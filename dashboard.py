@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import itertools
 import json
+import math
 import os
 import threading
 import time
@@ -132,7 +133,10 @@ SWEEP_DEFAULT_SELECTION: dict[str, list] = {
     "bearish_asset": ["cash"],
 }
 
-MAX_SWEEP_COMBOS = 5000
+# Today's absolute max (every option in every group checked) is 9,216 -- this
+# ceiling exists only to guard against a genuine runaway/malformed request (e.g.
+# a future parameter added without updating this), not to cap intentional use.
+MAX_SWEEP_COMBOS = 200_000
 
 
 _PRICE_WIDE: pd.DataFrame | None = None
@@ -166,6 +170,14 @@ def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
         if gold_path.exists():
             gold = read_index_csv(gold_path).rename("GOLDBEES")
             close = close.join(gold, how="outer")
+            # A single missing trading day inside GOLDBEES's own history (data
+            # gap, not a market holiday -- the stock panel traded that day) made
+            # value() treat a fully-invested-in-gold position as worth exactly
+            # zero for that one day, fabricating a flash-crash-and-recover that
+            # dominated every downstream vol/Sharpe/drawdown calculation. Forward
+            # -fill only within its trading history: NaN before its first listed
+            # date is untouched (still correctly "not tradable yet").
+            close["GOLDBEES"] = close["GOLDBEES"].ffill()
         _PRICE_WIDE = close[close.notna().sum(axis=1) >= 200]
         _OPEN_WIDE = open_wide.reindex(_PRICE_WIDE.index)
     if _TIMELINE is None:
@@ -874,7 +886,9 @@ _SWEEP_STATE: dict = {
     "results": [],
     "cancel": False,
     "error": None,
+    "base": None,
 }
+SWEEP_RESULTS_PATH = ROOT / "sweep_results.json"
 
 
 def expand_sweep_combos(selection: dict) -> list[dict]:
@@ -983,9 +997,26 @@ def sweep_status_payload() -> dict:
     }
 
 
+def json_safe(obj):
+    # Python's json.dumps writes NaN/Infinity as bare (invalid-JSON) tokens by
+    # default -- harmless until a browser's strict JSON.parse hits one and
+    # aborts on the ENTIRE response, not just the offending field. A backtest
+    # over a very short/degenerate equity series (e.g. a sweep combo that ends
+    # up with almost no rebalances) can produce NaN vol/sharpe, so this is a
+    # real, reachable case, not just a defensive nicety. Recursively replace
+    # NaN/Infinity with null (valid JSON, renders as "-" client-side).
+    if isinstance(obj, float):
+        return None if (math.isnan(obj) or math.isinf(obj)) else obj
+    if isinstance(obj, dict):
+        return {k: json_safe(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [json_safe(v) for v in obj]
+    return obj
+
+
 class Handler(BaseHTTPRequestHandler):
     def _send_json(self, status: int, payload: dict) -> None:
-        body = json.dumps(payload).encode()
+        body = json.dumps(json_safe(payload)).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
@@ -1015,6 +1046,12 @@ class Handler(BaseHTTPRequestHandler):
             return
         if path == "/api/sweep/status":
             self._send_json(200, sweep_status_payload())
+            return
+        if path == "/api/sweep/saved":
+            if SWEEP_RESULTS_PATH.exists():
+                self._send_json(200, json.loads(SWEEP_RESULTS_PATH.read_text()))
+            else:
+                self._send_json(200, {"results": [], "saved_at": None})
             return
         self.send_error(404)
 
@@ -1046,7 +1083,7 @@ class Handler(BaseHTTPRequestHandler):
                     _SWEEP_STATE.update({
                         "job_id": job_id, "running": True, "total": len(combos), "completed": 0,
                         "started_at": time.time(), "finished_at": None, "results": [],
-                        "cancel": False, "error": None,
+                        "cancel": False, "error": None, "base": base_payload,
                     })
                 threading.Thread(target=run_sweep_job, args=(job_id, base_payload, combos), daemon=True).start()
                 self._send_json(200, {"job_id": job_id, "total": len(combos)})
@@ -1056,6 +1093,23 @@ class Handler(BaseHTTPRequestHandler):
                 with _SWEEP_LOCK:
                     _SWEEP_STATE["cancel"] = True
                 self._send_json(200, {"stopped": True})
+                return
+
+            if path == "/api/sweep/save":
+                with _SWEEP_LOCK:
+                    results = list(_SWEEP_STATE["results"])
+                    saved = {
+                        "saved_at": time.time(),
+                        "total": _SWEEP_STATE["total"],
+                        "completed": len(results),
+                        "base": _SWEEP_STATE["base"],
+                        "results": results,
+                    }
+                if not results:
+                    self._send_json(400, {"error": "No completed sweep results to save yet."})
+                    return
+                SWEEP_RESULTS_PATH.write_text(json.dumps(json_safe(saved)))
+                self._send_json(200, {"saved": True, "completed": len(results)})
                 return
 
             self.send_error(404)

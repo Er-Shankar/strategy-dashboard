@@ -214,6 +214,7 @@ th.sort-active{color:var(--blue)}
     <div class="sweep-actions">
       <button id="sweepRun">Run Sweep</button>
       <button id="sweepCancel" class="btn-danger" style="display:none">Cancel</button>
+      <button id="sweepSave" class="btn-secondary" style="display:none">Save Results</button>
     </div>
     <div id="sweepProgressWrap" style="display:none">
       <div class="progress-wrap"><div class="progress-bar" id="sweepBar"></div></div>
@@ -223,7 +224,7 @@ th.sort-active{color:var(--blue)}
   </div>
   <div class="card">
     <h2>Results <span class="sub" id="sweepResultCount" style="margin:0"></span></h2>
-    <p class="sub">Click a column header to sort. Ranked by Sharpe by default -- CAGR alone rewards luck, not durable edge.</p>
+    <p class="sub" id="sweepResultsNote">Click a column header to sort. Ranked by Sharpe by default -- CAGR alone rewards luck, not durable edge.</p>
     <div class="scroll"><table id="sweepTable"><thead></thead><tbody></tbody></table></div>
   </div>
 </div>
@@ -485,6 +486,7 @@ function renderSweepTable(results){
   LAST_SWEEP_RESULTS=results||[];
   const cols=sweepColumns(LAST_SWEEP_RESULTS);
   $('sweepResultCount').textContent=LAST_SWEEP_RESULTS.length?`(${LAST_SWEEP_RESULTS.length.toLocaleString('en-IN')} completed)`:'';
+  $('sweepSave').style.display=LAST_SWEEP_RESULTS.length?'':'none';
   const thead=document.querySelector('#sweepTable thead');
   thead.innerHTML='<tr>'+cols.map(c=>{
     const active=sweepSort.key===c, arrow=active?(sweepSort.dir==='desc'?' ▼':' ▲'):'';
@@ -548,6 +550,7 @@ async function startSweep(){
     $('sweepCancel').style.display=''; $('sweepCancel').disabled=false;
     $('sweepProgressWrap').style.display='';
     $('sweepBar').style.width='0%';
+    $('sweepResultsNote').textContent='Live results from this session.';
     if(sweepPollHandle)clearTimeout(sweepPollHandle);
     pollSweep();
   }catch(e){$('sweepRun').disabled=false;$('sweepErr').textContent=e.message;$('sweepErr').style.display='block'}
@@ -556,6 +559,19 @@ async function cancelSweep(){
   $('sweepCancel').disabled=true;
   try{await fetch('/api/sweep/cancel',{method:'POST'})}
   catch(e){$('sweepErr').textContent=e.message;$('sweepErr').style.display='block'}
+}
+function fmtTimestamp(unixSeconds){
+  return new Date(unixSeconds*1000).toLocaleString('en-IN',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+async function saveSweepResults(){
+  $('sweepSave').disabled=true;
+  try{
+    const res=await fetch('/api/sweep/save',{method:'POST'});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Save failed');
+    $('sweepResultsNote').textContent=`Saved ${data.completed} results to the server -- commit & deploy sweep_results.json to publish them on the hosted site.`;
+  }catch(e){$('sweepErr').textContent=e.message;$('sweepErr').style.display='block'}
+  finally{$('sweepSave').disabled=false}
 }
 async function loadSweepMeta(){
   try{
@@ -566,6 +582,7 @@ async function loadSweepMeta(){
     const status=await statusRes.json();
     if(status.total>0){
       renderSweepTable(status.results);
+      $('sweepResultsNote').textContent='Live results from this session.';
       if(status.running){
         sweepJobRunning=true;
         $('sweepRun').style.display='none'; $('sweepCancel').style.display='';
@@ -580,6 +597,15 @@ async function loadSweepMeta(){
           :`Done: ${status.completed}/${status.total} runs in ${fmtDuration(status.elapsed_seconds)}.`;
         updateSweepSummary();
       }
+      return;
+    }
+    // No live sweep has run in this server session -- fall back to a
+    // previously saved (and deployed) results file, if one exists.
+    const savedRes=await fetch('/api/sweep/saved');
+    const saved=await savedRes.json();
+    if(saved.results&&saved.results.length){
+      renderSweepTable(saved.results);
+      $('sweepResultsNote').textContent=`Showing ${saved.results.length.toLocaleString('en-IN')} saved results from ${fmtTimestamp(saved.saved_at)}. Run a new sweep to refresh.`;
     }
   }catch(e){$('sweepErr').textContent='Failed to load sweep options: '+e.message;$('sweepErr').style.display='block'}
 }
@@ -587,6 +613,7 @@ $('tabBacktestBtn').addEventListener('click',()=>switchTab('backtest'));
 $('tabSweepBtn').addEventListener('click',()=>switchTab('sweep'));
 $('sweepRun').addEventListener('click',startSweep);
 $('sweepCancel').addEventListener('click',cancelSweep);
+$('sweepSave').addEventListener('click',saveSweepResults);
 
 async function run(){
   $('run').disabled=true; $('run').textContent='Running...'; $('err').style.display='none';
