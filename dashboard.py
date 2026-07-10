@@ -8,7 +8,7 @@ import threading
 import time
 import traceback
 import uuid
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -317,6 +317,9 @@ def supertrend_bullish(ohlc: pd.DataFrame, atr_period: int, multiplier: float) -
     return bullish
 
 
+_TREND_STATE_CACHE: dict = {}
+
+
 def build_trend_state(price_index: pd.DatetimeIndex, cfg: dict) -> tuple[pd.Series, dict]:
     if cfg["trend_filter"] == "none":
         state = pd.Series(True, index=price_index)
@@ -328,6 +331,21 @@ def build_trend_state(price_index: pd.DatetimeIndex, cfg: dict) -> tuple[pd.Seri
             "current_mode": "Bullish",
             "changes": [],
         }
+
+    # The result depends only on (trend_source, trend_timeframe, atr_period,
+    # multiplier) -- NOT on start/end/lookbacks/etc -- so within a sweep that
+    # varies unrelated dimensions across e.g. 4,608 trend_filter=on combos,
+    # there are only a handful of truly distinct results (2 timeframes x 3
+    # multipliers = 6 for the default sweep grid). Re-reading+reparsing the
+    # OHLC CSV and re-running supertrend_bullish's O(n) loop plus the holiday
+    # relabelling loop for every combo was measured at ~100ms/call, almost all
+    # of it wasted recomputation of an identical prior result. (Cache is
+    # per-process: under multiprocessing each worker builds its own copy, but
+    # still collapses ~1000+ redundant calls per worker down to ~6.)
+    cache_key = (cfg["trend_source"], cfg["trend_timeframe"], int(cfg["supertrend_atr_period"]), float(cfg["supertrend_multiplier"]), id(price_index))
+    if cache_key in _TREND_STATE_CACHE:
+        cached_state, cached_summary = _TREND_STATE_CACHE[cache_key]
+        return cached_state, dict(cached_summary)
 
     ohlc, source_used = load_trend_ohlc(cfg["trend_source"])
     if ohlc is None or ohlc.empty:
@@ -362,7 +380,7 @@ def build_trend_state(price_index: pd.DatetimeIndex, cfg: dict) -> tuple[pd.Seri
         raw_state = raw_state[~raw_state.index.duplicated(keep="last")].sort_index()
     trend_state = raw_state.reindex(price_index, method="ffill").fillna(True).astype(bool)
     switches = int((trend_state.astype(int).diff().abs() == 1).sum())
-    return trend_state, {
+    summary = {
         "enabled": True,
         "source": source_used,
         "condition": f"{cfg['trend_timeframe']} supertrend",
@@ -371,6 +389,8 @@ def build_trend_state(price_index: pd.DatetimeIndex, cfg: dict) -> tuple[pd.Seri
         "current_mode": "Bullish" if bool(trend_state.iloc[-1]) else "Bearish",
         "changes": trend_changes(trend_state),
     }
+    _TREND_STATE_CACHE[cache_key] = (trend_state, summary)
+    return trend_state, dict(summary)
 
 
 def trend_changes(trend_state: pd.Series) -> list[dict]:
@@ -930,28 +950,40 @@ def run_one_combo(base_payload: dict, combo: dict) -> dict:
 
 
 def sweep_worker_count() -> int:
-    # Each concurrent worker holds its own precompute_return_panels() working set
-    # (~45-135MB depending on the combo, measured empirically) IN ADDITION to the
-    # shared ~300MB baseline. On a 512MB host (Render free tier, detected via the
-    # same $PORT signal used for host binding) even 2 workers leaves only ~10%
-    # headroom and 3+ measurably exceeds the limit -- so hosted mode stays
-    # sequential (matches the single-request footprint we already verified is
-    # safe). Locally there's no such ceiling, so use real parallelism for speed.
+    # Measured directly: threads give ZERO real speedup here (6 threads was
+    # slightly SLOWER than plain sequential, 7.55s vs 6.71s for 6 identical
+    # backtests) -- the per-rebalance simulation loop (trade/tax-lot bookkeeping)
+    # is pure Python and holds the GIL for nearly the whole runtime, so "workers"
+    # just take turns rather than running concurrently. On the hosted 512MB host
+    # we stay at 1 worker anyway (memory, not CPU, is the constraint there -- see
+    # sweep_executor()). Locally, real parallelism requires separate processes
+    # (each with its own GIL) -- see sweep_executor().
     if os.environ.get("PORT"):
         return 1
-    return min(6, max(2, os.cpu_count() or 4))
+    return max(1, (os.cpu_count() or 4) - 1)  # leave one core for the HTTP server
+
+
+def sweep_executor_class():
+    # Threads on the hosted host: a full process per worker would duplicate the
+    # ~300MB baseline (price panels, pandas/numpy import) per worker, which is
+    # exactly the OOM mechanism already fixed once -- not worth it when hosted
+    # mode is pinned to 1 worker anyway. Processes locally: each gets its own
+    # GIL, so this is where the real parallelism actually comes from; local
+    # machines have enough RAM (verified 16GB here) that N x ~300MB is a
+    # non-issue.
+    return ThreadPoolExecutor if os.environ.get("PORT") else ProcessPoolExecutor
 
 
 def run_sweep_job(job_id: str, base_payload: dict, combos: list[dict]) -> None:
     load_inputs()  # warm the shared cache once before fanning out workers
     workers = sweep_worker_count()
-    # Not using ThreadPoolExecutor as a context manager: its __exit__ calls
+    # Not using the executor as a context manager: its __exit__ calls
     # shutdown(wait=True), which blocks until every already-submitted future
     # finishes -- so breaking out of the loop below on cancel wouldn't actually
     # stop anything, it would just stop collecting results while the pool kept
     # grinding through the rest in the background. Explicit shutdown(wait=False,
     # cancel_futures=True) in `finally` actually drops the not-yet-started work.
-    executor = ThreadPoolExecutor(max_workers=workers)
+    executor = sweep_executor_class()(max_workers=workers)
     try:
         futures = {executor.submit(run_one_combo, base_payload, combo): combo for combo in combos}
         for future in as_completed(futures):
