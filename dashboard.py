@@ -54,15 +54,9 @@ DEFAULTS = {
     "long_term_days": 365,
     "trend_filter": "none",
     "trend_source": "nifty500",
-    "trend_condition": "close_above_ma",
-    "trend_ma_type": "sma",
-    "trend_ma_days": 200,
-    "trend_fast_ma_days": 50,
     "trend_timeframe": "weekly",
     "supertrend_atr_period": 1,
     "supertrend_multiplier": 2.5,
-    "trend_buffer_pct": 0.0,
-    "trend_confirmation_days": 1,
     "bearish_exposure": 0.0,
     "bearish_asset": "cash",
     "bearish_symbol": "GOLDBEES",
@@ -119,11 +113,8 @@ def merged_config(payload: dict) -> dict:
     cfg["exit_rank"] = int(cfg["exit_rank"])
     cfg["rebalance_day"] = int(cfg["rebalance_day"])
     cfg["initial_capital"] = float(cfg["initial_capital"])
-    cfg["trend_ma_days"] = int(cfg["trend_ma_days"])
-    cfg["trend_fast_ma_days"] = int(cfg["trend_fast_ma_days"])
     cfg["supertrend_atr_period"] = max(int(cfg["supertrend_atr_period"]), 1)
     cfg["supertrend_multiplier"] = float(cfg["supertrend_multiplier"])
-    cfg["trend_confirmation_days"] = max(int(cfg["trend_confirmation_days"]), 1)
     cfg["bearish_exposure"] = min(max(float(cfg["bearish_exposure"]), 0.0), 1.0)
     return cfg
 
@@ -194,12 +185,6 @@ def load_trend_ohlc(source: str) -> tuple[pd.DataFrame | None, str]:
     return df, f"{label} close-only"
 
 
-def moving_average(series: pd.Series, days: int, ma_type: str) -> pd.Series:
-    if ma_type == "ema":
-        return series.ewm(span=days, min_periods=days, adjust=False).mean()
-    return series.rolling(days, min_periods=days).mean()
-
-
 def resample_ohlc(ohlc: pd.DataFrame, timeframe: str) -> pd.DataFrame:
     if timeframe == "daily":
         return ohlc
@@ -260,52 +245,8 @@ def build_trend_state(price_index: pd.DatetimeIndex, cfg: dict) -> tuple[pd.Seri
             "changes": [],
         }
 
-    if cfg["trend_condition"] == "weekly_supertrend":
-        ohlc, source_used = load_trend_ohlc(cfg["trend_source"])
-        if ohlc is None or ohlc.empty:
-            state = pd.Series(True, index=price_index)
-            return state, {
-                "enabled": False,
-                "source": "missing",
-                "bearish_days": 0,
-                "switches": 0,
-                "current_mode": "Bullish",
-                "changes": [],
-                "warning": "No trend OHLC CSV found.",
-            }
-        st_ohlc = resample_ohlc(ohlc, cfg["trend_timeframe"])
-        raw_state = supertrend_bullish(
-            st_ohlc,
-            int(cfg["supertrend_atr_period"]),
-            float(cfg["supertrend_multiplier"]),
-        )
-        # Weekly bars are labelled by calendar Friday (W-FRI). When that Friday is
-        # a market holiday (e.g. 2020-05-01, 2025-04-18) the label is absent from
-        # the trading calendar, so a plain ffill can't apply the new state until the
-        # following Monday -- pushing the reported flip a week off the real close.
-        # Re-stamp each bar to its actual last trading day so holiday weeks behave
-        # exactly like normal weeks (normal Fridays are unchanged).
-        if cfg["trend_timeframe"] != "daily" and len(price_index):
-            relabelled = []
-            for bar_end in raw_state.index:
-                prior = price_index[price_index <= bar_end]
-                relabelled.append(prior[-1] if len(prior) else bar_end)
-            raw_state = pd.Series(raw_state.values, index=pd.DatetimeIndex(relabelled))
-            raw_state = raw_state[~raw_state.index.duplicated(keep="last")].sort_index()
-        trend_state = raw_state.reindex(price_index, method="ffill").fillna(True).astype(bool)
-        switches = int((trend_state.astype(int).diff().abs() == 1).sum())
-        return trend_state, {
-            "enabled": True,
-            "source": source_used,
-            "condition": f"{cfg['trend_timeframe']} supertrend",
-            "bearish_days": int((~trend_state).sum()),
-            "switches": switches,
-            "current_mode": "Bullish" if bool(trend_state.iloc[-1]) else "Bearish",
-            "changes": trend_changes(trend_state),
-        }
-
-    trend, source_used = load_trend_series(cfg["trend_source"])
-    if trend is None or trend.empty:
+    ohlc, source_used = load_trend_ohlc(cfg["trend_source"])
+    if ohlc is None or ohlc.empty:
         state = pd.Series(True, index=price_index)
         return state, {
             "enabled": False,
@@ -314,42 +255,33 @@ def build_trend_state(price_index: pd.DatetimeIndex, cfg: dict) -> tuple[pd.Seri
             "switches": 0,
             "current_mode": "Bullish",
             "changes": [],
-            "warning": "No trend index CSV found.",
+            "warning": "No trend OHLC CSV found.",
         }
-
-    slow = moving_average(trend, int(cfg["trend_ma_days"]), cfg["trend_ma_type"])
-    fast = moving_average(trend, int(cfg["trend_fast_ma_days"]), cfg["trend_ma_type"])
-    buffer = float(cfg["trend_buffer_pct"]) / 100.0
-    if cfg["trend_condition"] == "fast_above_slow":
-        raw_bull = fast > slow * (1 + buffer)
-        raw_bear = fast < slow * (1 - buffer)
-    elif cfg["trend_condition"] == "close_above_ma_and_ma_rising":
-        raw_bull = (trend > slow * (1 + buffer)) & (slow.diff() > 0)
-        raw_bear = (trend < slow * (1 - buffer)) | (slow.diff() < 0)
-    else:
-        raw_bull = trend > slow * (1 + buffer)
-        raw_bear = trend < slow * (1 - buffer)
-
-    confirm = int(cfg["trend_confirmation_days"])
-    if confirm > 1:
-        bull = raw_bull.rolling(confirm).sum() >= confirm
-        bear = raw_bear.rolling(confirm).sum() >= confirm
-    else:
-        bull, bear = raw_bull, raw_bear
-
-    regime = []
-    mode = True
-    for date in trend.index:
-        if bool(bull.loc[date]):
-            mode = True
-        elif bool(bear.loc[date]):
-            mode = False
-        regime.append(mode)
-    trend_state = pd.Series(regime, index=trend.index).reindex(price_index, method="ffill").fillna(True).astype(bool)
+    st_ohlc = resample_ohlc(ohlc, cfg["trend_timeframe"])
+    raw_state = supertrend_bullish(
+        st_ohlc,
+        int(cfg["supertrend_atr_period"]),
+        float(cfg["supertrend_multiplier"]),
+    )
+    # Weekly bars are labelled by calendar Friday (W-FRI). When that Friday is
+    # a market holiday (e.g. 2020-05-01, 2025-04-18) the label is absent from
+    # the trading calendar, so a plain ffill can't apply the new state until the
+    # following Monday -- pushing the reported flip a week off the real close.
+    # Re-stamp each bar to its actual last trading day so holiday weeks behave
+    # exactly like normal weeks (normal Fridays are unchanged).
+    if cfg["trend_timeframe"] != "daily" and len(price_index):
+        relabelled = []
+        for bar_end in raw_state.index:
+            prior = price_index[price_index <= bar_end]
+            relabelled.append(prior[-1] if len(prior) else bar_end)
+        raw_state = pd.Series(raw_state.values, index=pd.DatetimeIndex(relabelled))
+        raw_state = raw_state[~raw_state.index.duplicated(keep="last")].sort_index()
+    trend_state = raw_state.reindex(price_index, method="ffill").fillna(True).astype(bool)
     switches = int((trend_state.astype(int).diff().abs() == 1).sum())
     return trend_state, {
         "enabled": True,
         "source": source_used,
+        "condition": f"{cfg['trend_timeframe']} supertrend",
         "bearish_days": int((~trend_state).sum()),
         "switches": switches,
         "current_mode": "Bullish" if bool(trend_state.iloc[-1]) else "Bearish",
