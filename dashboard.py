@@ -915,9 +915,22 @@ def run_one_combo(base_payload: dict, combo: dict) -> dict:
     return row
 
 
+def sweep_worker_count() -> int:
+    # Each concurrent worker holds its own precompute_return_panels() working set
+    # (~45-135MB depending on the combo, measured empirically) IN ADDITION to the
+    # shared ~300MB baseline. On a 512MB host (Render free tier, detected via the
+    # same $PORT signal used for host binding) even 2 workers leaves only ~10%
+    # headroom and 3+ measurably exceeds the limit -- so hosted mode stays
+    # sequential (matches the single-request footprint we already verified is
+    # safe). Locally there's no such ceiling, so use real parallelism for speed.
+    if os.environ.get("PORT"):
+        return 1
+    return min(6, max(2, os.cpu_count() or 4))
+
+
 def run_sweep_job(job_id: str, base_payload: dict, combos: list[dict]) -> None:
     load_inputs()  # warm the shared cache once before fanning out workers
-    workers = min(6, max(2, os.cpu_count() or 4))
+    workers = sweep_worker_count()
     # Not using ThreadPoolExecutor as a context manager: its __exit__ calls
     # shutdown(wait=True), which blocks until every already-submitted future
     # finishes -- so breaking out of the loop below on cancel wouldn't actually
