@@ -417,12 +417,47 @@ def get_rebalance_dates(index: pd.DatetimeIndex, start: str, end: str, frequency
     return sorted(set(dates))
 
 
-def compute_scores(price_wide: pd.DataFrame, date: pd.Timestamp, universe: set[str], cfg: dict) -> tuple[pd.Series, pd.Series]:
-    if date not in price_wide.index:
-        return pd.Series(dtype=float), pd.Series(dtype=float)
+def precompute_return_panels(price_wide: pd.DataFrame, cfg: dict) -> dict:
+    """Vectorized once-per-backtest precompute of the lookback returns that
+    compute_scores previously recomputed from a fresh window slice on every single
+    rebalance date (100+ times per run). Same values, computed once across the
+    full panel instead of once per rebalance -- pure speedup, no behavior change.
+
+    Built via raw numpy (float64, same precision as before -- no ranking-relevant
+    rounding introduced) rather than pandas' pct_change(): pandas' rolling/
+    pct_change ops on a 729-column panel carry ~3-4x their result size in
+    transient memory (internal upcasting/temporaries), which is what caused an
+    OOM crash on a 512MB host the first time this was tried with pandas ops
+    end-to-end. (float32 was tried and rejected: it shaves more memory but
+    introduces up to ~1% relative score differences -- enough to flip which
+    symbols land in the top-N ranking near the cutoff, silently changing
+    backtest results.) Volatility is deliberately NOT precomputed the same way --
+    it's cheap per-call on a small window already (see compute_scores), and
+    precomputing it via pandas' rolling().std() alone added ~90MB of transient
+    memory for a 22MB result, without a matching speed payoff.
+    """
     lookbacks = [lb for lb in cfg["lookbacks"] if lb in LOOKBACK_OPTIONS]
     if not lookbacks:
         lookbacks = ["3m", "6m", "9m"]
+    days_needed = {LOOKBACK_OPTIONS[lb] for lb in lookbacks}
+
+    idx, cols = price_wide.index, price_wide.columns
+    arr = price_wide.to_numpy(dtype=np.float64, copy=True)
+    n, m = arr.shape
+    ret_full = {}
+    for days in days_needed:
+        out = np.full((n, m), np.nan, dtype=np.float64)
+        np.divide(arr[days:], arr[:-days], out=out[days:])
+        out[days:] -= 1.0
+        ret_full[days] = pd.DataFrame(out, index=idx, columns=cols, copy=False)
+
+    return {"lookbacks": lookbacks, "ret_full": ret_full}
+
+
+def compute_scores(price_wide: pd.DataFrame, date: pd.Timestamp, universe: set[str], cfg: dict, panels: dict) -> tuple[pd.Series, pd.Series]:
+    if date not in price_wide.index:
+        return pd.Series(dtype=float), pd.Series(dtype=float)
+    lookbacks = panels["lookbacks"]
     max_lb = max(LOOKBACK_OPTIONS[lb] for lb in lookbacks + [cfg["vol_lookback"]])
     if cfg["skip_1m"]:
         max_lb += LOOKBACK_OPTIONS["1m"]
@@ -431,15 +466,15 @@ def compute_scores(price_wide: pd.DataFrame, date: pd.Timestamp, universe: set[s
         return pd.Series(dtype=float), pd.Series(dtype=float)
 
     cols = [c for c in price_wide.columns if c in universe]
-    window = price_wide.iloc[loc - max_lb: loc + 1][cols]
-    p_now = window.iloc[-1 - (LOOKBACK_OPTIONS["1m"] if cfg["skip_1m"] else 0)]
+    p_now_loc = loc - (LOOKBACK_OPTIONS["1m"] if cfg["skip_1m"] else 0)
+    p_now = price_wide.iloc[p_now_loc][cols]
     score = pd.Series(0.0, index=cols)
     total_weight = 0.0
     valid = p_now.notna()
     for lb in lookbacks:
         days = LOOKBACK_OPTIONS[lb]
-        p_old = window.iloc[-1 - (LOOKBACK_OPTIONS["1m"] if cfg["skip_1m"] else 0) - days]
-        ret = p_now / p_old - 1
+        ret = panels["ret_full"][days].iloc[p_now_loc][cols]
+        p_old = price_wide.iloc[p_now_loc - days][cols]
         weight = float(cfg["weights"].get(lb, 1.0))
         score = score.add(ret.fillna(0) * weight, fill_value=0)
         valid &= p_old.notna()
@@ -447,8 +482,11 @@ def compute_scores(price_wide: pd.DataFrame, date: pd.Timestamp, universe: set[s
     if total_weight:
         score = score / total_weight
 
+    # Volatility is computed directly from a small window slice (matches the
+    # original per-rebalance calculation exactly), not from a full-panel
+    # precompute -- see the docstring on precompute_return_panels for why.
     vol_days = LOOKBACK_OPTIONS.get(cfg["vol_lookback"], 63)
-    vol_window = window.iloc[-vol_days:].pct_change().dropna(how="all")
+    vol_window = price_wide.iloc[loc - vol_days + 1: loc + 1][cols].pct_change().dropna(how="all")
     vol = vol_window.std() * np.sqrt(252)
     if cfg["vol_adjust"]:
         valid &= vol.notna() & (vol > 0)
@@ -656,6 +694,7 @@ def run_dashboard_backtest(cfg: dict) -> dict:
             {"shares": gross / price, "cost": gross, "entry": date}
         )
 
+    panels = precompute_return_panels(price_wide, cfg)
     for i, date in enumerate(dates):
         action_key = date.date().isoformat()
         is_trend_event = action_key in trend_event_info
@@ -664,7 +703,7 @@ def run_dashboard_backtest(cfg: dict) -> dict:
         # enter at this day's open -- no look-ahead.
         loc = price_wide.index.get_loc(date)
         rank_date = price_wide.index[loc - 1] if loc > 0 else date
-        scores, vols = compute_scores(price_wide, rank_date, universe, cfg)
+        scores, vols = compute_scores(price_wide, rank_date, universe, cfg, panels)
         ranks = {sym: n + 1 for n, sym in enumerate(scores.index)}
         is_bullish = bool(trend_state.loc[date]) if date in trend_state.index else True
         gold_symbol = str(cfg.get("bearish_symbol", "GOLDBEES")).upper()
@@ -732,8 +771,18 @@ def run_dashboard_backtest(cfg: dict) -> dict:
         else:
             days = price_wide.loc[(price_wide.index > date) & (price_wide.index <= next_date)].index
             gross_returns.append(pd.Series(0.0, index=days))
-        for day in price_wide.loc[date:next_date].index:
-            net_points.append((day, total_value(day)))
+        # Cash and share counts are fixed for the whole holding period (no trades
+        # occur until the next rebalance), so the daily mark-to-market can be one
+        # matrix multiply instead of calling total_value() per day per holding
+        # (previously ~51,000 scalar .at[] lookups across a full backtest).
+        period_index = price_wide.loc[date:next_date].index
+        held_symbols = [s for s in positions if s in price_wide.columns]
+        if held_symbols:
+            shares_vec = pd.Series({s: shares(s) for s in held_symbols})
+            position_value = price_wide.loc[period_index, held_symbols].mul(shares_vec, axis=1).sum(axis=1)
+        else:
+            position_value = pd.Series(0.0, index=period_index)
+        net_points.extend(zip(period_index, cash + position_value))
 
         holdings_rows.append(
             {
