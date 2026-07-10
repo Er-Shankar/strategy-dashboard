@@ -78,10 +78,17 @@ _TREND_CACHE: dict[str, pd.Series] = {}
 def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     global _PRICE_WIDE, _OPEN_WIDE, _TIMELINE
     if _PRICE_WIDE is None:
-        # Prefer the OHLC panel (adjusted open + close from one snapshot) so we can
-        # enter at the rebalance-day OPEN while ranking on the previous CLOSE.
+        # Prefer pre-pivoted wide parquet files: pandas' pivot() on the 2.1M-row
+        # long-format panel has a huge transient memory spike (~650MB, vs a ~23MB
+        # result) which OOMs low-memory hosts. Pivoting once locally and reading
+        # the wide result directly keeps runtime peak RSS under ~260MB.
+        wide_close_path = ROOT / "prices_wide_close.parquet"
+        wide_open_path = ROOT / "prices_wide_open.parquet"
         ohlc_path = ROOT / "prices_ohlc.parquet"
-        if ohlc_path.exists():
+        if wide_close_path.exists() and wide_open_path.exists():
+            close = pd.read_parquet(wide_close_path)
+            open_wide = pd.read_parquet(wide_open_path)
+        elif ohlc_path.exists():
             prices = pd.read_parquet(ohlc_path)
             close = prices.pivot(index="date", columns="symbol", values="close").sort_index()
             open_wide = prices.pivot(index="date", columns="symbol", values="open").sort_index()

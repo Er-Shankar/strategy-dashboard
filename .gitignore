@@ -8,6 +8,8 @@
 !universe.py
 !requirements.txt
 
+!prices_wide_close.parquet
+!prices_wide_open.parquet
 !prices_ohlc.parquet
 !prices.parquet
 !nifty500_ohlc.csv
