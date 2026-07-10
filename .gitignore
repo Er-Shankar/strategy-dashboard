@@ -1,0 +1,17 @@
+# Allow-list: ignore everything by default, then explicitly un-ignore
+# only the files the deployed dashboard actually reads at runtime.
+*
+
+!.gitignore
+!dashboard.py
+!dashboard.html
+!universe.py
+!requirements.txt
+
+!prices_ohlc.parquet
+!prices.parquet
+!nifty500_ohlc.csv
+!nifty500.csv
+!nifty50.csv
+!goldbees.csv
+!changes.csv

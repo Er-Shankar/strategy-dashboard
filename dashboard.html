@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Momentum Strategy Dashboard</title>
+<style>
+:root{--bg:#f7f7f4;--panel:#fff;--ink:#111;--muted:#666;--line:#ddd;--blue:#2563eb;--green:#16835f;--red:#d33}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{display:grid;grid-template-columns:330px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:18px;overflow:auto}
+main{padding:22px;overflow:auto}
+h1{font-size:22px;margin:0 0 4px} h2{font-size:16px;margin:22px 0 8px} h3{font-size:13px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.sub{color:var(--muted);margin:0 0 16px}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,select,button{font:inherit}
+input[type="number"],input[type="date"],select{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 8px;background:#fff;color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px;align-items:end;margin:8px 0 12px}
+.filters label{margin-top:0}
+.check{display:flex;align-items:center;gap:8px;margin:7px 0;color:#333}
+.check input{width:16px;height:16px}
+.look{display:grid;grid-template-columns:56px 1fr;gap:8px;align-items:center;margin:6px 0}
+.look span{font-weight:650}
+button{width:100%;border:0;border-radius:8px;background:var(--blue);color:#fff;padding:10px 12px;margin-top:16px;cursor:pointer;font-weight:650}
+button:disabled{opacity:.6;cursor:wait}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px}
+.tile,.card{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.tile{padding:13px}.tile .lbl{font-size:12px;color:var(--muted)}.tile .val{font-size:23px;font-weight:700;margin-top:3px}.tile .cmp{font-size:12px;color:var(--muted)}
+.card{padding:14px;margin-top:14px}
+svg{width:100%;height:auto;display:block}
+.chart{position:relative}
+.tip{position:absolute;display:none;pointer-events:none;background:#111;color:#fff;border-radius:7px;padding:7px 9px;font-size:12px;line-height:1.35;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:3;white-space:nowrap}
+.axis-label{font-size:11px;fill:#666}.hover-line{stroke:#888;stroke-width:1;stroke-dasharray:3 3}.hover-dot{stroke:#fff;stroke-width:2}
+.legend{display:flex;gap:14px;color:var(--muted);font-size:12px;margin-bottom:8px}.key{display:inline-flex;align-items:center;gap:6px}.key i{width:14px;height:3px;display:inline-block;border-radius:2px}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}th:first-child,td:first-child{text-align:left}.sym{font-weight:650}.pos{color:var(--green)}.neg{color:var(--red)}
+table.heat{border-collapse:separate;border-spacing:2px;min-width:650px}table.heat th,table.heat td{text-align:center;border:0;padding:6px 4px;border-radius:4px;font-size:12px}table.heat th:first-child{text-align:right}
+.scroll{overflow:auto;max-height:330px}
+.err{background:#fff0f0;border:1px solid #f2b8b8;color:#8a1111;border-radius:8px;padding:10px;margin-top:12px;display:none}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <h1>Strategy Dashboard</h1>
+  <p class="sub">Fixed universe: Nifty MidSmallcap 400 point-in-time.</p>
+
+  <h3>Backtest Window</h3>
+  <div class="row">
+    <div><label>Start</label><input id="start" type="date" value="2016-05-01"></div>
+    <div><label>End</label><input id="end" type="date" value="2026-07-01"></div>
+  </div>
+
+  <h3>Lookbacks</h3>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="1m">1M</label><input class="wt" data-lb="1m" type="number" step="0.25" value="0"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="3m" checked>3M</label><input class="wt" data-lb="3m" type="number" step="0.25" value="1"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="6m" checked>6M</label><input class="wt" data-lb="6m" type="number" step="0.25" value="1"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="9m" checked>9M</label><input class="wt" data-lb="9m" type="number" step="0.25" value="1"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="12m">12M</label><input class="wt" data-lb="12m" type="number" step="0.25" value="1"></div>
+
+  <h3>Formula</h3>
+  <label class="check"><input id="vol_adjust" type="checkbox" checked>Divide score by volatility</label>
+  <label>Volatility lookback</label>
+  <select id="vol_lookback"><option value="3m">3M</option><option value="6m">6M</option><option value="9m">9M</option><option value="12m">12M</option></select>
+  <label class="check"><input id="skip_1m" type="checkbox">Skip most recent 1M</label>
+
+  <h3>Portfolio Rules</h3>
+  <div class="row">
+    <div><label>Holdings</label><input id="top_n" type="number" min="1" max="80" value="20"></div>
+    <div><label>Entry rank cap</label><input id="entry_rank" type="number" min="1" max="200" value="20"></div>
+  </div>
+  <div class="row">
+    <div><label>Exit rank</label><input id="exit_rank" type="number" min="1" max="400" value="50"></div>
+    <div><label>Rebalance day</label><input id="rebalance_day" type="number" min="1" max="28" value="21"></div>
+  </div>
+  <label>Rebalance frequency</label>
+  <select id="rebalance_frequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="quarterly">Quarterly</option></select>
+  <label>Weighting</label>
+  <select id="weighting"><option value="equal">Equal weight</option><option value="score">Score weighted</option><option value="inverse_vol">Inverse volatility</option></select>
+
+  <h3>Trend Filter</h3>
+  <label>Mode</label>
+  <select id="trend_filter">
+    <option value="none" selected>None - current strategy</option>
+    <option value="ma">Use market trend filter</option>
+  </select>
+  <label>Trend source</label>
+  <select id="trend_source">
+    <option value="nifty500" selected>Nifty 500</option>
+    <option value="nifty50">Nifty 50</option>
+  </select>
+  <label>Condition</label>
+  <select id="trend_condition">
+    <option value="close_above_ma" selected>Close above MA</option>
+    <option value="close_above_ma_and_ma_rising">Close above MA and MA rising</option>
+    <option value="fast_above_slow">Fast MA above slow MA</option>
+    <option value="weekly_supertrend">Supertrend</option>
+  </select>
+  <div class="row">
+    <div><label>MA type</label><select id="trend_ma_type"><option value="sma">SMA</option><option value="ema">EMA</option></select></div>
+    <div><label>Slow MA days</label><input id="trend_ma_days" type="number" min="20" max="300" value="200"></div>
+  </div>
+  <div class="row">
+    <div><label>Fast MA days</label><input id="trend_fast_ma_days" type="number" min="10" max="200" value="50"></div>
+    <div><label>Confirm days</label><input id="trend_confirmation_days" type="number" min="1" max="20" value="1"></div>
+  </div>
+  <div class="row">
+    <div><label>Supertrend timeframe</label><select id="trend_timeframe"><option value="weekly" selected>Weekly</option><option value="daily">Daily</option></select></div>
+    <div><label>ATR period</label><input id="supertrend_atr_period" type="number" min="1" max="50" value="1"></div>
+  </div>
+  <label>Supertrend multiplier</label><input id="supertrend_multiplier" type="number" min="0.1" step="0.1" value="2.5">
+  <div class="row">
+    <div><label>Buffer %</label><input id="trend_buffer_pct" type="number" step="0.25" value="0"></div>
+    <div><label>Bearish exposure</label><select id="bearish_exposure"><option value="0">Sell all / cash</option><option value="0.25">Keep 25%</option><option value="0.5">Keep 50%</option><option value="0.75">Keep 75%</option><option value="1">Keep 100%, no new entries</option></select></div>
+  </div>
+  <label>Bearish destination</label>
+  <select id="bearish_asset">
+    <option value="cash" selected>Cash</option>
+    <option value="goldbees">GoldBees ETF</option>
+  </select>
+
+  <h3>Costs / Tax</h3>
+  <label>Initial capital</label><input id="initial_capital" type="number" value="1000000" step="100000">
+  <label class="check"><input id="include_brokerage" type="checkbox" checked>Brokerage</label>
+  <input id="brokerage_rate" type="number" step="0.0001" value="0.0003">
+  <label class="check"><input id="include_stt" type="checkbox" checked>STT</label>
+  <input id="stt_rate" type="number" step="0.0001" value="0.001">
+  <label class="check"><input id="include_sebi" type="checkbox" checked>SEBI charges</label>
+  <input id="sebi_rate" type="number" step="0.000001" value="0.000001">
+  <label class="check"><input id="include_stamp" type="checkbox" checked>Stamp duty on buys</label>
+  <input id="stamp_duty_rate" type="number" step="0.00001" value="0.00015">
+  <label class="check"><input id="include_slippage" type="checkbox">Slippage / impact</label>
+  <input id="slippage_rate" type="number" step="0.0001" value="0">
+  <label class="check"><input id="include_tax" type="checkbox" checked>Capital gains tax</label>
+  <div class="row">
+    <div><label>STCG</label><input id="stcg_rate" type="number" step="0.01" value="0.20"></div>
+    <div><label>LTCG</label><input id="ltcg_rate" type="number" step="0.01" value="0.125"></div>
+  </div>
+  <label>LTCG yearly exemption</label><input id="ltcg_exemption" type="number" step="25000" value="125000">
+  <button id="run">Run Backtest</button>
+  <div id="err" class="err"></div>
+</aside>
+<main>
+  <div class="grid">
+    <div class="tile"><div class="lbl">Gross CAGR</div><div class="val" id="grossCagr">-</div><div class="cmp">before costs/tax</div></div>
+    <div class="tile"><div class="lbl">Net CAGR</div><div class="val" id="netCagr">-</div><div class="cmp">after selected costs/tax</div></div>
+    <div class="tile"><div class="lbl">Net Final</div><div class="val" id="netFinal">-</div><div class="cmp">on selected initial capital</div></div>
+    <div class="tile"><div class="lbl">Gross DD</div><div class="val" id="grossDd">-</div><div class="cmp">before costs/tax</div></div>
+    <div class="tile"><div class="lbl">Net DD</div><div class="val" id="maxdd">-</div><div class="cmp">after selected costs/tax</div></div>
+    <div class="tile"><div class="lbl">Charges + Tax</div><div class="val" id="costTax">-</div><div class="cmp">absolute on capital</div></div>
+    <div class="tile"><div class="lbl">Trend Mode</div><div class="val" id="trendMode">-</div><div class="cmp" id="trendSource">source</div></div>
+  </div>
+  <div class="card">
+    <h2>Growth of Rs 100</h2>
+    <div class="legend"><span class="key"><i style="background:var(--blue)"></i>Gross</span><span class="key"><i style="background:var(--red)"></i>Net</span><span class="key"><i style="background:var(--green)"></i>Nifty 500</span></div>
+    <div id="chart"></div>
+  </div>
+  <div class="card">
+    <h2>Drawdown</h2>
+    <div class="legend"><span class="key"><i style="background:var(--blue)"></i>Gross</span><span class="key"><i style="background:var(--red)"></i>Net</span><span class="key"><i style="background:var(--green)"></i>Nifty 500</span></div>
+    <div id="ddChart"></div>
+  </div>
+  <div class="card">
+    <h2>Trend Filter Details</h2>
+    <div class="scroll"><table id="trendChanges"><thead><tr><th>Signal Date</th><th>Action Date</th><th>New Mode</th><th>Previous Mode</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <div class="card">
+    <h2>Calendar-Year Returns</h2>
+    <div id="yearChart"></div>
+  </div>
+  <div class="card">
+    <h2>Monthly Returns</h2>
+    <div class="scroll"><table class="heat" id="heat"></table></div>
+  </div>
+  <div class="row">
+    <div class="card"><h2>Top Contributors</h2><div id="topContrib"></div></div>
+    <div class="card"><h2>Worst Detractors</h2><div id="botContrib"></div></div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <h2>Latest Holdings</h2>
+      <div class="scroll"><table id="holdings"><thead><tr><th>Symbol</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Historical Entries / Exits</h2>
+    <div class="filters">
+      <div><label>From</label><input id="changeFrom" type="date"></div>
+      <div><label>To</label><input id="changeTo" type="date"></div>
+      <div><label>Action</label><select id="changeAction"><option value="all">All</option><option value="ENTER">Entries</option><option value="EXIT">Exits</option></select></div>
+      <div><label>Rows</label><select id="changeLimit"><option value="100">100</option><option value="250">250</option><option value="500">500</option><option value="all">All</option></select></div>
+    </div>
+    <div class="sub" id="changeCount"></div>
+    <div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</main>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let LAST_DATA=null;
+const rupee=v=>'Rs '+Math.round(v||0).toLocaleString('en-IN');
+function num(id){return Number($(id).value)}
+function checked(id){return $(id).checked}
+function config(){
+  const lookbacks=[...document.querySelectorAll('.lb:checked')].map(x=>x.value);
+  const weights={};
+  document.querySelectorAll('.wt').forEach(x=>weights[x.dataset.lb]=Number(x.value));
+  return {
+    start:$('start').value,end:$('end').value,lookbacks,weights,
+    vol_adjust:checked('vol_adjust'),vol_lookback:$('vol_lookback').value,skip_1m:checked('skip_1m'),
+    top_n:num('top_n'),entry_rank:num('entry_rank'),exit_rank:num('exit_rank'),
+    rebalance_frequency:$('rebalance_frequency').value,rebalance_day:num('rebalance_day'),weighting:$('weighting').value,
+    initial_capital:num('initial_capital'),
+    include_brokerage:checked('include_brokerage'),brokerage_rate:num('brokerage_rate'),
+    include_stt:checked('include_stt'),stt_rate:num('stt_rate'),
+    include_sebi:checked('include_sebi'),sebi_rate:num('sebi_rate'),
+    include_stamp:checked('include_stamp'),stamp_duty_rate:num('stamp_duty_rate'),
+    include_slippage:checked('include_slippage'),slippage_rate:num('slippage_rate'),
+    include_tax:checked('include_tax'),stcg_rate:num('stcg_rate'),ltcg_rate:num('ltcg_rate'),ltcg_exemption:num('ltcg_exemption')
+    ,trend_filter:$('trend_filter').value,trend_source:$('trend_source').value,trend_condition:$('trend_condition').value,
+    trend_ma_type:$('trend_ma_type').value,trend_ma_days:num('trend_ma_days'),trend_fast_ma_days:num('trend_fast_ma_days'),
+    trend_timeframe:$('trend_timeframe').value,supertrend_atr_period:num('supertrend_atr_period'),supertrend_multiplier:num('supertrend_multiplier'),
+    trend_buffer_pct:num('trend_buffer_pct'),trend_confirmation_days:num('trend_confirmation_days'),bearish_exposure:num('bearish_exposure'),
+    bearish_asset:$('bearish_asset').value
+  };
+}
+function svgEl(tag,attrs={},parent){
+  const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v));
+  if(parent)parent.appendChild(node);
+  return node;
+}
+function fmtDate(value){return new Date(value).toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'2-digit'})}
+function fmtNum(value){return Number(value).toLocaleString('en-IN',{maximumFractionDigits:2})}
+function linePath(data,X,Y){return 'M'+data.map(p=>X(new Date(p[0]))+','+Y(p[1])).join('L')}
+function nearestPoint(data, targetTs){
+  let best=data[0], bestDist=Math.abs(+new Date(best[0])-targetTs);
+  for(const point of data){
+    const dist=Math.abs(+new Date(point[0])-targetTs);
+    if(dist<bestDist){best=point;bestDist=dist}
+  }
+  return best;
+}
+function drawLineChart(mountId, series, yMin=null, yMax=null){
+  const mount=$(mountId); mount.innerHTML='';
+  mount.classList.add('chart');
+  const tip=document.createElement('div'); tip.className='tip'; mount.appendChild(tip);
+  const nonEmpty=series.filter(s=>s.data&&s.data.length); if(!nonEmpty.length)return;
+  const W=980,H=350,P={l:58,r:22,t:16,b:42};
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`},mount);
+  const all=nonEmpty.flatMap(s=>s.data), xs=all.map(p=>+new Date(p[0])), vals=all.map(p=>p[1]);
+  const x0=Math.min(...xs),x1=Math.max(...xs),v0=yMin ?? Math.min(0,...vals),v1=yMax ?? Math.max(...vals);
+  const X=d=>P.l+(+d-x0)/(x1-x0)*(W-P.l-P.r), Y=v=>P.t+(1-(v-v0)/(v1-v0||1))*(H-P.t-P.b);
+  for(let i=0;i<=5;i++){
+    const v=v0+(v1-v0)*i/5,y=Y(v);
+    svgEl('line',{x1:P.l,x2:W-P.r,y1:y,y2:y,stroke:'#ddd'},svg);
+    const text=svgEl('text',{x:P.l-8,y:y+4,'text-anchor':'end',class:'axis-label'},svg);
+    text.textContent=Math.round(v);
+  }
+  const tickCount=6;
+  for(let i=0;i<tickCount;i++){
+    const ts=x0+(x1-x0)*i/(tickCount-1);
+    const date=new Date(ts), x=X(date);
+    svgEl('line',{x1:x,x2:x,y1:H-P.b,y2:H-P.b+5,stroke:'#aaa'},svg);
+    const text=svgEl('text',{x:x,y:H-14,'text-anchor':'middle',class:'axis-label'},svg);
+    text.textContent=date.getFullYear();
+  }
+  svgEl('line',{x1:P.l,x2:W-P.r,y1:H-P.b,y2:H-P.b,stroke:'#aaa'},svg);
+  svgEl('line',{x1:P.l,x2:P.l,y1:P.t,y2:H-P.b,stroke:'#aaa'},svg);
+  nonEmpty.forEach(s=>svgEl('path',{d:linePath(s.data,X,Y),fill:'none',stroke:s.color,'stroke-width':2,'stroke-linejoin':'round','stroke-linecap':'round'},svg));
+  const hover=svgEl('g',{style:'display:none'},svg);
+  const vline=svgEl('line',{y1:P.t,y2:H-P.b,class:'hover-line'},hover);
+  const dots=nonEmpty.map(s=>svgEl('circle',{r:4,fill:s.color,class:'hover-dot'},hover));
+  const overlay=svgEl('rect',{x:P.l,y:P.t,width:W-P.l-P.r,height:H-P.t-P.b,fill:'transparent'},svg);
+  overlay.addEventListener('mousemove',ev=>{
+    const rect=svg.getBoundingClientRect();
+    const sx=W/rect.width, sy=H/rect.height;
+    const mx=(ev.clientX-rect.left)*sx;
+    const ts=x0+(mx-P.l)/(W-P.l-P.r)*(x1-x0);
+    const points=nonEmpty.map(s=>({series:s,point:nearestPoint(s.data,ts)}));
+    const x=X(new Date(points[0].point[0]));
+    hover.style.display='';
+    vline.setAttribute('x1',x); vline.setAttribute('x2',x);
+    dots.forEach((dot,i)=>{dot.setAttribute('cx',X(new Date(points[i].point[0])));dot.setAttribute('cy',Y(points[i].point[1]));});
+    tip.innerHTML=`<strong>${fmtDate(points[0].point[0])}</strong>`+points.map(p=>`<br><span style="color:${p.series.color}">●</span> ${p.series.label||'Value'}: ${fmtNum(p.point[1])}`).join('');
+    const left=Math.min(Math.max((ev.clientX-rect.left)+12,8),mount.clientWidth-tip.offsetWidth-8);
+    const top=Math.min(Math.max((ev.clientY-rect.top)-8,8),mount.clientHeight-tip.offsetHeight-8);
+    tip.style.left=left+'px'; tip.style.top=top+'px'; tip.style.display='block';
+  });
+  overlay.addEventListener('mouseleave',()=>{hover.style.display='none';tip.style.display='none';});
+}
+function drawChart(gross,net,benchmark){
+  const series=[{label:'Gross',data:gross,color:'#2563eb'},{label:'Net',data:net,color:'#d33'}];
+  if(benchmark&&benchmark.length)series.push({label:'Nifty 500',data:benchmark,color:'#16835f'});
+  drawLineChart('chart',series);
+}
+function drawBars(mountId, rows, color='#2563eb'){
+  const mount=$(mountId); mount.innerHTML=''; if(!rows||!rows.length)return;
+  mount.classList.add('chart');
+  const tip=document.createElement('div'); tip.className='tip'; mount.appendChild(tip);
+  const W=980,H=320,P={l:52,r:18,t:18,b:40};
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`},mount);
+  const vals=rows.map(r=>r[1]), v0=Math.min(0,...vals), v1=Math.max(0,...vals);
+  const Y=v=>P.t+(1-(v-v0)/(v1-v0||1))*(H-P.t-P.b), bw=(W-P.l-P.r)/rows.length*.65;
+  for(let i=0;i<=4;i++){
+    const v=v0+(v1-v0)*i/4,y=Y(v);
+    svgEl('line',{x1:P.l,x2:W-P.r,y1:y,y2:y,stroke:'#ddd'},svg);
+    const text=svgEl('text',{x:P.l-8,y:y+4,'text-anchor':'end',class:'axis-label'},svg); text.textContent=Math.round(v)+'%';
+  }
+  rows.forEach((r,i)=>{
+    const x=P.l+(i+.5)*(W-P.l-P.r)/rows.length-bw/2, y=Math.min(Y(r[1]),Y(0)), h=Math.abs(Y(r[1])-Y(0));
+    const rect=svgEl('rect',{x,y,width:bw,height:h,fill:r[1]>=0?color:'#d33',rx:3},svg);
+    const text=svgEl('text',{x:x+bw/2,y:H-12,'text-anchor':'middle',class:'axis-label'},svg); text.textContent=r[0];
+    rect.addEventListener('mousemove',ev=>{
+      tip.innerHTML=`<strong>${r[0]}</strong><br>Return: ${fmtNum(r[1])}%`;
+      const box=svg.getBoundingClientRect();
+      tip.style.left=Math.min((ev.clientX-box.left)+12,mount.clientWidth-tip.offsetWidth-8)+'px';
+      tip.style.top=Math.max((ev.clientY-box.top)-8,8)+'px';
+      tip.style.display='block';
+    });
+    rect.addEventListener('mouseleave',()=>tip.style.display='none');
+  });
+  svgEl('line',{x1:P.l,x2:W-P.r,y1:Y(0),y2:Y(0),stroke:'#aaa'},svg);
+}
+function drawHorizontal(mountId, rows, color){
+  const mount=$(mountId); mount.innerHTML=''; if(!rows||!rows.length)return;
+  mount.classList.add('chart');
+  const tip=document.createElement('div'); tip.className='tip'; mount.appendChild(tip);
+  const W=470,H=rows.length*28+18,P={l:120,r:56,t:8,b:8};
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`},mount);
+  const max=Math.max(...rows.map(r=>Math.abs(r[1])))||1;
+  rows.forEach((r,i)=>{
+    const y=P.t+i*28,w=Math.abs(r[1])/max*(W-P.l-P.r);
+    const label=svgEl('text',{x:P.l-8,y:y+16,'text-anchor':'end','font-size':12,fill:'#333'},svg); label.textContent=r[0];
+    const rect=svgEl('rect',{x:P.l,y:y+3,width:w,height:17,rx:3,fill:r[1]>=0?color:'#d33'},svg);
+    const value=svgEl('text',{x:P.l+w+6,y:y+16,'font-size':12,fill:'#666'},svg); value.textContent=r[1]+'%';
+    rect.addEventListener('mousemove',ev=>{
+      const box=svg.getBoundingClientRect();
+      tip.innerHTML=`<strong>${r[0]}</strong><br>Contribution: ${fmtNum(r[1])}%`;
+      tip.style.left=Math.min((ev.clientX-box.left)+12,mount.clientWidth-tip.offsetWidth-8)+'px';
+      tip.style.top=Math.max((ev.clientY-box.top)-8,8)+'px';
+      tip.style.display='block';
+    });
+    rect.addEventListener('mouseleave',()=>tip.style.display='none');
+  });
+}
+function heatColor(v){const cap=10,t=Math.max(-1,Math.min(1,v/cap));const a=t>=0?[37,99,235]:[211,51,51],m=[238,238,238];const f=Math.abs(t);const rgb=m.map((x,i)=>Math.round(x+(a[i]-x)*f));return `rgb(${rgb.join(',')})`}
+function drawHeat(monthly, yearly){
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], tbl=$('heat');
+  const yearMap=Object.fromEntries((yearly||[]).map(r=>[String(r[0]),r[1]]));
+  let html='<tr><th></th>'+months.map(m=>`<th>${m}</th>`).join('')+'<th>Year</th></tr>';
+  Object.keys(monthly||{}).sort().forEach(y=>{html+=`<tr><th>${y}</th>`;for(let m=1;m<=12;m++){const v=monthly[y][m];html+=v==null?'<td></td>':`<td title="${months[m-1]} ${y}: ${v}%" style="background:${heatColor(v)};color:${Math.abs(v)>5?'#fff':'#111'}">${v}</td>`}const yr=yearMap[y];html+=`<td title="${y}: ${yr??''}%" class="${yr>=0?'pos':'neg'}">${yr==null?'':yr+'%'}</td></tr>`});
+  tbl.innerHTML=html;
+}
+function renderChanges(){
+  if(!LAST_DATA)return;
+  const from=$('changeFrom').value, to=$('changeTo').value, action=$('changeAction').value, limit=$('changeLimit').value;
+  let rows=[...(LAST_DATA.changes||[])];
+  if(from)rows=rows.filter(r=>r.date>=from);
+  if(to)rows=rows.filter(r=>r.date<=to);
+  if(action!=='all')rows=rows.filter(r=>r.action===action);
+  rows=rows.slice().reverse();
+  const total=rows.length;
+  if(limit!=='all')rows=rows.slice(0,Number(limit));
+  $('changeCount').textContent=`Showing ${rows.length.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} matching rows`;
+  document.querySelector('#changes tbody').innerHTML=rows.map(r=>`<tr><td>${r.date}</td><td class="${r.action==='ENTER'?'pos':'neg'}">${r.action}</td><td class="sym">${r.symbol}</td><td>${r.rank??'-'}</td></tr>`).join('')||'<tr><td colspan="4">No entries/exits for selected filters.</td></tr>';
+}
+async function run(){
+  $('run').disabled=true; $('run').textContent='Running...'; $('err').style.display='none';
+  try{
+    const res=await fetch('/api/backtest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config())});
+    const data=await res.json(); if(!res.ok)throw new Error(data.error||'Backtest failed');
+    LAST_DATA=data;
+    $('grossCagr').textContent=data.gross_metrics.cagr+'%';
+    $('netCagr').textContent=data.net_metrics.cagr+'%';
+    $('netFinal').textContent=rupee(data.summary.net_final_value);
+    $('grossDd').textContent=data.gross_metrics.maxdd+'%';
+    $('maxdd').textContent=data.net_metrics.maxdd+'%';
+    $('costTax').textContent=rupee(data.summary.total_charges+data.summary.total_tax);
+    $('trendMode').textContent=data.summary.trend.current_mode;
+    $('trendSource').textContent=(data.summary.trend.enabled?'on · ':'off · ')+data.summary.trend.source+' · switches '+data.summary.trend.switches+' · actions '+(data.summary.trend_actions||0);
+    const warnings=[...(data.summary.warnings||[])];
+    if(data.benchmark&&data.benchmark.warning)warnings.push(data.benchmark.warning);
+    if(warnings.length){$('err').textContent=warnings.join(' ');$('err').style.display='block'}
+    drawChart(data.gross_equity,data.net_equity,data.benchmark&&data.benchmark.equity);
+    const ddSeries=[
+      {label:'Gross DD',data:data.drawdown.gross,color:'#2563eb'},
+      {label:'Net DD',data:data.drawdown.net,color:'#d33'}
+    ];
+    if(data.benchmark&&data.benchmark.drawdown&&data.benchmark.drawdown.length)ddSeries.push({label:'Nifty 500 DD',data:data.benchmark.drawdown,color:'#16835f'});
+    const allDd=ddSeries.flatMap(s=>s.data).map(x=>x[1]);
+    drawLineChart('ddChart',ddSeries,Math.min(...allDd),0);
+    drawBars('yearChart',data.yearly,'#2563eb');
+    drawHeat(data.monthly,data.yearly);
+    drawHorizontal('topContrib',data.contributors.top,'#2563eb');
+    drawHorizontal('botContrib',data.contributors.bottom,'#d33');
+    document.querySelector('#trendChanges tbody').innerHTML=(data.summary.trend.changes||[]).slice().reverse().map(r=>`<tr><td>${r.date}</td><td>${r.action_date||'-'}</td><td class="${r.mode==='Bullish'?'pos':'neg'}">${r.mode}</td><td>${r.previous}</td></tr>`).join('')||'<tr><td colspan="4">No trend changes for selected settings.</td></tr>';
+    document.querySelector('#holdings tbody').innerHTML=data.latest_holdings.map(s=>`<tr><td class="sym">${s}</td></tr>`).join('');
+    if(!$('changeFrom').value)$('changeFrom').value=$('start').value;
+    if(!$('changeTo').value)$('changeTo').value=$('end').value;
+    renderChanges();
+  }catch(e){$('err').textContent=e.message;$('err').style.display='block'}
+  finally{$('run').disabled=false;$('run').textContent='Run Backtest'}
+}
+$('run').addEventListener('click',run);
+['changeFrom','changeTo','changeAction','changeLimit'].forEach(id=>$(id).addEventListener('change',renderChanges));
+run();
+</script>
+</body>
+</html>
