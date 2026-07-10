@@ -38,6 +38,24 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
 table.heat{border-collapse:separate;border-spacing:2px;min-width:650px}table.heat th,table.heat td{text-align:center;border:0;padding:6px 4px;border-radius:4px;font-size:12px}table.heat th:first-child{text-align:right}
 .scroll{overflow:auto;max-height:330px}
 .err{background:#fff0f0;border:1px solid #f2b8b8;color:#8a1111;border-radius:8px;padding:10px;margin-top:12px;display:none}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{width:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:8px 16px;margin:0;font-weight:600}
+.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.sweep-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:10px 0}
+.sweep-group{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.sweep-group h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.sweep-group .check{margin:4px 0;font-size:13px}
+.sweep-summary{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.sweep-summary .big{font-size:20px;font-weight:700}
+.sweep-actions{display:flex;gap:10px}
+.sweep-actions button{margin-top:0}
+.btn-secondary{background:#fff;color:var(--ink);border:1px solid var(--line)!important}
+.btn-danger{background:var(--red)!important}
+.progress-wrap{background:#eee;border-radius:6px;overflow:hidden;height:10px;margin-top:12px}
+.progress-bar{background:var(--blue);height:100%;width:0%;transition:width .3s}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink)}
+th.sort-active{color:var(--blue)}
 @media(max-width:900px){.app{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}.grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -126,6 +144,11 @@ table.heat{border-collapse:separate;border-spacing:2px;min-width:650px}table.hea
   <div id="err" class="err"></div>
 </aside>
 <main>
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBacktestBtn">Backtest</button>
+    <button class="tab-btn" id="tabSweepBtn">Combination Sweep</button>
+  </div>
+<div id="backtestView">
   <div class="grid">
     <div class="tile"><div class="lbl">Gross CAGR</div><div class="val" id="grossCagr">-</div><div class="cmp">before costs/tax</div></div>
     <div class="tile"><div class="lbl">Net CAGR</div><div class="val" id="netCagr">-</div><div class="cmp">after selected costs/tax</div></div>
@@ -178,6 +201,32 @@ table.heat{border-collapse:separate;border-spacing:2px;min-width:650px}table.hea
     <div class="sub" id="changeCount"></div>
     <div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th></tr></thead><tbody></tbody></table></div>
   </div>
+</div>
+<div id="sweepView" style="display:none">
+  <div class="card">
+    <h2>Combination Sweep</h2>
+    <p class="sub">Uses the Backtest Window, Portfolio Rules (rank thresholds, rebalance day) and Costs/Tax settings from the Backtest tab as fixed context. Select which values to test for each dimension below -- the default selection is a self-contained 24-run sweep of the core signal (lookback set x skip-1-month x volatility-adjust).</p>
+    <div class="sweep-groups" id="sweepGroups"></div>
+    <div class="sweep-summary">
+      <div><div class="big" id="sweepCount">-</div><div class="sub" style="margin:0">combinations selected</div></div>
+      <div><div class="big" id="sweepEta">-</div><div class="sub" style="margin:0">estimated time</div></div>
+    </div>
+    <div class="sweep-actions">
+      <button id="sweepRun">Run Sweep</button>
+      <button id="sweepCancel" class="btn-danger" style="display:none">Cancel</button>
+    </div>
+    <div id="sweepProgressWrap" style="display:none">
+      <div class="progress-wrap"><div class="progress-bar" id="sweepBar"></div></div>
+      <div class="sub" id="sweepStatus" style="margin:6px 0 0"></div>
+    </div>
+    <div id="sweepErr" class="err"></div>
+  </div>
+  <div class="card">
+    <h2>Results <span class="sub" id="sweepResultCount" style="margin:0"></span></h2>
+    <p class="sub">Click a column header to sort. Ranked by Sharpe by default -- CAGR alone rewards luck, not durable edge.</p>
+    <div class="scroll"><table id="sweepTable"><thead></thead><tbody></tbody></table></div>
+  </div>
+</div>
 </main>
 </div>
 <script>
@@ -349,6 +398,196 @@ function renderChanges(){
   $('changeCount').textContent=`Showing ${rows.length.toLocaleString('en-IN')} of ${total.toLocaleString('en-IN')} matching rows`;
   document.querySelector('#changes tbody').innerHTML=rows.map(r=>`<tr><td>${r.date}</td><td class="${r.action==='ENTER'?'pos':'neg'}">${r.action}</td><td class="sym">${r.symbol}</td><td>${r.rank??'-'}</td></tr>`).join('')||'<tr><td colspan="4">No entries/exits for selected filters.</td></tr>';
 }
+
+// --- Combination Sweep ---
+let SWEEP_META=null, sweepJobRunning=false, sweepPollHandle=null, sweepAvgSecPerCombo=null;
+let sweepSort={key:'sharpe',dir:'desc'}, LAST_SWEEP_RESULTS=[];
+const SWEEP_METRIC_LABELS={cagr:'Net CAGR %',gross_cagr:'Gross CAGR %',sharpe:'Sharpe',vol:'Vol %',maxdd:'Net MaxDD %',gross_maxdd:'Gross MaxDD %',final:'Net Final',rebalances:'Rebalances',error:'Error'};
+function switchTab(tab){
+  const isBacktest=tab==='backtest';
+  $('backtestView').style.display=isBacktest?'':'none';
+  $('sweepView').style.display=isBacktest?'none':'';
+  $('tabBacktestBtn').classList.toggle('active',isBacktest);
+  $('tabSweepBtn').classList.toggle('active',!isBacktest);
+  if(!isBacktest&&!SWEEP_META)loadSweepMeta();
+}
+function fmtDuration(sec){
+  sec=Math.max(0,sec);
+  if(sec<60)return Math.ceil(sec)+'s';
+  const m=Math.floor(sec/60), s=Math.round(sec%60);
+  if(m<60)return m+'m '+s+'s';
+  const h=Math.floor(m/60);
+  return h+'h '+(m%60)+'m';
+}
+function renderSweepGroups(){
+  const container=$('sweepGroups'); container.innerHTML='';
+  SWEEP_META.params.forEach(p=>{
+    const div=document.createElement('div'); div.className='sweep-group';
+    const h=document.createElement('h4'); h.textContent=p.label; div.appendChild(h);
+    const defaults=new Set((SWEEP_META.defaults[p.key]||[]).map(v=>JSON.stringify(v)));
+    p.options.forEach(opt=>{
+      const label=document.createElement('label'); label.className='check';
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.className='sweep-opt';
+      cb.dataset.param=p.key; cb.dataset.value=JSON.stringify(opt.value);
+      cb.checked=defaults.has(JSON.stringify(opt.value));
+      cb.addEventListener('change',updateSweepSummary);
+      label.appendChild(cb); label.appendChild(document.createTextNode(' '+opt.label));
+      div.appendChild(label);
+    });
+    container.appendChild(div);
+  });
+  updateSweepSummary();
+}
+function currentSweepSelection(){
+  const sel={};
+  document.querySelectorAll('.sweep-opt:checked').forEach(cb=>{
+    const key=cb.dataset.param;
+    (sel[key]=sel[key]||[]).push(JSON.parse(cb.dataset.value));
+  });
+  return sel;
+}
+function sweepCombinationCount(sel){
+  let count=1;
+  for(const p of SWEEP_META.params){
+    const n=(sel[p.key]||[]).length;
+    if(n===0)return 0;
+    count*=n;
+  }
+  return count;
+}
+function updateSweepSummary(){
+  const sel=currentSweepSelection();
+  const count=sweepCombinationCount(sel);
+  $('sweepCount').textContent=count.toLocaleString('en-IN');
+  const secPer=sweepAvgSecPerCombo!=null?sweepAvgSecPerCombo:(1.3/6);
+  $('sweepEta').textContent=count===0?'-':fmtDuration(count*secPer);
+  $('sweepRun').disabled=(count===0)||sweepJobRunning;
+}
+function sweepColumns(results){
+  if(!results||!results.length)return [];
+  const sample=results.find(r=>!r.error)||results[0];
+  const paramKeys=SWEEP_META.params.map(p=>p.key).filter(k=>k in sample);
+  const metricKeys=Object.keys(SWEEP_METRIC_LABELS).filter(k=>k!=='error'&&results.some(r=>k in r));
+  const hasError=results.some(r=>'error' in r);
+  return [...paramKeys, ...metricKeys, ...(hasError?['error']:[])];
+}
+function sweepColumnLabel(key){
+  const p=SWEEP_META.params.find(p=>p.key===key);
+  return p?p.label:(SWEEP_METRIC_LABELS[key]||key);
+}
+function sweepValueLabel(key,value){
+  const p=SWEEP_META.params.find(p=>p.key===key);
+  if(p){const opt=p.options.find(o=>JSON.stringify(o.value)===JSON.stringify(value));if(opt)return opt.label;}
+  if(typeof value==='number')return fmtNum(value);
+  return String(value);
+}
+function renderSweepTable(results){
+  LAST_SWEEP_RESULTS=results||[];
+  const cols=sweepColumns(LAST_SWEEP_RESULTS);
+  $('sweepResultCount').textContent=LAST_SWEEP_RESULTS.length?`(${LAST_SWEEP_RESULTS.length.toLocaleString('en-IN')} completed)`:'';
+  const thead=document.querySelector('#sweepTable thead');
+  thead.innerHTML='<tr>'+cols.map(c=>{
+    const active=sweepSort.key===c, arrow=active?(sweepSort.dir==='desc'?' ▼':' ▲'):'';
+    return `<th class="sortable${active?' sort-active':''}" data-col="${c}">${sweepColumnLabel(c)}${arrow}</th>`;
+  }).join('')+'</tr>';
+  thead.querySelectorAll('th.sortable').forEach(th=>th.addEventListener('click',()=>{
+    const col=th.dataset.col;
+    if(sweepSort.key===col)sweepSort.dir=sweepSort.dir==='desc'?'asc':'desc'; else sweepSort={key:col,dir:'desc'};
+    renderSweepTable(LAST_SWEEP_RESULTS);
+  }));
+  const sorted=[...LAST_SWEEP_RESULTS].sort((a,b)=>{
+    let av=a[sweepSort.key], bv=b[sweepSort.key];
+    if(av==null)av=-Infinity; if(bv==null)bv=-Infinity;
+    if(typeof av==='string'||typeof bv==='string'){av=String(av);bv=String(bv);return sweepSort.dir==='desc'?bv.localeCompare(av):av.localeCompare(bv);}
+    return sweepSort.dir==='desc'?bv-av:av-bv;
+  });
+  document.querySelector('#sweepTable tbody').innerHTML=sorted.map(r=>'<tr>'+cols.map(c=>{
+    const v=r[c], cls=(c==='cagr'||c==='sharpe')&&typeof v==='number'?(v>=0?'pos':'neg'):'';
+    return `<td class="${cls}">${v==null?'-':sweepValueLabel(c,v)}</td>`;
+  }).join('')+'</tr>').join('')||`<tr><td colspan="${cols.length||1}">No results yet.</td></tr>`;
+}
+function renderSweepProgress(data){
+  const pct=data.total?Math.round(100*data.completed/data.total):0;
+  $('sweepBar').style.width=pct+'%';
+  if(data.running)$('sweepStatus').textContent=`${data.completed}/${data.total} (${pct}%) -- elapsed ${fmtDuration(data.elapsed_seconds)}, ETA ${fmtDuration(data.eta_seconds)}`;
+}
+async function pollSweep(){
+  try{
+    const res=await fetch('/api/sweep/status');
+    const data=await res.json();
+    renderSweepProgress(data);
+    renderSweepTable(data.results);
+    if(data.running){
+      sweepPollHandle=setTimeout(pollSweep,1200);
+    }else{
+      sweepJobRunning=false;
+      $('sweepRun').style.display=''; $('sweepRun').disabled=false;
+      $('sweepCancel').style.display='none';
+      if(data.completed>0)sweepAvgSecPerCombo=data.elapsed_seconds/data.completed;
+      updateSweepSummary();
+      if(data.error){$('sweepErr').textContent='Sweep error: '+data.error;$('sweepErr').style.display='block';}
+      $('sweepStatus').textContent=data.cancelled
+        ?`Cancelled after ${data.completed}/${data.total} runs (${fmtDuration(data.elapsed_seconds)} elapsed).`
+        :`Done: ${data.completed}/${data.total} runs in ${fmtDuration(data.elapsed_seconds)}.`;
+    }
+  }catch(e){
+    $('sweepErr').textContent='Lost connection to sweep status: '+e.message; $('sweepErr').style.display='block';
+    sweepPollHandle=setTimeout(pollSweep,2000);
+  }
+}
+async function startSweep(){
+  const sel=currentSweepSelection();
+  if(!sweepCombinationCount(sel)){$('sweepErr').textContent='Select at least one value for every parameter.';$('sweepErr').style.display='block';return;}
+  $('sweepErr').style.display='none'; $('sweepRun').disabled=true;
+  try{
+    const res=await fetch('/api/sweep/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base:config(),selection:sel})});
+    const data=await res.json();
+    if(!res.ok){$('sweepRun').disabled=false;throw new Error(data.error||'Failed to start sweep');}
+    sweepJobRunning=true;
+    $('sweepRun').style.display='none';
+    $('sweepCancel').style.display=''; $('sweepCancel').disabled=false;
+    $('sweepProgressWrap').style.display='';
+    $('sweepBar').style.width='0%';
+    if(sweepPollHandle)clearTimeout(sweepPollHandle);
+    pollSweep();
+  }catch(e){$('sweepRun').disabled=false;$('sweepErr').textContent=e.message;$('sweepErr').style.display='block'}
+}
+async function cancelSweep(){
+  $('sweepCancel').disabled=true;
+  try{await fetch('/api/sweep/cancel',{method:'POST'})}
+  catch(e){$('sweepErr').textContent=e.message;$('sweepErr').style.display='block'}
+}
+async function loadSweepMeta(){
+  try{
+    const res=await fetch('/api/sweep/meta');
+    SWEEP_META=await res.json();
+    renderSweepGroups();
+    const statusRes=await fetch('/api/sweep/status');
+    const status=await statusRes.json();
+    if(status.total>0){
+      renderSweepTable(status.results);
+      if(status.running){
+        sweepJobRunning=true;
+        $('sweepRun').style.display='none'; $('sweepCancel').style.display='';
+        $('sweepProgressWrap').style.display='';
+        pollSweep();
+      }else if(status.completed>0){
+        $('sweepProgressWrap').style.display='';
+        renderSweepProgress(status);
+        if(status.completed>0)sweepAvgSecPerCombo=status.elapsed_seconds/status.completed;
+        $('sweepStatus').textContent=status.cancelled
+          ?`Cancelled after ${status.completed}/${status.total} runs.`
+          :`Done: ${status.completed}/${status.total} runs in ${fmtDuration(status.elapsed_seconds)}.`;
+        updateSweepSummary();
+      }
+    }
+  }catch(e){$('sweepErr').textContent='Failed to load sweep options: '+e.message;$('sweepErr').style.display='block'}
+}
+$('tabBacktestBtn').addEventListener('click',()=>switchTab('backtest'));
+$('tabSweepBtn').addEventListener('click',()=>switchTab('sweep'));
+$('sweepRun').addEventListener('click',startSweep);
+$('sweepCancel').addEventListener('click',cancelSweep);
+
 async function run(){
   $('run').disabled=true; $('run').textContent='Running...'; $('err').style.display='none';
   try{

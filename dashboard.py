@@ -1,7 +1,13 @@
 from __future__ import annotations
 
+import itertools
 import json
 import os
+import threading
+import time
+import traceback
+import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -61,6 +67,72 @@ DEFAULTS = {
     "bearish_asset": "cash",
     "bearish_symbol": "GOLDBEES",
 }
+
+
+# --- Combination sweep -------------------------------------------------------
+# A curated set of the dimensions that actually define the strategy's "edge"
+# (signal, portfolio construction, trend filter) -- not every config field, and
+# never the cost/tax fields, which should reflect reality rather than be tuned
+# for a better-looking number. The default selection below is deliberately the
+# small "Stage 1" grid (lookback set x skip_1m x vol_adjust, other dimensions
+# pinned to a single value = 24 combinations) so opening the tab shows a fast,
+# self-contained sweep rather than an accidental multi-thousand-run grid.
+SWEEP_LOOKBACK_SETS: dict[str, tuple[list[str], dict[str, float]]] = {
+    "3m_6m_9m": (["3m", "6m", "9m"], {"3m": 1.0, "6m": 1.0, "9m": 1.0}),
+    "6m_12m": (["6m", "12m"], {"6m": 1.0, "12m": 1.0}),
+    "12m": (["12m"], {"12m": 1.0}),
+    "6m": (["6m"], {"6m": 1.0}),
+    "3m_6m_9m_12m": (["3m", "6m", "9m", "12m"], {"3m": 1.0, "6m": 1.0, "9m": 1.0, "12m": 1.0}),
+    "1m_3m_6m": (["1m", "3m", "6m"], {"1m": 1.0, "3m": 1.0, "6m": 1.0}),
+}
+
+SWEEP_PARAMS: list[dict] = [
+    {"key": "lookback_set", "label": "Lookback set", "options": [
+        {"value": k, "label": k.replace("_", "+").upper()} for k in SWEEP_LOOKBACK_SETS
+    ]},
+    {"key": "skip_1m", "label": "Skip most recent 1M", "options": [
+        {"value": False, "label": "No"}, {"value": True, "label": "Yes"},
+    ]},
+    {"key": "vol_adjust", "label": "Volatility adjust", "options": [
+        {"value": True, "label": "On"}, {"value": False, "label": "Off"},
+    ]},
+    {"key": "top_n", "label": "Holdings (top_n)", "options": [
+        {"value": v, "label": str(v)} for v in (10, 15, 20, 30)
+    ]},
+    {"key": "rebalance_frequency", "label": "Rebalance frequency", "options": [
+        {"value": "monthly", "label": "Monthly"}, {"value": "quarterly", "label": "Quarterly"},
+    ]},
+    {"key": "weighting", "label": "Weighting", "options": [
+        {"value": "equal", "label": "Equal"}, {"value": "inverse_vol", "label": "Inverse vol"},
+    ]},
+    {"key": "trend_filter", "label": "Trend filter", "options": [
+        {"value": "none", "label": "Off"}, {"value": "supertrend", "label": "On"},
+    ]},
+    {"key": "supertrend_multiplier", "label": "Supertrend multiplier", "options": [
+        {"value": v, "label": str(v)} for v in (2.0, 2.5, 3.0)
+    ]},
+    {"key": "trend_timeframe", "label": "Supertrend timeframe", "options": [
+        {"value": "weekly", "label": "Weekly"}, {"value": "daily", "label": "Daily"},
+    ]},
+    {"key": "bearish_asset", "label": "Bearish destination", "options": [
+        {"value": "cash", "label": "Cash"}, {"value": "goldbees", "label": "GoldBees"},
+    ]},
+]
+
+SWEEP_DEFAULT_SELECTION: dict[str, list] = {
+    "lookback_set": list(SWEEP_LOOKBACK_SETS.keys()),
+    "skip_1m": [False, True],
+    "vol_adjust": [True, False],
+    "top_n": [20],
+    "rebalance_frequency": ["monthly"],
+    "weighting": ["equal"],
+    "trend_filter": ["none"],
+    "supertrend_multiplier": [2.5],
+    "trend_timeframe": ["weekly"],
+    "bearish_asset": ["cash"],
+}
+
+MAX_SWEEP_COMBOS = 5000
 
 
 _PRICE_WIDE: pd.DataFrame | None = None
@@ -785,9 +857,135 @@ def run_dashboard_backtest(cfg: dict) -> dict:
     }
 
 
+# --- Combination sweep job runner --------------------------------------------
+# One sweep runs at a time (personal-use tool, no auth). State lives in a plain
+# module-level dict guarded by a lock; a background thread drives a small
+# ThreadPoolExecutor over the combos (numpy/pandas release the GIL during the
+# heavy array ops, so this gets real parallelism on a multi-core dev machine;
+# on a throttled single-core host it just runs sequentially without penalty).
+_SWEEP_LOCK = threading.Lock()
+_SWEEP_STATE: dict = {
+    "job_id": None,
+    "running": False,
+    "total": 0,
+    "completed": 0,
+    "started_at": None,
+    "finished_at": None,
+    "results": [],
+    "cancel": False,
+    "error": None,
+}
+
+
+def expand_sweep_combos(selection: dict) -> list[dict]:
+    keys = [p["key"] for p in SWEEP_PARAMS if selection.get(p["key"])]
+    value_lists = [selection[k] for k in keys]
+    return [dict(zip(keys, combo)) for combo in itertools.product(*value_lists)]
+
+
+def combo_to_overrides(combo: dict) -> dict:
+    overrides = {}
+    for key, value in combo.items():
+        if key == "lookback_set":
+            lookbacks, weights = SWEEP_LOOKBACK_SETS[value]
+            overrides["lookbacks"] = lookbacks
+            overrides["weights"] = weights
+        else:
+            overrides[key] = value
+    return overrides
+
+
+def run_one_combo(base_payload: dict, combo: dict) -> dict:
+    row = dict(combo)
+    try:
+        cfg = merged_config({**base_payload, **combo_to_overrides(combo)})
+        result = run_dashboard_backtest(cfg)
+        row.update({
+            "cagr": result["net_metrics"]["cagr"],
+            "gross_cagr": result["gross_metrics"]["cagr"],
+            "sharpe": result["net_metrics"]["sharpe"],
+            "vol": result["net_metrics"]["vol"],
+            "maxdd": result["net_metrics"]["maxdd"],
+            "gross_maxdd": result["gross_metrics"]["maxdd"],
+            "final": result["net_metrics"]["final"],
+            "rebalances": result["summary"]["rebalances"],
+        })
+    except Exception as exc:
+        row["error"] = str(exc)
+    return row
+
+
+def run_sweep_job(job_id: str, base_payload: dict, combos: list[dict]) -> None:
+    load_inputs()  # warm the shared cache once before fanning out workers
+    workers = min(6, max(2, os.cpu_count() or 4))
+    # Not using ThreadPoolExecutor as a context manager: its __exit__ calls
+    # shutdown(wait=True), which blocks until every already-submitted future
+    # finishes -- so breaking out of the loop below on cancel wouldn't actually
+    # stop anything, it would just stop collecting results while the pool kept
+    # grinding through the rest in the background. Explicit shutdown(wait=False,
+    # cancel_futures=True) in `finally` actually drops the not-yet-started work.
+    executor = ThreadPoolExecutor(max_workers=workers)
+    try:
+        futures = {executor.submit(run_one_combo, base_payload, combo): combo for combo in combos}
+        for future in as_completed(futures):
+            with _SWEEP_LOCK:
+                if _SWEEP_STATE["job_id"] != job_id:
+                    return  # superseded by a newer job
+                if _SWEEP_STATE["cancel"]:
+                    break
+            row = future.result()
+            with _SWEEP_LOCK:
+                if _SWEEP_STATE["job_id"] != job_id:
+                    return
+                _SWEEP_STATE["results"].append(row)
+                _SWEEP_STATE["completed"] += 1
+    except Exception as exc:
+        with _SWEEP_LOCK:
+            if _SWEEP_STATE["job_id"] == job_id:
+                _SWEEP_STATE["error"] = f"{exc}\n{traceback.format_exc(limit=3)}"
+    finally:
+        executor.shutdown(wait=False, cancel_futures=True)
+        with _SWEEP_LOCK:
+            if _SWEEP_STATE["job_id"] == job_id:
+                _SWEEP_STATE["running"] = False
+                _SWEEP_STATE["finished_at"] = time.time()
+
+
+def sweep_status_payload() -> dict:
+    with _SWEEP_LOCK:
+        state = dict(_SWEEP_STATE)
+    elapsed = (state["finished_at"] or time.time()) - state["started_at"] if state["started_at"] else 0.0
+    completed, total = state["completed"], state["total"]
+    eta = (elapsed / completed) * (total - completed) if completed and total > completed and state["running"] else 0.0
+    return {
+        "job_id": state["job_id"],
+        "running": state["running"],
+        "total": total,
+        "completed": completed,
+        "elapsed_seconds": round(elapsed, 1),
+        "eta_seconds": round(eta, 1),
+        "cancelled": state["cancel"],
+        "error": state["error"],
+        "results": state["results"],
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
+    def _send_json(self, status: int, payload: dict) -> None:
+        body = json.dumps(payload).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _read_json_body(self) -> dict:
+        length = int(self.headers.get("Content-Length", "0"))
+        return json.loads(self.rfile.read(length) or b"{}")
+
     def do_GET(self) -> None:
-        if urlparse(self.path).path in ("/", "/dashboard.html"):
+        path = urlparse(self.path).path
+        if path in ("/", "/dashboard.html"):
             body = (ROOT / "dashboard.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -795,29 +993,61 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
+        if path == "/api/sweep/meta":
+            self._send_json(200, {
+                "params": SWEEP_PARAMS,
+                "defaults": SWEEP_DEFAULT_SELECTION,
+                "max_combos": MAX_SWEEP_COMBOS,
+            })
+            return
+        if path == "/api/sweep/status":
+            self._send_json(200, sweep_status_payload())
+            return
         self.send_error(404)
 
     def do_POST(self) -> None:
-        if urlparse(self.path).path != "/api/backtest":
-            self.send_error(404)
-            return
+        path = urlparse(self.path).path
         try:
-            length = int(self.headers.get("Content-Length", "0"))
-            payload = json.loads(self.rfile.read(length) or b"{}")
-            result = run_dashboard_backtest(merged_config(payload))
-            body = json.dumps(result).encode()
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            if path == "/api/backtest":
+                payload = self._read_json_body()
+                result = run_dashboard_backtest(merged_config(payload))
+                self._send_json(200, result)
+                return
+
+            if path == "/api/sweep/start":
+                payload = self._read_json_body()
+                base_payload = payload.get("base", {})
+                selection = payload.get("selection", {})
+                combos = expand_sweep_combos(selection)
+                if not combos:
+                    self._send_json(400, {"error": "Select at least one value for every sweep parameter."})
+                    return
+                if len(combos) > MAX_SWEEP_COMBOS:
+                    self._send_json(400, {"error": f"{len(combos)} combinations exceeds the {MAX_SWEEP_COMBOS} cap. Narrow your selection."})
+                    return
+                with _SWEEP_LOCK:
+                    if _SWEEP_STATE["running"]:
+                        self._send_json(409, {"error": "A sweep is already running. Cancel it first."})
+                        return
+                    job_id = uuid.uuid4().hex
+                    _SWEEP_STATE.update({
+                        "job_id": job_id, "running": True, "total": len(combos), "completed": 0,
+                        "started_at": time.time(), "finished_at": None, "results": [],
+                        "cancel": False, "error": None,
+                    })
+                threading.Thread(target=run_sweep_job, args=(job_id, base_payload, combos), daemon=True).start()
+                self._send_json(200, {"job_id": job_id, "total": len(combos)})
+                return
+
+            if path == "/api/sweep/cancel":
+                with _SWEEP_LOCK:
+                    _SWEEP_STATE["cancel"] = True
+                self._send_json(200, {"stopped": True})
+                return
+
+            self.send_error(404)
         except Exception as exc:
-            body = json.dumps({"error": str(exc)}).encode()
-            self.send_response(500)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            self._send_json(500, {"error": str(exc)})
 
 
 def main() -> None:
