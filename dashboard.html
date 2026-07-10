@@ -578,34 +578,45 @@ async function loadSweepMeta(){
     const res=await fetch('/api/sweep/meta');
     SWEEP_META=await res.json();
     renderSweepGroups();
-    const statusRes=await fetch('/api/sweep/status');
+    const [statusRes,savedRes]=await Promise.all([fetch('/api/sweep/status'),fetch('/api/sweep/saved')]);
     const status=await statusRes.json();
-    if(status.total>0){
+    const saved=await savedRes.json();
+    const savedCount=(saved.results||[]).length;
+
+    if(status.running){
+      // Always show live progress while a sweep is actively running, even if
+      // it has fewer results so far than a saved dataset -- that's expected.
       renderSweepTable(status.results);
       $('sweepResultsNote').textContent='Live results from this session.';
-      if(status.running){
-        sweepJobRunning=true;
-        $('sweepRun').style.display='none'; $('sweepCancel').style.display='';
-        $('sweepProgressWrap').style.display='';
-        pollSweep();
-      }else if(status.completed>0){
-        $('sweepProgressWrap').style.display='';
-        renderSweepProgress(status);
-        if(status.completed>0)sweepAvgSecPerCombo=status.elapsed_seconds/status.completed;
-        $('sweepStatus').textContent=status.cancelled
-          ?`Cancelled after ${status.completed}/${status.total} runs.`
-          :`Done: ${status.completed}/${status.total} runs in ${fmtDuration(status.elapsed_seconds)}.`;
-        updateSweepSummary();
-      }
+      sweepJobRunning=true;
+      $('sweepRun').style.display='none'; $('sweepCancel').style.display='';
+      $('sweepProgressWrap').style.display='';
+      pollSweep();
       return;
     }
-    // No live sweep has run in this server session -- fall back to a
-    // previously saved (and deployed) results file, if one exists.
-    const savedRes=await fetch('/api/sweep/saved');
-    const saved=await savedRes.json();
-    if(saved.results&&saved.results.length){
+
+    // Not running: prefer whichever dataset is actually bigger/more useful.
+    // A live run that was cancelled early or errored out (e.g. someone
+    // starts a huge sweep on the hosted deploy by accident, where it'd take
+    // hours, and cancels it) should NOT hide a complete saved dataset just
+    // because status.total > 0 -- total reflects what was REQUESTED, not
+    // what's usable.
+    if(status.completed>0&&status.completed>=savedCount){
+      renderSweepTable(status.results);
+      $('sweepResultsNote').textContent='Live results from this session.';
+      $('sweepProgressWrap').style.display='';
+      renderSweepProgress(status);
+      sweepAvgSecPerCombo=status.elapsed_seconds/status.completed;
+      $('sweepStatus').textContent=status.cancelled
+        ?`Cancelled after ${status.completed}/${status.total} runs.`
+        :`Done: ${status.completed}/${status.total} runs in ${fmtDuration(status.elapsed_seconds)}.`;
+      updateSweepSummary();
+    }else if(savedCount>0){
       renderSweepTable(saved.results);
-      $('sweepResultsNote').textContent=`Showing ${saved.results.length.toLocaleString('en-IN')} saved results from ${fmtTimestamp(saved.saved_at)}. Run a new sweep to refresh.`;
+      $('sweepResultsNote').textContent=`Showing ${savedCount.toLocaleString('en-IN')} saved results from ${fmtTimestamp(saved.saved_at)}. Run a new sweep to refresh.`;
+    }else if(status.completed>0){
+      renderSweepTable(status.results);
+      $('sweepResultsNote').textContent=status.cancelled?'Live results from this session (cancelled early).':'Live results from this session.';
     }
   }catch(e){$('sweepErr').textContent='Failed to load sweep options: '+e.message;$('sweepErr').style.display='block'}
 }
