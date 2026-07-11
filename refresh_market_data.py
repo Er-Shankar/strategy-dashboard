@@ -82,12 +82,20 @@ def main() -> None:
 
     new_close = panel.pivot(index="date", columns="symbol", values="close").sort_index()
     new_open = panel.pivot(index="date", columns="symbol", values="open").sort_index()
-    # Preserve already-published historical values for reproducible saved
-    # backtests; use fresh Yahoo downloads only to fill newly available/missing
-    # dates. Rewriting old adjusted opens can move net/cost-tax results even
-    # when gross close-to-close results remain visually unchanged.
-    close = existing_close.combine_first(new_close).sort_index()
-    open_wide = existing_open.combine_first(new_open).reindex(index=close.index, columns=close.columns)
+    # Preserve every already-published historical cell for reproducible saved
+    # backtests. Use fresh Yahoo downloads only for dates strictly after the
+    # current dataset's last date; even filling old NaNs can move net/cost-tax
+    # results because executions fall back from open to close when open is absent.
+    last_existing = max(existing_close.index.max(), existing_open.index.max())
+    new_close = new_close[new_close.index > last_existing]
+    new_open = new_open[new_open.index > last_existing]
+    columns = sorted(set(existing_close.columns) | set(new_close.columns))
+    close = pd.concat(
+        [existing_close.reindex(columns=columns), new_close.reindex(columns=columns)]
+    ).sort_index()
+    open_wide = pd.concat(
+        [existing_open.reindex(columns=columns), new_open.reindex(columns=columns)]
+    ).sort_index().reindex(index=close.index, columns=close.columns)
 
     close.to_parquet(ROOT / "prices_wide_close.parquet")
     open_wide.to_parquet(ROOT / "prices_wide_open.parquet")
