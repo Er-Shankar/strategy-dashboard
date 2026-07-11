@@ -157,6 +157,7 @@ function rebalanceDates(c,startIdx,endIdx){
 }
 function value(symIdx,day,open=false){const arr=open?MARKET.open[symIdx]:MARKET.close[symIdx];return arr?arr[day]:null}
 function symbolIndex(sym){return MARKET.symbols.indexOf(sym)}
+function bySymbol(a,b){return MARKET.symbols[a].localeCompare(MARKET.symbols[b])}
 function computeScores(day,universe,c){
   const end=day-(c.skip_1m?21:0), maxLb=Math.max(...c.lookbacks.map(x=>LB[x]),LB[c.vol_lookback]||63);if(end<maxLb)return [];
   const rows=[];
@@ -166,7 +167,7 @@ function computeScores(day,universe,c){
     for(const lb of c.lookbacks){const past=value(s,end-LB[lb]);if(past==null||past<=0){ok=false;break}score+=(c.weights[lb]??1)*(now/past-1)}
     if(!ok)continue;
     const vLb=LB[c.vol_lookback]||63, rets=[];
-    for(let i=end-vLb+1;i<=end;i++){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)rets.push(b/a-1)}
+    for(let i=end-vLb+2;i<=end;i++){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)rets.push(b/a-1)}
     const vol=stdev(rets)*Math.sqrt(252);if(!(vol>0))continue;
     if(c.vol_adjust)score/=vol;
     rows.push({s,score,vol});
@@ -207,7 +208,7 @@ function drawdown(series){let peak=-Infinity;return series.map(([d,v])=>{peak=Ma
 function runBacktest(c){
   const startIdx=firstIdx(MARKET.dates,c.start), endIdx=lastIdx(MARKET.dates,c.end), rb=rebalanceDates(c,startIdx,endIdx);if(rb.length<2)throw Error('Not enough rebalance dates.');
   const trend=supertrendState(c), goldIdx=symbolIndex(c.bearish_symbol), buyRate=charges(c,true), sellRate=charges(c,false);
-  let current=new Set(), gross=[[MARKET.dates[rb[0]],100]], cash=c.initial_capital, positions=new Map(), net=[[MARKET.dates[rb[0]],100]], totalCharges=0,totalTax=0, changes=[], holdings=[], taxState={stLoss:0,ltLoss:0,exempt:{}};
+  let current=new Set(), gross=[], cash=c.initial_capital, positions=new Map(), net=[], totalCharges=0,totalTax=0, changes=[], holdings=[], taxState={stLoss:0,ltLoss:0,exempt:{}};
   const shares=s=>positions.get(s)?.reduce((a,l)=>a+l.shares,0)||0;
   const posValue=(s,day)=>{const px=value(s,day,false);return px==null?0:shares(s)*px};
   const totalValue=day=>cash+[...positions.keys()].reduce((a,s)=>a+posValue(s,day),0);
@@ -225,12 +226,14 @@ function runBacktest(c){
       else if(c.weighting==='inverse_vol'){let sum=0;for(const s of current){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
       else for(const s of current)weights.set(s,1/current.size)}
     if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
-    for(const s of [...positions.keys()])if(!current.has(s))sell(s,day,shares(s));
-    let acct=totalValue(day);for(const s of current){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01)sell(s,day,(cur-target)/px)}
-    acct=totalValue(day);for(const s of current){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99)buy(s,day,target-cur)}
-    holdings.push({date:MARKET.dates[day],holdings:[...current].map(s=>({symbol:MARKET.symbols[s],weight:weights.get(s)||0})),mode:bullish?'Bullish':'Bearish'});
+    const currentSorted=[...current].sort(bySymbol);
+    for(const s of [...positions.keys()].sort(bySymbol))if(!current.has(s))sell(s,day,shares(s));
+    let acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01)sell(s,day,(cur-target)/px)}
+    acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99)buy(s,day,target-cur)}
+    holdings.push({date:MARKET.dates[day],holdings:currentSorted.map(s=>({symbol:MARKET.symbols[s],weight:weights.get(s)||0})),mode:bullish?'Bullish':'Bearish'});
     const next=k+1<rb.length?rb[k+1]:endIdx;
-    for(let i=day+1;i<=next;i++){let ret=0;for(const [s,w] of weights){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)ret+=w*(b/a-1)}gross.push([MARKET.dates[i],gross.at(-1)[1]*(1+ret)]);net.push([MARKET.dates[i],totalValue(i)/c.initial_capital*100])}
+    for(let i=day;i<=next;i++)net.push([MARKET.dates[i],totalValue(i)/c.initial_capital*100]);
+    for(let i=day+1;i<=next;i++){let ret=0;for(const [s,w] of weights){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)ret+=w*(b/a-1)}gross.push([MARKET.dates[i],(gross.length?gross.at(-1)[1]:100)*(1+ret)])}
   }
   return {gross,net,drawdown:{gross:drawdown(gross),net:drawdown(net)},benchmark:benchmarkEquity(startIdx,endIdx),gross_metrics:metrics(gross),net_metrics:metrics(net),summary:{rebalances:rb.length,total_charges:totalCharges,total_tax:totalTax,trend_mode:holdings.at(-1)?.mode||'-'},latest_holdings:holdings.at(-1)?.holdings||[],changes:changes.slice(-500)};
 }
