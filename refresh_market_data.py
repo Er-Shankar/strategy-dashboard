@@ -88,15 +88,16 @@ def main() -> None:
     close.to_parquet(ROOT / "prices_wide_close.parquet")
     open_wide.to_parquet(ROOT / "prices_wide_open.parquet")
     long_close = (
-        close.stack(dropna=True)
+        close.stack()
         .rename("close")
         .reset_index()
         .rename(columns={"level_0": "date", "level_1": "symbol"})
+        .dropna(subset=["close"])
     )
     long_close["source"] = "yahoo_adjusted"
     long_close.to_parquet(ROOT / "prices.parquet")
     long_ohlc = (
-        pd.concat({"open": open_wide.stack(dropna=True), "close": close.stack(dropna=True)}, axis=1)
+        pd.concat({"open": open_wide.stack(), "close": close.stack()}, axis=1)
         .dropna()
         .reset_index()
         .rename(columns={"level_0": "date", "level_1": "symbol"})
