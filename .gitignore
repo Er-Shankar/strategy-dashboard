@@ -18,3 +18,11 @@
 !goldbees.csv
 !changes.csv
 !sweep_results.json
+
+!site/
+!site/**
+!.github/
+!.github/**
+!build_static_site.py
+!refresh_market_data.py
+!STATIC_DASHBOARD.md

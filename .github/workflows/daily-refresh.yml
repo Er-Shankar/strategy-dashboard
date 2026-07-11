@@ -1,0 +1,55 @@
+name: Daily static dashboard refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 19:30 IST, after the normal Indian market close data window.
+    - cron: "0 14 * * 1-5"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  refresh-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh market data
+        run: python refresh_market_data.py
+
+      - name: Build static data bundle
+        run: python build_static_site.py
+
+      - name: Validate static bundle
+        run: python -m json.tool site/data/metadata.json >/dev/null
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: refresh-and-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

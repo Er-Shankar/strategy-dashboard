@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Momentum Lab</title>
+<style>
+:root{--bg:#f6f7f8;--panel:#fff;--ink:#111827;--muted:#687082;--line:#dfe3ea;--blue:#2458d3;--green:#157a5b;--red:#c93a3a;--amber:#a56400}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+.app{display:grid;grid-template-columns:340px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:18px;overflow:auto}
+main{padding:20px;overflow:auto}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:0 0 10px}h3{font-size:12px;margin:18px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.sub{color:var(--muted);margin:0 0 14px}.tiny{font-size:12px;color:var(--muted)}
+label{display:block;font-size:12px;color:var(--muted);margin:9px 0 4px}
+input,select,button{font:inherit}
+input[type=number],input[type=date],input[type=text],select{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 8px;background:#fff;color:var(--ink)}
+button{border:0;border-radius:8px;background:var(--blue);color:#fff;padding:10px 13px;cursor:pointer;font-weight:700}
+button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+button.danger{background:var(--red)}
+button:disabled{opacity:.6;cursor:wait}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.check{display:flex;align-items:center;gap:8px;margin:7px 0;color:#333}.check input{width:16px;height:16px}
+.look{display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:center;margin:6px 0}
+.actions{display:flex;gap:8px;margin-top:16px}.actions button{flex:1}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px}
+.tile,.card{background:var(--panel);border:1px solid var(--line);border-radius:8px}.tile{padding:13px}.tile .lbl{font-size:12px;color:var(--muted)}.tile .val{font-size:22px;font-weight:750;margin-top:4px}.tile .cmp{font-size:12px;color:var(--muted)}
+.card{padding:14px;margin-top:14px}.cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+canvas{width:100%;height:320px;display:block}.short canvas{height:240px}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}th:first-child,td:first-child{text-align:left}.sym{font-weight:700}.pos{color:var(--green)}.neg{color:var(--red)}
+.scroll{overflow:auto;max-height:330px}.err{display:none;background:#fff3f3;border:1px solid #f0b6b6;color:#8b1717;border-radius:8px;padding:10px;margin-top:12px}
+.status{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.pill{border:1px solid var(--line);border-radius:999px;background:#fff;padding:5px 10px;color:var(--muted);font-size:12px}
+.saved-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}.saved-row:last-child{border-bottom:0}
+.progress{height:8px;border-radius:999px;background:#e8ebf0;overflow:hidden;margin-top:10px}.bar{height:100%;background:var(--blue);width:0%}
+@media(max-width:980px){.app{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}.grid{grid-template-columns:repeat(2,1fr)}.cards2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <h1>Momentum Lab</h1>
+  <p class="sub">Static GitHub Pages app. Data refreshes daily; backtests run in this browser.</p>
+  <div class="tiny" id="dataStatus">Loading data bundle...</div>
+  <div class="progress"><div class="bar" id="loadBar"></div></div>
+
+  <h3>Backtest Window</h3>
+  <div class="row"><div><label>Start</label><input id="start" type="date"></div><div><label>End</label><input id="end" type="date"></div></div>
+
+  <h3>Lookbacks</h3>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="1m">1M</label><input class="wt" data-lb="1m" type="number" step="0.25"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="3m">3M</label><input class="wt" data-lb="3m" type="number" step="0.25"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="6m">6M</label><input class="wt" data-lb="6m" type="number" step="0.25"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="9m">9M</label><input class="wt" data-lb="9m" type="number" step="0.25"></div>
+  <div class="look"><label class="check"><input type="checkbox" class="lb" value="12m">12M</label><input class="wt" data-lb="12m" type="number" step="0.25"></div>
+
+  <h3>Formula</h3>
+  <label class="check"><input id="vol_adjust" type="checkbox">Divide by volatility</label>
+  <label>Volatility lookback</label><select id="vol_lookback"><option value="3m">3M</option><option value="6m">6M</option><option value="9m">9M</option><option value="12m">12M</option></select>
+  <label class="check"><input id="skip_1m" type="checkbox">Skip most recent 1M</label>
+
+  <h3>Portfolio Rules</h3>
+  <div class="row"><div><label>Holdings</label><input id="top_n" type="number" min="1" max="80"></div><div><label>Entry rank cap</label><input id="entry_rank" type="number" min="1" max="400"></div></div>
+  <div class="row"><div><label>Exit rank</label><input id="exit_rank" type="number" min="1" max="500"></div><div><label>Rebalance day</label><input id="rebalance_day" type="number" min="1" max="28"></div></div>
+  <label>Frequency</label><select id="rebalance_frequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="quarterly">Quarterly</option></select>
+  <label>Weighting</label><select id="weighting"><option value="equal">Equal</option><option value="score">Score weighted</option><option value="inverse_vol">Inverse volatility</option></select>
+
+  <h3>Trend Filter</h3>
+  <label>Mode</label><select id="trend_filter"><option value="none">None</option><option value="supertrend">Supertrend</option></select>
+  <label>Source</label><select id="trend_source"><option value="nifty500">Nifty 500</option><option value="nifty50">Nifty 50</option></select>
+  <div class="row"><div><label>Timeframe</label><select id="trend_timeframe"><option value="weekly">Weekly</option><option value="daily">Daily</option></select></div><div><label>ATR period</label><input id="supertrend_atr_period" type="number" min="1" max="50"></div></div>
+  <label>Multiplier</label><input id="supertrend_multiplier" type="number" step="0.1">
+  <label>Bearish exposure</label><select id="bearish_exposure"><option value="0">Cash</option><option value="0.25">25%</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option></select>
+  <label>Bearish destination</label><select id="bearish_asset"><option value="cash">Cash</option><option value="goldbees">GoldBees</option></select>
+
+  <h3>Costs / Tax</h3>
+  <label>Initial capital</label><input id="initial_capital" type="number" step="100000">
+  <label class="check"><input id="include_brokerage" type="checkbox">Brokerage</label><input id="brokerage_rate" type="number" step="0.0001">
+  <label class="check"><input id="include_stt" type="checkbox">STT</label><input id="stt_rate" type="number" step="0.0001">
+  <label class="check"><input id="include_sebi" type="checkbox">SEBI charges</label><input id="sebi_rate" type="number" step="0.000001">
+  <label class="check"><input id="include_stamp" type="checkbox">Stamp duty</label><input id="stamp_duty_rate" type="number" step="0.00001">
+  <label class="check"><input id="include_slippage" type="checkbox">Slippage</label><input id="slippage_rate" type="number" step="0.0001">
+  <label class="check"><input id="include_tax" type="checkbox">Capital gains tax</label>
+  <div class="row"><div><label>STCG</label><input id="stcg_rate" type="number" step="0.01"></div><div><label>LTCG</label><input id="ltcg_rate" type="number" step="0.01"></div></div>
+  <label>LTCG yearly exemption</label><input id="ltcg_exemption" type="number" step="25000">
+  <div class="actions"><button id="run">Run</button><button class="secondary" id="save">Save</button></div>
+  <div id="err" class="err"></div>
+</aside>
+<main>
+  <div class="status">
+    <span class="pill" id="refreshPill">Data: -</span>
+    <span class="pill" id="rangePill">Range: -</span>
+    <span class="pill" id="symbolPill">Symbols: -</span>
+  </div>
+  <div class="grid">
+    <div class="tile"><div class="lbl">Gross CAGR</div><div class="val" id="grossCagr">-</div><div class="cmp">before costs/tax</div></div>
+    <div class="tile"><div class="lbl">Net CAGR</div><div class="val" id="netCagr">-</div><div class="cmp">after costs/tax</div></div>
+    <div class="tile"><div class="lbl">Net Final</div><div class="val" id="netFinal">-</div><div class="cmp">selected capital</div></div>
+    <div class="tile"><div class="lbl">Gross DD</div><div class="val" id="grossDd">-</div><div class="cmp">max drawdown</div></div>
+    <div class="tile"><div class="lbl">Net DD</div><div class="val" id="netDd">-</div><div class="cmp">max drawdown</div></div>
+    <div class="tile"><div class="lbl">Sharpe</div><div class="val" id="sharpe">-</div><div class="cmp">net daily returns</div></div>
+    <div class="tile"><div class="lbl">Costs + Tax</div><div class="val" id="costTax">-</div><div class="cmp">absolute</div></div>
+    <div class="tile"><div class="lbl">Rebalances</div><div class="val" id="rebalances">-</div><div class="cmp">events</div></div>
+    <div class="tile"><div class="lbl">Latest Mode</div><div class="val" id="trendMode">-</div><div class="cmp">trend state</div></div>
+    <div class="tile"><div class="lbl">Latest Holdings</div><div class="val" id="holdingCount">-</div><div class="cmp">names</div></div>
+  </div>
+
+  <div class="card"><h2>Growth of Rs 100</h2><canvas id="equityChart"></canvas></div>
+  <div class="card short"><h2>Drawdown</h2><canvas id="ddChart"></canvas></div>
+  <div class="cards2">
+    <div class="card"><h2>Latest Holdings</h2><div class="scroll"><table id="holdings"><thead><tr><th>Symbol</th><th>Weight</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card"><h2>Saved Backtests</h2><div class="row"><input id="saveName" type="text" placeholder="Name current result"><button id="saveNamed">Save</button></div><div id="savedList" style="margin-top:10px"></div></div>
+  </div>
+  <div class="card"><h2>Recent Entries / Exits</h2><div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th></tr></thead><tbody></tbody></table></div></div>
+</main>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const LB={_1m:21,'1m':21,'3m':63,'6m':126,'9m':189,'12m':252};
+let MARKET=null, RESULT=null;
+const pct=v=>(isFinite(v)?v.toFixed(1):'-')+'%';
+const money=v=>'Rs '+Math.round(v||0).toLocaleString('en-IN');
+const safe=v=>Number.isFinite(v)?v:null;
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const stdev=a=>{if(a.length<2)return 0;const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)*(v-m),0)/(a.length-1));};
+const dateTs=d=>new Date(d+'T00:00:00Z').getTime();
+function firstIdx(dates,target){const t=dateTs(target);let lo=0,hi=dates.length-1,ans=dates.length-1;while(lo<=hi){const mid=(lo+hi)>>1;if(dateTs(dates[mid])>=t){ans=mid;hi=mid-1}else lo=mid+1}return ans}
+function lastIdx(dates,target){const t=dateTs(target);let lo=0,hi=dates.length-1,ans=0;while(lo<=hi){const mid=(lo+hi)>>1;if(dateTs(dates[mid])<=t){ans=mid;lo=mid+1}else hi=mid-1}return ans}
+function num(id){return Number($(id).value)}function checked(id){return $(id).checked}
+function cfg(){
+  const lookbacks=[...document.querySelectorAll('.lb:checked')].map(x=>x.value);
+  const weights={};document.querySelectorAll('.wt').forEach(x=>weights[x.dataset.lb]=Number(x.value));
+  return {start:$('start').value,end:$('end').value,lookbacks,weights,vol_adjust:checked('vol_adjust'),vol_lookback:$('vol_lookback').value,skip_1m:checked('skip_1m'),top_n:num('top_n'),entry_rank:num('entry_rank'),exit_rank:num('exit_rank'),rebalance_frequency:$('rebalance_frequency').value,rebalance_day:num('rebalance_day'),weighting:$('weighting').value,initial_capital:num('initial_capital'),include_brokerage:checked('include_brokerage'),brokerage_rate:num('brokerage_rate'),include_stt:checked('include_stt'),stt_rate:num('stt_rate'),include_sebi:checked('include_sebi'),sebi_rate:num('sebi_rate'),include_stamp:checked('include_stamp'),stamp_duty_rate:num('stamp_duty_rate'),include_slippage:checked('include_slippage'),slippage_rate:num('slippage_rate'),include_tax:checked('include_tax'),stcg_rate:num('stcg_rate'),ltcg_rate:num('ltcg_rate'),ltcg_exemption:num('ltcg_exemption'),long_term_days:365,trend_filter:$('trend_filter').value,trend_source:$('trend_source').value,trend_timeframe:$('trend_timeframe').value,supertrend_atr_period:num('supertrend_atr_period'),supertrend_multiplier:num('supertrend_multiplier'),bearish_exposure:num('bearish_exposure'),bearish_asset:$('bearish_asset').value,bearish_symbol:'GOLDBEES'};
+}
+function applyDefaults(d){
+  $('start').value=d.start;$('end').value=d.end;
+  document.querySelectorAll('.lb').forEach(x=>x.checked=d.lookbacks.includes(x.value));
+  document.querySelectorAll('.wt').forEach(x=>x.value=d.weights[x.dataset.lb]??1);
+  ['vol_adjust','skip_1m','include_brokerage','include_stt','include_sebi','include_stamp','include_slippage','include_tax'].forEach(id=>$(id).checked=!!d[id]);
+  ['vol_lookback','top_n','entry_rank','exit_rank','rebalance_frequency','rebalance_day','weighting','initial_capital','brokerage_rate','stt_rate','sebi_rate','stamp_duty_rate','slippage_rate','stcg_rate','ltcg_rate','ltcg_exemption','trend_filter','trend_source','trend_timeframe','supertrend_atr_period','supertrend_multiplier','bearish_exposure','bearish_asset'].forEach(id=>$(id).value=d[id]);
+}
+function universeAt(idx){
+  const date=MARKET.dates[idx];let best=MARKET.universe[0].symbols;
+  for(const snap of MARKET.universe){if(snap.date<=date)best=snap.symbols;else break}
+  return best;
+}
+function rebalanceDates(c,startIdx,endIdx){
+  const out=[];const dates=MARKET.dates;
+  if(c.rebalance_frequency==='weekly'){for(let i=startIdx;i<=endIdx;i++){const day=new Date(dates[i]+'T00:00:00Z').getUTCDay();if(day===1)out.push(i)}return out.length?out:[startIdx];}
+  const seen=new Set();
+  for(let i=startIdx;i<=endIdx;i++){
+    const dt=new Date(dates[i]+'T00:00:00Z'), key=dt.getUTCFullYear()+'-'+dt.getUTCMonth();
+    if(c.rebalance_frequency==='quarterly' && ![2,5,8,11].includes(dt.getUTCMonth()))continue;
+    if(dt.getUTCDate()>=c.rebalance_day && !seen.has(key)){seen.add(key);out.push(i)}
+  }
+  return out;
+}
+function value(symIdx,day,open=false){const arr=open?MARKET.open[symIdx]:MARKET.close[symIdx];return arr?arr[day]:null}
+function symbolIndex(sym){return MARKET.symbols.indexOf(sym)}
+function computeScores(day,universe,c){
+  const end=day-(c.skip_1m?21:0), maxLb=Math.max(...c.lookbacks.map(x=>LB[x]),LB[c.vol_lookback]||63);if(end<maxLb)return [];
+  const rows=[];
+  for(const s of universe){
+    const now=value(s,end);if(now==null||now<=0)continue;
+    let score=0, ok=true;
+    for(const lb of c.lookbacks){const past=value(s,end-LB[lb]);if(past==null||past<=0){ok=false;break}score+=(c.weights[lb]??1)*(now/past-1)}
+    if(!ok)continue;
+    const vLb=LB[c.vol_lookback]||63, rets=[];
+    for(let i=end-vLb+1;i<=end;i++){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)rets.push(b/a-1)}
+    const vol=stdev(rets)*Math.sqrt(252);if(!(vol>0))continue;
+    if(c.vol_adjust)score/=vol;
+    rows.push({s,score,vol});
+  }
+  rows.sort((a,b)=>b.score-a.score);return rows;
+}
+function charges(c,buy){let r=0;if(c.include_brokerage)r+=c.brokerage_rate;if(c.include_stt)r+=c.stt_rate;if(c.include_sebi)r+=c.sebi_rate;if(c.include_slippage)r+=c.slippage_rate;if(buy&&c.include_stamp)r+=c.stamp_duty_rate;return r}
+function fy(date){const d=new Date(date+'T00:00:00Z'), y=d.getUTCFullYear(), m=d.getUTCMonth()+1, s=m>=4?y:y-1;return 'FY'+s+'-'+String(s+1).slice(-2)}
+function tax(gain,isLong,date,state,c){if(!c.include_tax)return 0;if(gain<=0){if(isLong)state.ltLoss+=-gain;else state.stLoss+=-gain;return 0}let taxable=gain;if(isLong){const off=Math.min(taxable,state.ltLoss);taxable-=off;state.ltLoss-=off;const off2=Math.min(taxable,state.stLoss);taxable-=off2;state.stLoss-=off2;const f=fy(date);state.exempt[f]??=0;const ex=Math.min(taxable,Math.max(c.ltcg_exemption-state.exempt[f],0));taxable-=ex;state.exempt[f]+=ex;return taxable*c.ltcg_rate}const off=Math.min(taxable,state.stLoss);taxable-=off;state.stLoss-=off;return taxable*c.stcg_rate}
+function supertrendState(c){
+  if(c.trend_filter!=='supertrend')return MARKET.dates.map(()=>true);
+  const b=MARKET.benchmarks[c.trend_source]||MARKET.benchmarks.nifty500;if(!b||!b.ohlc)return MARKET.dates.map(()=>true);
+  let o=b.ohlc.open,h=b.ohlc.high,l=b.ohlc.low,cl=b.ohlc.close, map=MARKET.dates.map((_,i)=>i);
+  if(c.trend_timeframe==='weekly'){
+    const rows=[], idxs=[];let cur='';
+    for(let i=0;i<MARKET.dates.length;i++){if(cl[i]==null)continue;const d=new Date(MARKET.dates[i]+'T00:00:00Z'), key=d.getUTCFullYear()+'-'+Math.ceil((((d-new Date(Date.UTC(d.getUTCFullYear(),0,1)))/86400000)+1)/7);if(key!==cur){rows.push({o:o[i],h:h[i],l:l[i],c:cl[i]});idxs.push(i);cur=key}else{const r=rows[rows.length-1];r.h=Math.max(r.h,h[i]);r.l=Math.min(r.l,l[i]);r.c=cl[i];idxs[idxs.length-1]=i}}
+    o=rows.map(r=>r.o);h=rows.map(r=>r.h);l=rows.map(r=>r.l);cl=rows.map(r=>r.c);map=idxs;
+  }
+  const n=cl.length, atr=Array(n).fill(null), bull=Array(n).fill(true), p=Math.max(1,c.supertrend_atr_period), m=c.supertrend_multiplier;
+  const tr=[];for(let i=0;i<n;i++){if(cl[i]==null){tr.push(null);continue}const prev=i?cl[i-1]:cl[i];tr.push(Math.max(h[i]-l[i],Math.abs(h[i]-prev),Math.abs(l[i]-prev)));if(i>=p-1)atr[i]=mean(tr.slice(i-p+1,i+1).filter(x=>x!=null))}
+  let finalU=null, finalL=null, st=null;
+  for(let i=0;i<n;i++){if(atr[i]==null){bull[i]=true;continue}const mid=(h[i]+l[i])/2, bu=mid+m*atr[i], bl=mid-m*atr[i];finalU=(finalU==null||bu<finalU||cl[i-1]>finalU)?bu:finalU;finalL=(finalL==null||bl>finalL||cl[i-1]<finalL)?bl:finalL;if(st==null)st=cl[i]>=finalU?finalL:finalU;else st=st===finalU?(cl[i]<=finalU?finalU:finalL):(cl[i]>=finalL?finalL:finalU);bull[i]=cl[i]>=st}
+  if(c.trend_timeframe==='daily')return bull;
+  const daily=MARKET.dates.map(()=>true);let last=true,j=0;for(let i=0;i<daily.length;i++){while(j<map.length&&map[j]<=i){last=bull[j];j++}daily[i]=last}return daily;
+}
+function benchmarkEquity(startIdx,endIdx){
+  const b=MARKET.benchmarks.nifty500?.close||MARKET.benchmarks.nifty50?.close;if(!b)return [];
+  let base=null,out=[];for(let i=startIdx;i<=endIdx;i++){if(b[i]==null)continue;if(base==null)base=b[i];out.push([MARKET.dates[i],b[i]/base*100])}return out;
+}
+function metrics(series){
+  if(series.length<2)return {cagr:0,vol:0,sharpe:0,maxdd:0,final:0};
+  const vals=series.map(x=>x[1]), rets=[];for(let i=1;i<vals.length;i++)rets.push(vals[i]/vals[i-1]-1);
+  const years=(dateTs(series.at(-1)[0])-dateTs(series[0][0]))/86400000/365.25, cagr=(vals.at(-1)/vals[0])**(1/years)-1, vol=stdev(rets)*Math.sqrt(252), sharpe=vol>0?mean(rets)*252/vol:0;
+  let peak=vals[0], dd=0;for(const v of vals){peak=Math.max(peak,v);dd=Math.min(dd,v/peak-1)}
+  return {cagr:cagr*100,vol:vol*100,sharpe,maxdd:dd*100,final:vals.at(-1)};
+}
+function drawdown(series){let peak=-Infinity;return series.map(([d,v])=>{peak=Math.max(peak,v);return [d,(v/peak-1)*100]})}
+function runBacktest(c){
+  const startIdx=firstIdx(MARKET.dates,c.start), endIdx=lastIdx(MARKET.dates,c.end), rb=rebalanceDates(c,startIdx,endIdx);if(rb.length<2)throw Error('Not enough rebalance dates.');
+  const trend=supertrendState(c), goldIdx=symbolIndex(c.bearish_symbol), buyRate=charges(c,true), sellRate=charges(c,false);
+  let current=new Set(), gross=[[MARKET.dates[rb[0]],100]], cash=c.initial_capital, positions=new Map(), net=[[MARKET.dates[rb[0]],100]], totalCharges=0,totalTax=0, changes=[], holdings=[], taxState={stLoss:0,ltLoss:0,exempt:{}};
+  const shares=s=>positions.get(s)?.reduce((a,l)=>a+l.shares,0)||0;
+  const posValue=(s,day)=>{const px=value(s,day,false);return px==null?0:shares(s)*px};
+  const totalValue=day=>cash+[...positions.keys()].reduce((a,s)=>a+posValue(s,day),0);
+  function sell(s,day,qty){let lots=positions.get(s)||[], px=value(s,day,true)??value(s,day,false);if(!px||qty<=0)return;let rem=Math.min(qty,shares(s)), sale=0,taxDue=0, kept=[];for(const lot of lots){const take=Math.min(lot.shares,rem);if(take>0){const frac=take/lot.shares, lotSale=take*px, lotCost=lot.cost*frac;sale+=lotSale;taxDue+=tax(lotSale-lotCost,(dateTs(MARKET.dates[day])-dateTs(lot.entry))/86400000>=c.long_term_days,MARKET.dates[day],taxState,c);lot.shares-=take;lot.cost*=1-frac;rem-=take}if(lot.shares>1e-9)kept.push(lot)}if(kept.length)positions.set(s,kept);else positions.delete(s);const ch=sale*sellRate;cash+=sale-ch-taxDue;totalCharges+=ch;totalTax+=taxDue}
+  function buy(s,day,amount){const px=value(s,day,true)??value(s,day,false);if(!px||amount<=0)return;const gross=Math.min(cash,amount)/(1+buyRate);const ch=gross*buyRate;if(gross<=0)return;cash-=gross+ch;totalCharges+=ch;const lots=positions.get(s)||[];lots.push({shares:gross/px,cost:gross,entry:MARKET.dates[day]});positions.set(s,lots)}
+  for(let k=0;k<rb.length;k++){
+    const day=rb[k], rankDay=Math.max(startIdx,day-1), scores=computeScores(rankDay,universeAt(day),c), rank=new Map(scores.map((r,i)=>[r.s,i+1])), scoreBy=new Map(scores.map(r=>[r.s,r])), bullish=trend[day], useGold=!bullish&&c.bearish_asset==='goldbees'&&goldIdx>=0;
+    const survivors=[...current].filter(s=>(rank.get(s)||999999)<=c.exit_rank), target=new Set();
+    if(bullish){survivors.forEach(s=>target.add(s));for(const r of scores.slice(0,c.entry_rank)){if(target.size>=c.top_n)break;if(!target.has(r.s))target.add(r.s)}}
+    else if(useGold)target.add(goldIdx);else if(c.bearish_exposure>0)survivors.forEach(s=>target.add(s));
+    for(const s of target)if(!current.has(s))changes.push({date:MARKET.dates[day],action:'ENTER',symbol:MARKET.symbols[s],rank:rank.get(s)||null});
+    for(const s of current)if(!target.has(s))changes.push({date:MARKET.dates[day],action:'EXIT',symbol:MARKET.symbols[s],rank:rank.get(s)||null});
+    current=target;
+    let weights=new Map();if(current.size){if(c.weighting==='score'){let sum=0;for(const s of current){const w=Math.max(0,scoreBy.get(s)?.score||0);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
+      else if(c.weighting==='inverse_vol'){let sum=0;for(const s of current){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
+      else for(const s of current)weights.set(s,1/current.size)}
+    if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
+    for(const s of [...positions.keys()])if(!current.has(s))sell(s,day,shares(s));
+    let acct=totalValue(day);for(const s of current){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01)sell(s,day,(cur-target)/px)}
+    acct=totalValue(day);for(const s of current){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99)buy(s,day,target-cur)}
+    holdings.push({date:MARKET.dates[day],holdings:[...current].map(s=>({symbol:MARKET.symbols[s],weight:weights.get(s)||0})),mode:bullish?'Bullish':'Bearish'});
+    const next=k+1<rb.length?rb[k+1]:endIdx;
+    for(let i=day+1;i<=next;i++){let ret=0;for(const [s,w] of weights){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)ret+=w*(b/a-1)}gross.push([MARKET.dates[i],gross.at(-1)[1]*(1+ret)]);net.push([MARKET.dates[i],totalValue(i)/c.initial_capital*100])}
+  }
+  return {gross,net,drawdown:{gross:drawdown(gross),net:drawdown(net)},benchmark:benchmarkEquity(startIdx,endIdx),gross_metrics:metrics(gross),net_metrics:metrics(net),summary:{rebalances:rb.length,total_charges:totalCharges,total_tax:totalTax,trend_mode:holdings.at(-1)?.mode||'-'},latest_holdings:holdings.at(-1)?.holdings||[],changes:changes.slice(-500)};
+}
+function drawChart(id,series){
+  const cv=$(id), ctx=cv.getContext('2d'), rect=cv.getBoundingClientRect(), dpr=devicePixelRatio||1;cv.width=rect.width*dpr;cv.height=rect.height*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,rect.width,rect.height);
+  const all=series.flatMap(s=>s.data||[]);if(!all.length)return;const W=rect.width,H=rect.height,P={l:48,r:18,t:16,b:30}, xs=all.map(p=>dateTs(p[0])), ys=all.map(p=>p[1]), x0=Math.min(...xs),x1=Math.max(...xs), y0=Math.min(0,...ys), y1=Math.max(...ys);
+  const X=t=>P.l+(t-x0)/(x1-x0||1)*(W-P.l-P.r), Y=v=>P.t+(1-(v-y0)/(y1-y0||1))*(H-P.t-P.b);
+  ctx.strokeStyle='#dde2ea';ctx.fillStyle='#687082';ctx.font='11px system-ui';for(let i=0;i<=4;i++){const v=y0+(y1-y0)*i/4,y=Y(v);ctx.beginPath();ctx.moveTo(P.l,y);ctx.lineTo(W-P.r,y);ctx.stroke();ctx.fillText(Math.round(v),6,y+4)}
+  for(const s of series){if(!s.data?.length)continue;ctx.strokeStyle=s.color;ctx.lineWidth=2;ctx.beginPath();s.data.forEach((p,i)=>{const x=X(dateTs(p[0])),y=Y(p[1]);if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y)});ctx.stroke();ctx.fillStyle=s.color;ctx.fillText(s.label,P.l+8+(series.indexOf(s)*110),14)}
+}
+function render(r){
+  RESULT=r;$('grossCagr').textContent=pct(r.gross_metrics.cagr);$('netCagr').textContent=pct(r.net_metrics.cagr);$('netFinal').textContent=money(r.net_metrics.final/100*cfg().initial_capital);$('grossDd').textContent=pct(r.gross_metrics.maxdd);$('netDd').textContent=pct(r.net_metrics.maxdd);$('sharpe').textContent=r.net_metrics.sharpe.toFixed(2);$('costTax').textContent=money(r.summary.total_charges+r.summary.total_tax);$('rebalances').textContent=r.summary.rebalances;$('trendMode').textContent=r.summary.trend_mode;$('holdingCount').textContent=r.latest_holdings.length;
+  drawChart('equityChart',[{label:'Gross',color:'#2458d3',data:r.gross},{label:'Net',color:'#c93a3a',data:r.net},{label:'Nifty 500',color:'#157a5b',data:r.benchmark}]);
+  drawChart('ddChart',[{label:'Gross DD',color:'#2458d3',data:r.drawdown.gross},{label:'Net DD',color:'#c93a3a',data:r.drawdown.net}]);
+  document.querySelector('#holdings tbody').innerHTML=r.latest_holdings.map(x=>`<tr><td class="sym">${x.symbol}</td><td>${(x.weight*100).toFixed(1)}%</td></tr>`).join('');
+  document.querySelector('#changes tbody').innerHTML=r.changes.slice().reverse().map(x=>`<tr><td>${x.date}</td><td class="${x.action==='ENTER'?'pos':'neg'}">${x.action}</td><td class="sym">${x.symbol}</td><td>${x.rank??'-'}</td></tr>`).join('');
+}
+async function openDb(){return new Promise((res,rej)=>{const r=indexedDB.open('momentum-lab',1);r.onupgradeneeded=()=>r.result.createObjectStore('runs',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function dbAll(){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readonly'), req=tx.objectStore('runs').getAll();req.onsuccess=()=>res(req.result.sort((a,b)=>b.saved_at.localeCompare(a.saved_at)))})}
+async function dbPut(row){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').put(row);tx.oncomplete=res})}
+async function dbDel(id){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').delete(id);tx.oncomplete=res})}
+async function renderSaved(){const rows=await dbAll();$('savedList').innerHTML=rows.map(r=>`<div class="saved-row"><div><strong>${r.name}</strong><div class="tiny">${new Date(r.saved_at).toLocaleString('en-IN')} | CAGR ${r.metrics.cagr.toFixed(1)}% | Sharpe ${r.metrics.sharpe.toFixed(2)}</div></div><button class="secondary" data-load="${r.id}">Open</button><button class="danger" data-del="${r.id}">Delete</button></div>`).join('')||'<p class="tiny">No saved runs yet.</p>';document.querySelectorAll('[data-load]').forEach(b=>b.onclick=async()=>{const row=(await dbAll()).find(x=>x.id===b.dataset.load);if(row){applyDefaults(row.config);render(row.result)}});document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{await dbDel(b.dataset.del);renderSaved()})}
+async function saveRun(name){if(!RESULT)return;await dbPut({id:crypto.randomUUID(),name:name||'Saved backtest',saved_at:new Date().toISOString(),config:cfg(),metrics:RESULT.net_metrics,result:RESULT});renderSaved()}
+async function loadMarket(){
+  const res=await fetch('data/market.json');const reader=res.body?.getReader();if(!reader){MARKET=await res.json()}else{const len=Number(res.headers.get('content-length')||0);let got=0,chunks=[];while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);got+=value.length;if(len)$('loadBar').style.width=Math.round(got/len*100)+'%'}const blob=new Blob(chunks);MARKET=JSON.parse(await blob.text())}
+  $('loadBar').style.width='100%';$('dataStatus').textContent='Bundle loaded. Running default backtest...';applyDefaults(MARKET.defaults);$('refreshPill').textContent='Data: '+MARKET.generated_at.slice(0,10);$('rangePill').textContent=`Range: ${MARKET.dates[0]} to ${MARKET.dates.at(-1)}`;$('symbolPill').textContent=`Symbols: ${MARKET.symbols.length}`;render(runBacktest(cfg()));$('dataStatus').textContent='Ready. Backtests run locally in your browser.';renderSaved();
+}
+$('run').onclick=()=>{try{$('err').style.display='none';render(runBacktest(cfg()))}catch(e){$('err').textContent=e.message;$('err').style.display='block'}};
+$('save').onclick=()=>$('saveName').focus();
+$('saveNamed').onclick=()=>saveRun($('saveName').value.trim()||'Backtest '+new Date().toLocaleString('en-IN'));
+window.addEventListener('resize',()=>RESULT&&render(RESULT));
+loadMarket().catch(e=>{$('dataStatus').textContent='Failed to load data.';$('err').textContent=e.message;$('err').style.display='block'});
+</script>
+</body>
+</html>
