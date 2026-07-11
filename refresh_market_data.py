@@ -82,8 +82,12 @@ def main() -> None:
 
     new_close = panel.pivot(index="date", columns="symbol", values="close").sort_index()
     new_open = panel.pivot(index="date", columns="symbol", values="open").sort_index()
-    close = new_close.combine_first(existing_close).sort_index()
-    open_wide = new_open.combine_first(existing_open).reindex(index=close.index, columns=close.columns)
+    # Preserve already-published historical values for reproducible saved
+    # backtests; use fresh Yahoo downloads only to fill newly available/missing
+    # dates. Rewriting old adjusted opens can move net/cost-tax results even
+    # when gross close-to-close results remain visually unchanged.
+    close = existing_close.combine_first(new_close).sort_index()
+    open_wide = existing_open.combine_first(new_open).reindex(index=close.index, columns=close.columns)
 
     close.to_parquet(ROOT / "prices_wide_close.parquet")
     open_wide.to_parquet(ROOT / "prices_wide_open.parquet")
