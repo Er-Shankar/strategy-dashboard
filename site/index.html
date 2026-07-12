@@ -416,6 +416,8 @@ const SIM_PARAMS=[
   {key:'skip_1m',label:'Skip most recent 1M',options:[{value:false,label:'No'},{value:true,label:'Yes'}]},
   {key:'vol_adjust',label:'Volatility adjust',options:[{value:true,label:'On'},{value:false,label:'Off'}]},
   {key:'top_n',label:'Holdings',options:[10,15,20,30].map(v=>({value:v,label:String(v)}))},
+  {key:'entry_rank',label:'Entry rank',options:[20,32,50].map(v=>({value:v,label:String(v)}))},
+  {key:'exit_rank',label:'Exit rank',options:[32,50].map(v=>({value:v,label:String(v)}))},
   {key:'rebalance_frequency',label:'Frequency',options:[{value:'monthly',label:'Monthly'},{value:'quarterly',label:'Quarterly'}]},
   {key:'weighting',label:'Weighting',options:[{value:'equal',label:'Equal'},{value:'inverse_vol',label:'Inverse vol'}]},
   {key:'trend_filter',label:'Trend filter',options:[{value:'none',label:'Off'},{value:'supertrend',label:'On'}]},
@@ -423,7 +425,7 @@ const SIM_PARAMS=[
   {key:'trend_timeframe',label:'Supertrend timeframe',options:[{value:'weekly',label:'Weekly'},{value:'daily',label:'Daily'}]},
   {key:'bearish_asset',label:'Bearish destination',options:[{value:'cash',label:'Cash'},{value:'goldbees',label:'GoldBees'}]}
 ];
-const SIM_DEFAULTS={universe:[['midsmallcap400'],['microcap250'],['midsmallcap400','microcap250']],lookback_set:Object.keys(SIM_LOOKBACK_SETS),skip_1m:[false,true],vol_adjust:[true,false],top_n:[20],rebalance_frequency:['monthly'],weighting:['equal'],trend_filter:['none'],supertrend_multiplier:[2.5],trend_timeframe:['weekly'],bearish_asset:['cash']};
+const SIM_DEFAULTS={universe:[['midsmallcap400'],['microcap250'],['midsmallcap400','microcap250']],lookback_set:Object.keys(SIM_LOOKBACK_SETS),skip_1m:[false,true],vol_adjust:[true,false],top_n:[20],entry_rank:[20],exit_rank:[50],rebalance_frequency:['monthly'],weighting:['equal'],trend_filter:['none'],supertrend_multiplier:[2.5],trend_timeframe:['weekly'],bearish_asset:['cash']};
 const SIM_LABELS={cagr:'Net CAGR %',gross_cagr:'Gross CAGR %',sharpe:'Sharpe',vol:'Vol %',maxdd:'Net MaxDD %',gross_maxdd:'Gross MaxDD %',final:'Net Final',rebalances:'Rebalances',error:'Error'};
 let simRunning=false, simCancel=false, simSort={key:'sharpe',dir:'desc'}, SIM_RESULTS=[], STATIC_SIM_RESULTS=[], LIVE_SIM_RESULTS=[], simAvgSec=null, staticSimLoaded=false;
 function switchTab(tab){const backtest=tab==='backtest';$('backtestView').style.display=backtest?'':'none';$('simulationView').style.display=backtest?'none':'';$('tabBacktestBtn').classList.toggle('active',backtest);$('tabSimulationBtn').classList.toggle('active',!backtest);if(!backtest){if(!$('simGroups').children.length)renderSimGroups();loadStaticSimulationResults()}}

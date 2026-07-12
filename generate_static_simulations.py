@@ -49,6 +49,16 @@ SIMULATION_PARAMS: list[dict] = [
         "options": [{"value": value, "label": str(value)} for value in (10, 15, 20, 30)],
     },
     {
+        "key": "entry_rank",
+        "label": "Entry rank",
+        "options": [{"value": value, "label": str(value)} for value in (20, 32, 50)],
+    },
+    {
+        "key": "exit_rank",
+        "label": "Exit rank",
+        "options": [{"value": value, "label": str(value)} for value in (32, 50)],
+    },
+    {
         "key": "rebalance_frequency",
         "label": "Frequency",
         "options": [
