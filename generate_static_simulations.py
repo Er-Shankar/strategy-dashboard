@@ -14,6 +14,7 @@ from dashboard import SWEEP_LOOKBACK_SETS, json_safe, run_one_combo
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "site" / "data" / "simulation_results.json"
+CHUNK_PREFIX = "simulation_results_part_"
 
 SIMULATION_PARAMS: list[dict] = [
     {
@@ -131,6 +132,7 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 4) - 1))
     parser.add_argument("--limit", type=int, default=0, help="Run only the first N combinations for a quick smoke test.")
     parser.add_argument("--cartesian", action="store_true", help="Keep duplicate no-op combinations for a literal full Cartesian grid.")
+    parser.add_argument("--chunk-size", type=int, default=25_000, help="Rows per result chunk. Use 0 to force one JSON file.")
     args = parser.parse_args()
 
     combos = all_combos(cartesian=args.cartesian)
@@ -172,11 +174,37 @@ def main() -> None:
         "completed": len(results),
         "params": SIMULATION_PARAMS,
         "cartesian": args.cartesian,
-        "results": results,
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(json_safe(payload), separators=(",", ":")))
-    print(f"Wrote {args.out} ({args.out.stat().st_size / 1024 / 1024:.1f} MB)", flush=True)
+
+    for old_chunk in args.out.parent.glob(f"{CHUNK_PREFIX}*.json"):
+        old_chunk.unlink()
+
+    if args.chunk_size and len(results) > args.chunk_size:
+        chunks = []
+        for index, start in enumerate(range(0, len(results), args.chunk_size), start=1):
+            chunk_rows = results[start:start + args.chunk_size]
+            chunk_name = f"{CHUNK_PREFIX}{index:04d}.json"
+            chunk_path = args.out.parent / chunk_name
+            chunk_payload = {
+                "schema_version": 1,
+                "part": index,
+                "rows": chunk_rows,
+            }
+            chunk_path.write_text(json.dumps(json_safe(chunk_payload), separators=(",", ":")))
+            chunks.append({
+                "file": chunk_name,
+                "rows": len(chunk_rows),
+                "bytes": chunk_path.stat().st_size,
+            })
+        payload["chunks"] = chunks
+        args.out.write_text(json.dumps(json_safe(payload), separators=(",", ":")))
+        total_bytes = args.out.stat().st_size + sum((args.out.parent / chunk["file"]).stat().st_size for chunk in chunks)
+        print(f"Wrote {args.out} + {len(chunks)} chunks ({total_bytes / 1024 / 1024:.1f} MB total)", flush=True)
+    else:
+        payload["results"] = results
+        args.out.write_text(json.dumps(json_safe(payload), separators=(",", ":")))
+        print(f"Wrote {args.out} ({args.out.stat().st_size / 1024 / 1024:.1f} MB)", flush=True)
 
 
 if __name__ == "__main__":
