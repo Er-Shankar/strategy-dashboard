@@ -17,7 +17,16 @@
 !nifty50.csv
 !goldbees.csv
 !changes.csv
+!changes_microcap250.csv
 !sweep_results.json
+!universe_membership.csv
+!midsmallcap400_current.csv
+!microcap250_current.csv
+!universe_snapshots/
+!universe_snapshots/**
+!build_membership_master.py
+!update_universe_daily.py
+!build_microcap_changes.py
 
 !site/
 !site/**

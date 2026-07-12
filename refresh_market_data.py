@@ -9,6 +9,11 @@ import yfinance as yf
 
 ROOT = Path(__file__).resolve().parent
 
+# Earliest date the benchmark/GoldBees series are pulled from. GOLDBEES.NS on
+# Yahoo begins 2009-01-02 (the binding limit); ^CRSLDX and ^NSEI go back further
+# but are aligned to the same floor so all benchmark files share one start date.
+BENCHMARK_START = "2009-01-02"
+
 
 def download_adjusted_ohlc(symbols: list[str], start: str, end: str) -> pd.DataFrame:
     frames = []
@@ -46,8 +51,8 @@ def download_adjusted_ohlc(symbols: list[str], start: str, end: str) -> pd.DataF
     return pd.concat(frames, ignore_index=True)
 
 
-def download_index(ticker: str, out: Path, ohlc_out: Path | None = None) -> None:
-    df = yf.download(ticker, start="2011-01-01", auto_adjust=False, progress=False, threads=False)
+def download_index(ticker: str, out: Path, ohlc_out: Path | None = None, start: str = BENCHMARK_START) -> None:
+    df = yf.download(ticker, start=start, auto_adjust=False, progress=False, threads=False)
     if df.empty:
         raise RuntimeError(f"No data returned for {ticker}")
     close = df["Close"]
@@ -118,7 +123,7 @@ def main() -> None:
 
     download_index("^CRSLDX", ROOT / "nifty500.csv", ROOT / "nifty500_ohlc.csv")
     download_index("^NSEI", ROOT / "nifty50.csv")
-    gold = yf.download("GOLDBEES.NS", start=args.start, end=args.end, auto_adjust=True, progress=False, threads=False)
+    gold = yf.download("GOLDBEES.NS", start=BENCHMARK_START, end=args.end, auto_adjust=True, progress=False, threads=False)
     if not gold.empty:
         close_gold = gold["Close"]
         if isinstance(close_gold, pd.DataFrame):

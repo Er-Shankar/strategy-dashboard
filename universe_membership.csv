@@ -1,0 +1,1558 @@
+universe,isin,symbol,company,entry_date,exit_date,entry_approx,still_member
+microcap250,INE767A01016,AARTIDRUGS,Aarti Drugs Ltd.,2024-04-26,,False,True
+microcap250,INE0LRU01027,AARTIPHARM,Aarti Pharmalabs Ltd.,2023-10-26,,False,True
+microcap250,,ABDL,,2021-05-10,2026-05-12,True,False
+microcap250,,ACE,,2021-05-10,2024-04-26,True,False
+microcap250,INE128X01021,ACI,Archean Chemical Industries Ltd.,2021-05-10,,True,True
+microcap250,,ACLGATI,,2021-05-10,2024-04-26,True,False
+microcap250,,ACUTAAS,,2021-05-10,2026-05-12,True,False
+microcap250,,ADFFOODS,,2021-05-10,2022-10-25,True,False
+microcap250,INE837H01020,ADVENZYMES,Advanced Enzyme Tech Ltd.,2022-10-25,,False,True
+microcap250,INE947N01017,AEQUS,Aequs Ltd.,2026-05-12,,False,True
+microcap250,INE0BWX01014,AETHER,Aether Industries Ltd.,2021-05-10,,True,True
+microcap250,INE943P01029,AGARWALEYE,Dr. Agarwal's Health Care Ltd.,2026-05-12,,False,True
+microcap250,,AGCNET,,2021-05-10,2021-10-29,True,False
+microcap250,,AGI,,2021-05-10,2026-05-12,True,False
+microcap250,INE1YPB01014,AGL,Allcargo Global Ltd.,2021-05-10,,True,True
+microcap250,INE758C01029,AHLUCONT,Ahluwalia Contracts (India) Ltd.,2021-05-10,2021-10-29,True,False
+microcap250,INE758C01029,AHLUCONT,Ahluwalia Contracts (India) Ltd.,2022-04-07,2023-04-28,False,False
+microcap250,INE758C01029,AHLUCONT,Ahluwalia Contracts (India) Ltd.,2023-10-26,,False,True
+microcap250,,AJAXENGG,,2025-10-28,2026-05-12,False,False
+microcap250,INE09XN01023,AKUMS,Akums Drugs and Pharmaceuticals Ltd.,2026-05-12,,False,True
+microcap250,,AKZOINDIA,,2022-05-31,2025-10-28,False,False
+microcap250,,ALEMBICLTD,,2022-04-07,2023-04-28,False,False
+microcap250,INE03Q201024,ALIVUS,Alivus Life Sciences Ltd.,2025-10-28,,False,True
+microcap250,INE150B01039,ALKYLAMINE,Alkyl Amines Chemicals Ltd.,2026-05-12,,False,True
+microcap250,,ALLCARGO,,2021-10-29,2026-05-12,False,False
+microcap250,INE270A01029,ALOKINDS,Alok Industries Ltd.,2026-05-12,,False,True
+microcap250,,AMRUTANJAN,,2021-05-10,2023-04-28,True,False
+microcap250,,ANANDRATHI,,2022-04-07,2024-04-26,False,False
+microcap250,,ANDHRAPAP,,2021-05-10,2021-10-29,True,False
+microcap250,INE294Z01018,ANUP,The Anup Engineering Ltd.,2021-05-10,,True,True
+microcap250,,ANURAS,,2025-10-28,2026-05-12,False,False
+microcap250,,APARINDS,,2021-05-10,2023-04-28,True,False
+microcap250,,APCOTEXIND,,2021-05-10,2024-04-26,True,False
+microcap250,,APEX,,2021-05-10,2021-10-29,True,False
+microcap250,INE901L01018,APLLTD,Alembic Pharmaceuticals Ltd.,2026-05-12,,False,True
+microcap250,INE713T01028,APOLLO,Apollo Micro Systems Ltd.,2026-05-12,,False,True
+microcap250,,APOLLOPIPE,,2022-04-07,2024-04-26,False,False
+microcap250,INE034A01011,ARVIND,Arvind Ltd.,2021-05-10,,True,True
+microcap250,INE955V01021,ARVINDFASN,Arvind Fashions Ltd.,2021-05-10,,True,True
+microcap250,INE348A01023,ASHAPURMIN,Ashapura Minechem Ltd.,2026-05-12,,False,True
+microcap250,,ASHIANA,,2021-05-10,2022-10-25,True,False
+microcap250,INE442H01029,ASHOKA,Ashoka Buildcon Ltd.,2022-04-07,,False,True
+microcap250,,ASIANTILES,,2021-05-10,2021-10-29,True,False
+microcap250,INE491J01022,ASKAUTOLTD,ASK Automotive Ltd.,2024-04-26,,False,True
+microcap250,,ASTEC,,2021-05-10,2024-04-26,True,False
+microcap250,INE386C01029,ASTRAMICRO,Astra Microwave Products Ltd.,2021-05-10,,True,True
+microcap250,,ASTRAZEN,,2023-04-28,2024-04-26,False,False
+microcap250,,ATFL,,2021-05-10,2022-04-07,True,False
+microcap250,INE0Z4F01028,ATLANTAELE,Atlanta Electricals Ltd.,2026-05-12,,False,True
+microcap250,INE132H01018,AURIONPRO,Aurionpro Solution Ltd.,2021-05-10,,True,True
+microcap250,,AUTOAXLES,,2021-05-10,2024-04-26,True,False
+microcap250,INE0LCL01028,AVALON,Avalon Technologies Ltd.,2021-05-10,,True,True
+microcap250,INE871C01038,AVANTIFEED,Avanti Feeds Ltd.,2021-05-10,,True,True
+microcap250,INE679V01027,AVL,Aditya Vision Ltd.,2021-05-10,2025-10-28,True,False
+microcap250,INE679V01027,AVL,Aditya Vision Ltd.,2026-05-12,,False,True
+microcap250,INE108V01019,AWFIS,Awfis Space Solutions Ltd.,2021-05-10,,True,True
+microcap250,INE555B01013,AXISCADES,AXISCADES Technologies Ltd.,2026-05-12,,False,True
+microcap250,INE02IJ01035,AZAD,Azad Engineering Ltd.,2024-04-26,,False,True
+microcap250,INE193E01025,BAJAJELEC,Bajaj Electricals Ltd,2025-10-28,,False,True
+microcap250,,BAJAJHIND,,2021-05-10,2025-10-28,True,False
+microcap250,INE050E01027,BALAMINES,Balaji Amines Ltd.,2021-05-10,,True,True
+microcap250,INE011E01029,BALUFORGE,Balu Forge Industries Ltd.,2021-05-10,,True,True
+microcap250,INE213C01025,BANCOINDIA,Banco Products (India) Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE213C01025,BANCOINDIA,Banco Products (India) Ltd.,2024-04-26,,False,True
+microcap250,,BANSALWIRE,,2021-05-10,2025-10-28,True,False
+microcap250,,BBL,,2021-05-10,2026-05-12,True,False
+microcap250,INE676A01027,BBOX,Black Box Ltd.,2026-05-12,,False,True
+microcap250,,BCG,,2024-04-26,2024-05-03,False,False
+microcap250,INE495P01020,BECTORFOOD,Mrs. Bectors Food Specialities Ltd.,2021-10-29,,False,True
+microcap250,,BELRISE,,2025-10-28,2026-05-12,False,False
+microcap250,,BEPL,,2021-05-10,2025-10-28,True,False
+microcap250,,BESTAGRO,,2022-04-07,2023-10-26,False,False
+microcap250,,BFINVEST,,2021-05-10,2022-04-07,True,False
+microcap250,,BHARATRAS,,2022-04-07,2022-10-25,False,False
+microcap250,INE340A01012,BIRLACORPN,Birla Corporation Ltd.,2021-05-10,,True,True
+microcap250,INE0UIZ01018,BLACKBUCK,Blackbuck Ltd.,2021-05-10,,True,True
+microcap250,,BLISSGVS,,2021-10-29,2022-04-07,False,False
+microcap250,,BLS,,2021-05-10,2023-04-28,True,False
+microcap250,,BLUEJET,,2024-04-26,2025-10-28,False,False
+microcap250,INE304W01038,BLUESTONE,BlueStone Jewellery and Lifestyle Ltd.,2026-05-12,,False,True
+microcap250,,BODALCHEM,,2021-05-10,2022-04-07,True,False
+microcap250,,BOMDYEING,,2021-05-10,2025-10-28,True,False
+microcap250,,BOROLTD,,2021-05-10,2025-10-28,True,False
+microcap250,INE666D01022,BORORENEW,Borosil Renewables Ltd.,2021-05-10,,True,True
+microcap250,,BOSCH-HCIL,,2021-05-10,2026-05-12,True,False
+microcap250,INE278Y01022,CAMPUS,Campus Activewear Ltd.,2026-05-12,,False,True
+microcap250,,CAPACITE,,2021-05-10,2022-04-07,True,False
+microcap250,INE0ILV01024,CAPILLARY,Capillary Technologies India Ltd.,2026-05-12,,False,True
+microcap250,,CAPLIPOINT,,2023-04-28,2024-04-26,False,False
+microcap250,,CARTRADE,,2022-04-07,2026-05-12,False,False
+microcap250,,CARYSIL,,2021-05-10,2024-04-26,True,False
+microcap250,INE483S01020,CCAVENUE,AvenuesAI Ltd.,2021-05-10,,True,True
+microcap250,,CEIGALL,,2021-05-10,2026-05-12,True,False
+microcap250,INE0LMW01024,CELLO,Cello World Ltd.,2021-05-10,,True,True
+microcap250,,CEMPRO,,2021-05-10,2026-05-12,True,False
+microcap250,,CENTRUM,,2021-05-10,2022-10-25,True,False
+microcap250,INE348B01021,CENTURYPLY,Century Plyboards (India) Ltd.,2026-05-12,,False,True
+microcap250,INE739E01017,CERA,Cera Sanitaryware Ltd,2026-05-12,,False,True
+microcap250,,CGCL,,2022-04-07,2022-05-31,False,False
+microcap250,,CGPOWER,,2021-05-10,2021-10-29,True,False
+microcap250,,CHEMCON,,2021-05-10,2022-10-25,True,False
+microcap250,,CHEMPLASTS,,2021-05-10,2025-10-28,True,False
+microcap250,,CHENNPETRO,,2021-05-10,2024-04-26,True,False
+microcap250,,CHOICEIN,,2022-10-25,2023-04-28,False,False
+microcap250,,CHOICEIN,,2023-10-26,2025-10-28,False,False
+microcap250,,CIEINDIA,,2021-05-10,2026-05-15,True,False
+microcap250,,CIGNITITEC,,2021-05-10,2026-07-13,True,False
+microcap250,,CLNINDIA,,2021-05-10,2022-04-07,True,False
+microcap250,INE925R01014,CMSINFO,CMS Info Systems Ltd.,2022-04-07,,False,True
+microcap250,INE02ZQ01018,CORONA,CORONA Remedies Ltd.,2026-05-12,,False,True
+microcap250,,COSMOFIRST,,2021-05-10,2024-04-26,True,False
+microcap250,,CRAFTSMAN,,2021-10-29,2023-04-28,False,False
+microcap250,INE218I01013,CRAMC,Canara Robeco Asset Management Company Ltd.,2026-05-12,,False,True
+microcap250,INE0S4R01014,CRIZAC,Crizac Ltd.,2026-05-12,,False,True
+microcap250,INE679A01013,CSBBANK,CSB Bank Ltd.,2021-05-10,,True,True
+microcap250,INE509F01029,CUPID,Cupid Ltd.,2026-05-12,,False,True
+microcap250,,CYIENTDLM,,2024-04-26,2026-05-12,False,False
+microcap250,INE365B01017,DATAMATICS,Datamatics Global Services Ltd.,2022-10-25,,False,True
+microcap250,,DATAPATTNS,,2022-04-07,2023-04-28,False,False
+microcap250,,DBCORP,,2021-05-10,2022-10-25,True,False
+microcap250,INE917M01012,DBL,Dilip Buildcon Ltd.,2023-04-28,,False,True
+microcap250,INE879I01012,DBREALTY,Valor Estate Ltd.,2026-05-12,,False,True
+microcap250,,DCAL,,2021-10-29,2026-05-12,False,False
+microcap250,INE503A01015,DCBBANK,DCB Bank Ltd.,2022-04-07,,False,True
+microcap250,,DCXINDIA,,2023-04-28,2025-10-28,False,False
+microcap250,,DEEPAKFERT,,2021-05-10,2022-10-25,True,False
+microcap250,,DFMFOODS,,2021-05-10,2023-03-31,True,False
+microcap250,,DHAMPURSUG,,2021-05-10,2022-04-07,True,False
+microcap250,,DHANI,,2023-04-28,2025-12-26,False,False
+microcap250,,DHANUKA,,2022-04-07,2023-04-28,False,False
+microcap250,,DHANUKA,,2025-10-28,2026-05-12,False,False
+microcap250,INE989C01038,DIACABS,Diamond Power Infrastructure Ltd.,2025-10-28,,False,True
+microcap250,,DIAMONDYD,,2021-05-10,2022-10-25,True,False
+microcap250,,DIVGIITTS,,2021-05-10,2024-04-26,True,False
+microcap250,,DODLA,,2022-04-07,2026-05-12,False,False
+microcap250,,DOLATALGO,,2021-05-10,2023-04-28,True,False
+microcap250,,DOLLAR,,2021-05-10,2024-04-26,True,False
+microcap250,,DREDGECORP,,2021-05-10,2022-04-07,True,False
+microcap250,,DWARKESH,,2022-10-25,2024-04-26,False,False
+microcap250,INE221B01012,DYNAMATECH,Dynamatic Technologies Ltd.,2021-05-10,,True,True
+microcap250,,EASEMYTRIP,,2021-10-29,2026-05-12,False,False
+microcap250,INE532F01054,EDELWEISS,Edelweiss Financial Services Ltd.,2021-05-10,,True,True
+microcap250,INE0LLY01014,EIEL,Enviro Infra Engineers Ltd.,2021-05-10,,True,True
+microcap250,,EKC,,2022-10-25,2023-04-28,False,False
+microcap250,,ELECON,,2022-10-25,2024-04-26,False,False
+microcap250,INE086A01029,ELECTCAST,Electrosteel Castings Ltd.,2021-05-10,,True,True
+microcap250,INE236E01022,ELLEN,Ellenbarrie Industrial Gases Ltd.,2026-05-12,,False,True
+microcap250,INE069I01010,EMBDL,Embassy Developments Ltd.,2021-05-10,,True,True
+microcap250,INE02YR01019,EMIL,Electronics Mart India Ltd.,2023-04-28,,False,True
+microcap250,,EMUDHRA,,2022-10-25,2026-05-12,False,False
+microcap250,INE010601016,ENTERO,Entero Healthcare Solutions Ltd.,2021-05-10,,True,True
+microcap250,,EPIGRAL,,2024-04-26,2026-05-12,False,False
+microcap250,INE255A01020,EPL,EPL Ltd.,2021-05-10,,True,True
+microcap250,INE063P01018,EQUITASBNK,Equitas Small Finance Bank Ltd.,2021-05-10,,True,True
+microcap250,,ERIS,,2023-03-31,2023-10-26,False,False
+microcap250,,ESABINDIA,,2021-05-10,2024-04-26,True,False
+microcap250,INE04TZ01018,ETHOSLTD,Ethos Ltd.,2022-10-25,,False,True
+microcap250,INE0KCE01017,EUREKAFORB,Eureka Forbes Ltd.,2021-05-10,,True,True
+microcap250,,EXCELINDUS,,2021-05-10,2022-04-07,True,False
+microcap250,,FACT,,2021-05-10,2021-10-29,True,False
+microcap250,,FCL,,2022-10-25,2025-10-28,False,False
+microcap250,,FCONSUMER,,2021-10-29,2022-10-25,False,False
+microcap250,,FDC,,2021-05-10,2026-05-12,True,False
+microcap250,INE007N01010,FEDFINA,Fedbank Financial Services Ltd.,2026-05-12,,False,True
+microcap250,,FEL,,2021-05-10,2021-10-29,True,False
+microcap250,INE737H01014,FIEMIND,Fiem Industries Ltd,2021-05-10,2021-10-29,True,False
+microcap250,INE737H01014,FIEMIND,Fiem Industries Ltd,2023-04-28,,False,True
+microcap250,,FINEORG,,2021-05-10,2026-05-12,True,False
+microcap250,,FINOPB,,2022-04-07,2024-04-26,False,False
+microcap250,INE183A01024,FINPIPE,Finolex Industries Ltd.,2026-05-12,,False,True
+microcap250,,FLFL,,2021-05-10,2021-10-29,True,False
+microcap250,,FMGOETZE,,2021-10-29,2022-04-07,False,False
+microcap250,,FORCEMOT,,2021-05-10,2025-10-28,True,False
+microcap250,,FRETAIL,,2022-04-07,2022-12-30,False,False
+microcap250,,GABRIEL,,2021-05-10,2026-05-12,True,False
+microcap250,INE036B01030,GAEL,Gujarat Ambuja Exports Ltd.,2021-05-10,,True,True
+microcap250,,GALLANTT,,2025-10-28,2026-05-12,False,False
+microcap250,,GANECOS,,2021-05-10,2026-05-12,True,False
+microcap250,,GANESHHOU,,2021-05-10,2026-05-12,True,False
+microcap250,,GANESHHOUC,,2022-10-25,2023-04-28,False,False
+microcap250,,GARFIBRES,,2021-05-10,2026-05-12,True,False
+microcap250,,GATEWAY,,2022-09-30,2026-05-12,False,False
+microcap250,,GDL,,2021-05-10,2022-03-31,True,False
+microcap250,,GENUSPOWER,,2021-05-10,2022-05-31,True,False
+microcap250,,GEOJITFSL,,2021-05-10,2023-04-28,True,False
+microcap250,,GEPIL,,2021-10-29,2022-10-25,False,False
+microcap250,INE539A01019,GHCL,GHCL Ltd.,2022-04-07,,False,True
+microcap250,,GIPCL,,2021-05-10,2022-04-07,True,False
+microcap250,,GMBREW,,2021-05-10,2022-04-07,True,False
+microcap250,,GMDCLTD,,2021-05-10,2024-04-26,True,False
+microcap250,INE541A01023,GMMPFAUDLR,GMM Pfaudler Ltd.,2021-05-10,,True,True
+microcap250,INE0CU601026,GMRP&UI,GMR Power and Urban Infra Ltd.,2021-05-10,,True,True
+microcap250,INE113A01013,GNFC,Gujarat Narmada Valley Fertilizers and Chemicals Ltd.,2025-10-28,,False,True
+microcap250,,GOCLCORP,,2021-05-10,2021-10-29,True,False
+microcap250,INE850D01014,GODREJAGRO,Godrej Agrovet Ltd.,2026-05-12,,False,True
+microcap250,INE887G01027,GOKEX,Gokaldas Exports Ltd.,2022-10-25,,False,True
+microcap250,INE314T01033,GOKULAGRO,Gokul Agro Resources Ltd.,2026-05-12,,False,True
+microcap250,,GOODYEAR,,2021-05-10,2024-01-19,True,False
+microcap250,,GOPAL,,2021-05-10,2025-10-28,True,False
+microcap250,INE517F01014,GPPL,Gujarat Pipavav Port Ltd.,2025-10-28,,False,True
+microcap250,,GRAUWEIL,,2021-05-10,2024-01-19,True,False
+microcap250,INE224A01026,GREAVESCOT,Greaves Cotton Ltd.,2022-04-07,,False,True
+microcap250,,GREENLAM,,2021-05-10,2021-10-29,True,False
+microcap250,,GREENLAM,,2022-04-07,2024-04-26,False,False
+microcap250,,GREENPANEL,,2021-05-10,2026-05-12,True,False
+microcap250,,GREENPLY,,2021-05-10,2025-10-28,True,False
+microcap250,,GRINFRA,,2024-04-26,2026-05-12,False,False
+microcap250,,GRSE,,2021-10-29,2024-04-26,False,False
+microcap250,INE291A01017,GRWRHITECH,Garware Hi-Tech Films Ltd.,2022-10-25,2023-04-28,False,False
+microcap250,INE291A01017,GRWRHITECH,Garware Hi-Tech Films Ltd.,2024-04-26,,False,True
+microcap250,INE026A01025,GSFC,Gujarat State Fertilizers & Chemicals Ltd.,2021-05-10,,True,True
+microcap250,,GTLINFRA,,2021-05-10,2021-10-29,True,False
+microcap250,,GTPL,,2021-10-29,2022-10-25,False,False
+microcap250,,GULFOILLUB,,2021-10-29,2023-04-28,False,False
+microcap250,,GULFOILLUB,,2024-04-26,2026-05-12,False,False
+microcap250,INE419U01012,HAPPSTMNDS,Happiest Minds Technologies Ltd.,2026-05-12,,False,True
+microcap250,,HARSHA,,2023-04-28,2024-04-26,False,False
+microcap250,,HATHWAY,,2022-10-25,2025-10-28,False,False
+microcap250,,HBLPOWER,,2021-05-10,2024-04-26,True,False
+microcap250,INE549A01026,HCC,Hindustan Construction Co. Ltd.,2021-05-10,,True,True
+microcap250,INE075I01017,HCG,Healthcare Global Enterprises Ltd.,2021-05-10,,True,True
+microcap250,,HEIDELBERG,,2022-04-07,2025-10-28,False,False
+microcap250,INE0AJG01018,HEMIPROP,Hemisphere Properties India Ltd.,2022-10-25,,False,True
+microcap250,INE978A01027,HERITGFOOD,Heritage Foods Ltd.,2021-05-10,,True,True
+microcap250,,HESTERBIO,,2021-05-10,2022-10-25,True,False
+microcap250,INE926X01010,HGINFRA,H.G. Infra Engineering Ltd.,2021-05-10,,True,True
+microcap250,,HGS,,2021-05-10,2024-04-26,True,False
+microcap250,,HIKAL,,2021-05-10,2026-05-12,True,False
+microcap250,,HIL,,2021-05-10,2024-04-26,True,False
+microcap250,,HIMATSEIDE,,2021-05-10,2023-04-28,True,False
+microcap250,,HLEGLAS,,2021-10-29,2022-04-07,False,False
+microcap250,,HNDFDS,,2021-05-10,2022-04-07,True,False
+microcap250,,HNDFDS,,2022-10-25,2024-04-26,False,False
+microcap250,,HONDAPOWER,,2021-05-10,2021-10-29,True,False
+microcap250,,HSCL,,2021-10-29,2024-04-26,False,False
+microcap250,,HUHTAMAKI,,2021-10-29,2022-04-07,False,False
+microcap250,INE483B01026,ICIL,Indo Count Industries Ltd.,2022-10-25,,False,True
+microcap250,,ICRA,,2021-05-10,2022-04-07,True,False
+microcap250,INE559A01017,IFBIND,IFB Industries Ltd.,2021-05-10,,True,True
+microcap250,,IGARASHI,,2021-05-10,2022-10-25,True,False
+microcap250,,IGPL,,2021-05-10,2023-04-28,True,False
+microcap250,INE489L01022,IIFLCAPS,IIFL Capital Services Ltd.,2021-05-10,,True,True
+microcap250,,IIFLSEC,,2021-05-10,2023-04-28,True,False
+microcap250,,IMAGICAA,,2021-05-10,2026-05-12,True,False
+microcap250,INE919H01018,IMFA,Indian Metals & Ferro Alloys Ltd.,2021-05-10,,True,True
+microcap250,INE560A01023,INDIAGLYCO,India Glycols Ltd.,2021-05-10,,True,True
+microcap250,,INDIANHUME,,2021-05-10,2022-04-07,True,False
+microcap250,INE922K01024,INDIASHLTR,India Shelter Finance Corporation Ltd.,2024-04-26,,False,True
+microcap250,INE09VQ01012,INDIGOPNTS,Indigo Paints Ltd.,2021-05-10,,True,True
+microcap250,,INDNIPPON,,2021-05-10,2021-10-29,True,False
+microcap250,,INDORAMA,,2022-10-25,2023-04-28,False,False
+microcap250,,INDOSTAR,,2021-05-10,2023-04-28,True,False
+microcap250,,INGERRAND,,2022-04-07,2023-04-28,False,False
+microcap250,,INGERRAND,,2024-04-26,2026-05-12,False,False
+microcap250,,INNOVACAP,,2025-09-23,2026-05-12,False,False
+microcap250,INE510W01014,INOXGREEN,Inox Green Energy Services Ltd.,2021-05-10,,True,True
+microcap250,INE616N01034,INOXINDIA,INOX India Ltd.,2026-05-12,,False,True
+microcap250,,INOXWIND,,2021-05-10,2024-04-26,True,False
+microcap250,,INSECTICID,,2021-05-10,2022-04-07,True,False
+microcap250,INE570A01022,IONEXCHANG,Ion Exchange (India) Ltd.,2022-05-31,,False,True
+microcap250,,ISGEC,,2022-03-31,2026-05-12,False,False
+microcap250,,ITDC,,2021-05-10,2022-04-07,True,False
+microcap250,,ITDCEM,,2021-05-10,2022-04-07,True,False
+microcap250,INE0HV901016,IXIGO,Le Travenues Technology Ltd.,2021-05-10,,True,True
+microcap250,,JAGRAN,,2021-05-10,2022-04-07,True,False
+microcap250,INE091G01026,JAIBALAJI,Jai Balaji Industries Ltd.,2021-05-10,,True,True
+microcap250,,JAICORPLTD,,2021-05-10,2025-10-28,True,False
+microcap250,INE039C01032,JAMNAAUTO,Jamna Auto Industries Ltd.,2024-04-26,,False,True
+microcap250,INE854B01010,JAYNECOIND,Jayaswal Neco Industries Ltd.,2026-05-12,,False,True
+microcap250,,JBMA,,2021-05-10,2022-10-25,True,False
+microcap250,,JCHAC,,2021-05-10,2023-04-28,True,False
+microcap250,,JINDALPOLY,,2021-05-10,2024-04-26,True,False
+microcap250,,JINDWORLD,,2021-05-10,2023-04-28,True,False
+microcap250,,JINDWORLD,,2024-01-19,2026-05-12,False,False
+microcap250,,JISLJALEQS,,2022-04-12,2026-05-12,False,False
+microcap250,,JKIL,,2021-05-10,2022-04-07,True,False
+microcap250,,JKIL,,2022-10-25,2026-05-12,False,False
+microcap250,INE786A01032,JKLAKSHMI,JK Lakshmi Cement Ltd.,2021-05-10,,True,True
+microcap250,INE789E01012,JKPAPER,JK Paper Ltd.,2021-05-10,,True,True
+microcap250,INE682M01012,JLHL,Jupiter Life Line Hospitals Ltd.,2026-05-12,,False,True
+microcap250,,JMCPROJECT,,2021-05-10,2022-10-25,True,False
+microcap250,INE953L01027,JSFB,Jana Small Finance Bank Ltd.,2021-05-10,,True,True
+microcap250,INE0J5801029,JSLL,Jeena Sikho Lifecare Ltd.,2026-05-12,,False,True
+microcap250,,JSWHL,,2021-05-10,2021-10-29,True,False
+microcap250,,JSWISPL,,2021-05-10,2023-04-28,True,False
+microcap250,,JTEKTINDIA,,2021-10-29,2022-10-25,False,False
+microcap250,,JTLIND,,2021-05-10,2025-10-28,True,False
+microcap250,INE599M01018,JUSTDIAL,Justdial Ltd.,2025-10-28,,False,True
+microcap250,,JWL,,2023-04-28,2024-04-26,False,False
+microcap250,INE668F01031,JYOTHYLAB,Jyothy Labs Ltd.,2026-05-12,,False,True
+microcap250,INE531A01024,KANSAINER,Kansai Nerolac Paints Ltd.,2026-03-30,,False,True
+microcap250,,KENNAMET,,2021-05-10,2021-10-29,True,False
+microcap250,,KENNAMET,,2022-04-07,2023-04-28,False,False
+microcap250,,KESORAMIND,,2024-04-26,2025-09-23,False,False
+microcap250,,KINGFA,,2021-05-10,2021-10-29,True,False
+microcap250,,KIRIINDUS,,2021-05-10,2024-04-26,True,False
+microcap250,INE732A01036,KIRLOSBROS,Kirloskar Brothers Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE732A01036,KIRLOSBROS,Kirloskar Brothers Ltd.,2026-05-12,,False,True
+microcap250,INE811A01020,KIRLPNU,Kirloskar Pneumatic Company Ltd.,2021-05-10,,True,True
+microcap250,INE602G01020,KITEX,Kitex Garments Ltd.,2021-05-10,2021-10-29,True,False
+microcap250,INE602G01020,KITEX,Kitex Garments Ltd.,2025-09-30,,False,True
+microcap250,,KKCL,,2023-04-28,2024-04-26,False,False
+microcap250,INE634I01029,KNRCON,KNR Constructions Ltd.,2025-10-28,,False,True
+microcap250,INE542W01025,KPIGREEN,KPI Green Energy Ltd.,2024-04-26,,False,True
+microcap250,INE001B01026,KRBL,KRBL Ltd.,2021-05-10,,True,True
+microcap250,INE0Q3J01015,KRN,KRN Heat Exchanger and Refrigeration Ltd.,2025-10-28,,False,True
+microcap250,INE999A01023,KSB,KSB Ltd.,2022-04-07,2025-10-28,False,False
+microcap250,INE999A01023,KSB,KSB Ltd.,2026-05-12,,False,True
+microcap250,INE455I01029,KSCL,Kaveri Seed Company Ltd.,2022-04-07,,False,True
+microcap250,,KSL,,2021-05-10,2022-10-25,True,False
+microcap250,,KSL,,2025-03-10,2026-05-12,False,False
+microcap250,INE614B01018,KTKBANK,Karnataka Bank Ltd.,2021-05-10,,True,True
+microcap250,,LEMONTREE,,2022-04-07,2023-02-17,False,False
+microcap250,INE093R01011,LLOYDSENGG,Lloyds Engineering Works Ltd.,2021-05-10,,True,True
+microcap250,INE080I01025,LLOYDSENT,Lloyds Enterprises Ltd.,2021-05-10,,True,True
+microcap250,,LMW,,2021-05-10,2026-05-12,True,False
+microcap250,INE0V9Q01010,LOTUSDEV,Sri Lotus Developers and Realty Ltd.,2026-05-12,,False,True
+microcap250,,LUMAXIND,,2021-05-10,2021-10-29,True,False
+microcap250,INE872H01027,LUMAXTECH,Lumax Auto Technologies Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE872H01027,LUMAXTECH,Lumax Auto Technologies Ltd.,2025-10-28,,False,True
+microcap250,,LUXIND,,2024-04-26,2026-05-12,False,False
+microcap250,INE576O01020,LXCHEM,Laxmi Organic Industries Ltd.,2021-05-10,,True,True
+microcap250,,MAHLIFE,,2021-05-10,2026-05-12,True,False
+microcap250,INE288A01013,MAHSCOOTER,Maharashtra Scooters Ltd.,2021-10-29,2025-10-28,False,False
+microcap250,INE288A01013,MAHSCOOTER,Maharashtra Scooters Ltd.,2026-05-12,,False,True
+microcap250,INE271B01025,MAHSEAMLES,Maharashtra Seamless Ltd.,2021-10-29,2024-04-26,False,False
+microcap250,INE271B01025,MAHSEAMLES,Maharashtra Seamless Ltd.,2026-05-12,,False,True
+microcap250,,MAJESCO,,2021-05-10,2021-10-29,True,False
+microcap250,,MANINFRA,,2021-05-10,2026-05-12,True,False
+microcap250,INE00VM01036,MANORAMA,Manorama Industries Ltd.,2025-10-28,,False,True
+microcap250,INE825V01034,MANYAVAR,Vedant Fashions Ltd.,2026-05-12,,False,True
+microcap250,INE750C01026,MARKSANS,Marksans Pharma Ltd.,2021-05-10,,True,True
+microcap250,INE759A01021,MASTEK,Mastek Ltd.,2021-05-10,2021-10-29,True,False
+microcap250,INE759A01021,MASTEK,Mastek Ltd.,2025-10-28,,False,True
+microcap250,,MATRIMONY,,2021-05-10,2023-04-28,True,False
+microcap250,,MAXESTATES,,2021-05-10,2026-05-12,True,False
+microcap250,,MAYURUNIQ,,2021-05-10,2024-04-26,True,False
+microcap250,INE804L01022,MEDPLUS,Medplus Health Services Ltd.,2021-05-10,,True,True
+microcap250,INE112L01020,METROPOLIS,Metropolis Healthcare Ltd.,2026-05-12,,False,True
+microcap250,,MFL,,2022-04-07,2023-04-28,False,False
+microcap250,INE099Z01011,MIDHANI,Mishra Dhatu Nigam Ltd.,2022-04-07,,False,True
+microcap250,,MIRZAINT,,2021-05-10,2021-10-29,True,False
+microcap250,,MMFL,,2021-05-10,2021-10-29,True,False
+microcap250,INE490G01020,MOIL,MOIL Ltd.,2023-04-28,,False,True
+microcap250,,MOL,,2022-04-07,2024-04-26,False,False
+microcap250,,MOLDTKPAC,,2021-05-10,2024-04-26,True,False
+microcap250,INE255X01014,MSTCLTD,MSTC Ltd.,2021-05-10,,True,True
+microcap250,INE864I01014,MTARTECH,MTAR Technologies Ltd.,2021-10-29,,False,True
+microcap250,,MTNL,,2021-05-10,2022-04-07,True,False
+microcap250,,MUTHOOTCAP,,2021-05-10,2021-10-29,True,False
+microcap250,INE418L01047,NAZARA,Nazara Technologies Ltd.,2024-04-26,,False,True
+microcap250,INE136S01016,NEOGEN,NEOGEN CHEMICALS LTD.,2021-05-10,,True,True
+microcap250,INE317F01035,NESCO,NESCO Ltd.,2022-10-25,,False,True
+microcap250,INE870H01013,NETWORK18,Network18 Media & Investments Ltd.,2025-10-28,,False,True
+microcap250,INE870D01012,NFL,National Fertilizers Ltd.,2022-04-07,,False,True
+microcap250,,NIITLTD,,2021-05-10,2022-10-25,True,False
+microcap250,,NILKAMAL,,2022-04-07,2022-10-25,False,False
+microcap250,,NOCIL,,2021-05-10,2025-10-28,True,False
+microcap250,,NOVARTIND,,2021-05-10,2022-04-07,True,False
+microcap250,,NUCLEUS,,2021-05-10,2022-10-25,True,False
+microcap250,,NUVOCO,,2021-05-10,2025-10-28,True,False
+microcap250,,OAL,,2021-05-10,2022-04-07,True,False
+microcap250,,OCCL,,2021-05-10,2022-04-07,True,False
+microcap250,,OLECTRA,,2021-05-10,2022-10-25,True,False
+microcap250,,OMAXE,,2021-05-10,2021-10-29,True,False
+microcap250,,OMAXE,,2022-10-25,2023-04-28,False,False
+microcap250,INE350C01017,OPTIEMUS,Optiemus Infracom Ltd.,2022-04-07,,False,True
+microcap250,,ORCHPHARMA,,2021-05-10,2026-05-12,True,False
+microcap250,INE876N01018,ORIENTCEM,Orient Cement Ltd.,2021-05-10,,True,True
+microcap250,,ORISSAMINE,,2021-05-10,2023-04-28,True,False
+microcap250,,ORISSAMINE,,2024-04-26,2025-10-28,False,False
+microcap250,INE16NZ01023,ORKLAINDIA,Orkla India Ltd.,2026-05-12,,False,True
+microcap250,INE0BYP01024,OSWALPUMPS,Oswal Pumps Ltd.,2025-10-28,,False,True
+microcap250,,PAISALO,,2021-05-10,2025-10-28,True,False
+microcap250,,PANACEABIO,,2021-05-10,2022-10-25,True,False
+microcap250,,PARADEEP,,2022-10-25,2026-05-12,False,False
+microcap250,,PARAGMILK,,2021-05-10,2022-04-07,True,False
+microcap250,INE045601023,PARAS,Paras Defence and Space Technologies Ltd.,2022-04-07,,False,True
+microcap250,INE119201023,PARKHOSPS,Park Medi World Ltd.,2026-05-12,,False,True
+microcap250,,PARKHOTELS,,2021-05-10,2026-05-12,True,False
+microcap250,,PATELENG,,2024-04-26,2026-05-12,False,False
+microcap250,INE785M01021,PCJEWELLER,PC Jeweller Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE785M01021,PCJEWELLER,PC Jeweller Ltd.,2023-04-28,,False,True
+microcap250,INE367G01038,PFOCUS,Prime Focus Ltd.,2026-05-12,,False,True
+microcap250,,PFS,,2021-05-10,2022-04-07,True,False
+microcap250,INE940H01022,PGIL,Pearl Global Industries Ltd.,2021-05-10,,True,True
+microcap250,INE546C01010,PICCADIL,Piccadily Agro Industries Ltd.,2026-05-12,,False,True
+microcap250,,PILANIINVS,,2021-05-10,2022-10-25,True,False
+microcap250,,PNBGILTS,,2021-05-10,2022-04-07,True,False
+microcap250,INE195J01029,PNCINFRA,PNC Infratech Ltd.,2025-10-28,,False,True
+microcap250,INE953R01016,PNGJL,P N Gadgil Jewellers Ltd.,2021-05-10,,True,True
+microcap250,,POLYPLEX,,2024-04-26,2026-05-12,False,False
+microcap250,,POONAWALLA,,2021-05-10,2021-10-29,True,False
+microcap250,INE211R01019,POWERMECH,Power Mech Projects Ltd.,2023-04-28,,False,True
+microcap250,INE074A01025,PRAJIND,Praj Industries Ltd.,2021-05-10,2021-10-29,True,False
+microcap250,INE074A01025,PRAJIND,Praj Industries Ltd.,2026-05-12,,False,True
+microcap250,,PRAKASH,,2021-05-10,2022-04-07,True,False
+microcap250,INE726V01018,PRICOLLTD,Pricol Ltd.,2023-04-28,,False,True
+microcap250,,PRINCEPIPE,,2021-05-10,2026-05-12,True,False
+microcap250,INE959A01019,PRIVISCL,Privi Speciality Chemicals Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE959A01019,PRIVISCL,Privi Speciality Chemicals Ltd.,2023-04-28,2024-04-26,False,False
+microcap250,INE959A01019,PRIVISCL,Privi Speciality Chemicals Ltd.,2025-10-28,,False,True
+microcap250,INE010A01011,PRSMJOHNSN,Prism Johnson Ltd.,2021-05-10,,True,True
+microcap250,INE00F201020,PRUDENT,Prudent Corporate Advisory Services Ltd.,2022-10-25,,False,True
+microcap250,,PSB,,2021-05-10,2022-04-07,True,False
+microcap250,INE877F01012,PTC,PTC India Ltd.,2021-05-10,2022-12-30,True,False
+microcap250,INE877F01012,PTC,PTC India Ltd.,2023-04-28,,False,True
+microcap250,,PTCIL,,2021-05-10,2024-04-26,True,False
+microcap250,,PUNJABCHEM,,2021-10-29,2022-10-25,False,False
+microcap250,INE323I01011,PURVA,Puravankara Ltd.,2021-05-10,2022-10-25,True,False
+microcap250,INE323I01011,PURVA,Puravankara Ltd.,2025-10-28,,False,True
+microcap250,INE0SII01026,QPOWER,Quality Power Electrical Equipments Ltd.,2026-05-12,,False,True
+microcap250,INE615P01015,QUESS,Quess Corp Ltd.,2025-10-28,,False,True
+microcap250,,QUICKHEAL,,2021-05-10,2022-04-07,True,False
+microcap250,,RAILTEL,,2022-10-25,2024-04-26,False,False
+microcap250,INE855B01025,RAIN,Rain Industries Ltd,2024-04-26,,False,True
+microcap250,,RAINBOW,,2022-10-25,2023-02-17,False,False
+microcap250,,RAJESHEXPO,,2021-05-10,2026-03-30,True,False
+microcap250,,RAJRATAN,,2022-10-25,2024-04-26,False,False
+microcap250,INE613A01020,RALLIS,Rallis India Ltd.,2024-04-26,,False,True
+microcap250,,RAMCOIND,,2021-05-10,2022-10-25,True,False
+microcap250,,RAMCOSYS,,2021-05-10,2022-04-07,True,False
+microcap250,,RANEHOLDIN,,2021-05-10,2022-04-07,True,False
+microcap250,INE0CLI01024,RATEGAIN,Rategain Travel Technologies Ltd.,2022-04-07,,False,True
+microcap250,INE703B01027,RATNAMANI,Ratnamani Metals & Tubes Ltd.,2025-12-26,2026-05-12,False,False
+microcap250,INE703B01027,RATNAMANI,Ratnamani Metals & Tubes Ltd.,2026-05-15,,False,True
+microcap250,,RAYMOND,,2021-10-29,2022-10-25,False,False
+microcap250,INE02ID01020,RAYMONDLSL,Raymond Lifestyle Ltd.,2025-10-28,,False,True
+microcap250,INE07T201019,RBA,Restaurant Brands Asia Ltd.,2021-05-10,,True,True
+microcap250,INE027A01015,RCF,Rashtriya Chemicals & Fertilizers Ltd.,2026-05-12,,False,True
+microcap250,INE0LXT01019,REDTAPE,Redtape Ltd.,2024-04-26,2025-10-28,False,False
+microcap250,INE0LXT01019,REDTAPE,Redtape Ltd.,2026-05-12,,False,True
+microcap250,INE056I01025,REFEX,Refex Industries Ltd.,2021-05-10,,True,True
+microcap250,INE131B01039,RELAXO,Relaxo Footwears Ltd.,2025-10-28,,False,True
+microcap250,INE621H01010,RELIGARE,Religare Enterprises Ltd.,2021-05-10,,True,True
+microcap250,,RELINFRA,,2021-05-10,2025-09-30,True,False
+microcap250,INE087H01022,RENUKA,Shree Renuka Sugars Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE087H01022,RENUKA,Shree Renuka Sugars Ltd.,2025-10-28,,False,True
+microcap250,,REPCOHOME,,2021-05-10,2022-10-25,True,False
+microcap250,,RESPONIND,,2022-04-07,2025-10-28,False,False
+microcap250,,RKFORGE,,2021-05-10,2024-04-26,True,False
+microcap250,,ROLEXRINGS,,2022-04-07,2024-04-26,False,False
+microcap250,,ROSSARI,,2024-04-26,2025-10-28,False,False
+microcap250,INE450U01017,ROUTE,Route Mobile Ltd.,2025-10-28,,False,True
+microcap250,,RPSGVENT,,2021-05-10,2023-04-28,True,False
+microcap250,,RSYSTEMS,,2021-05-10,2022-10-25,True,False
+microcap250,INE834M01019,RTNINDIA,RattanIndia Enterprises Ltd.,2021-05-10,2022-04-07,True,False
+microcap250,INE834M01019,RTNINDIA,RattanIndia Enterprises Ltd.,2025-10-28,,False,True
+microcap250,INE399K01017,RTNPOWER,RattanIndia Power Ltd.,2021-05-10,,True,True
+microcap250,INE506V01022,RUBICON,Rubicon Research Ltd.,2026-05-12,,False,True
+microcap250,,RUPA,,2021-05-10,2024-04-26,True,False
+microcap250,INE13B501022,SAATVIKGL,Saatvik Green Energy Ltd.,2026-05-12,,False,True
+microcap250,,SADBHAV,,2021-05-10,2022-04-07,True,False
+microcap250,INE429E01023,SAFARI,Safari Industries (India) Ltd.,2021-05-10,2021-10-29,True,False
+microcap250,INE429E01023,SAFARI,Safari Industries (India) Ltd.,2022-10-25,,False,True
+microcap250,,SAKSOFT,,2021-05-10,2024-04-26,True,False
+microcap250,INE08U801020,SAMHI,Samhi Hotels Ltd.,2024-04-26,,False,True
+microcap250,,SANDHAR,,2021-05-10,2022-10-25,True,False
+microcap250,INE149K01016,SANDUMA,Sandur Manganese & Iron Ores Ltd.,2025-10-28,,False,True
+microcap250,,SANGHIIND,,2021-05-10,2022-10-25,True,False
+microcap250,,SANOFI,,2021-05-10,2026-05-12,True,False
+microcap250,INE0UOS01011,SANOFICONR,Sanofi Consumer Healthcare India Ltd.,2021-05-10,2026-05-12,True,False
+microcap250,INE0UOS01011,SANOFICONR,Sanofi Consumer Healthcare India Ltd.,2026-07-13,,False,True
+microcap250,INE953O01021,SANSERA,Sansera Engineering Ltd.,2022-04-07,,False,True
+microcap250,,SAREGAMA,,2021-10-29,2022-04-07,False,False
+microcap250,,SASKEN,,2021-05-10,2022-10-25,True,False
+microcap250,,SATIA,,2021-05-10,2022-04-07,True,False
+microcap250,,SBCL,,2022-10-25,2025-10-28,False,False
+microcap250,,SBFC,,2024-01-19,2024-04-26,False,False
+microcap250,,SCHNEIDER,,2022-04-07,2024-04-26,False,False
+microcap250,,SEAMECLTD,,2021-05-10,2023-04-28,True,False
+microcap250,INE602W01027,SENCO,Senco Gold Ltd.,2024-04-26,,False,True
+microcap250,,SESHAPAPER,,2021-05-10,2022-04-07,True,False
+microcap250,INE916U01025,SFL,Sheela Foam Ltd.,2024-04-26,,False,True
+microcap250,INE151G01028,SHAILY,Shaily Engineering Plastics Ltd.,2021-05-10,,True,True
+microcap250,INE908D01010,SHAKTIPUMP,Shakti Pumps (India) Ltd.,2021-05-10,,True,True
+microcap250,,SHALBY,,2021-05-10,2022-10-25,True,False
+microcap250,,SHANKARA,,2021-05-10,2022-04-07,True,False
+microcap250,,SHANTIGEAR,,2021-05-10,2022-04-07,True,False
+microcap250,,SHANTIGEAR,,2023-04-28,2024-04-26,False,False
+microcap250,INE221J01015,SHARDACROP,Sharda Cropchem Ltd.,2022-04-07,,False,True
+microcap250,,SHARDAMOTR,,2021-10-29,2022-04-07,False,False
+microcap250,,SHARDAMOTR,,2025-10-28,2026-05-12,False,False
+microcap250,INE932X01026,SHAREINDIA,Share India Securities Ltd.,2022-04-07,,False,True
+microcap250,INE790G01031,SHILPAMED,Shilpa Medicare Ltd.,2023-04-28,,False,True
+microcap250,,SHK,,2021-05-10,2023-04-28,True,False
+microcap250,,SHOPERSTOP,,2021-10-29,2022-10-25,False,False
+microcap250,,SHOPERSTOP,,2024-04-26,2025-10-28,False,False
+microcap250,INE526E01018,SHRIPISTON,SPR Auto Technologies Ltd.,2021-05-10,,True,True
+microcap250,,SIRCA,,2021-05-10,2021-10-29,True,False
+microcap250,,SIS,,2023-04-28,2024-04-26,False,False
+microcap250,,SIYSIL,,2021-05-10,2024-04-26,True,False
+microcap250,INE640A01023,SKFINDIA,SKF India Ltd.,2026-05-12,,False,True
+microcap250,INE2J8701016,SKFINDUS,SKF India (Industrial) Ltd.,2026-05-12,,False,True
+microcap250,INE439E01022,SKIPPER,Skipper Ltd.,2021-05-10,,True,True
+microcap250,INE01IU01018,SKYGOLD,SKY GOLD AND DIAMONDS Ltd.,2025-10-28,,False,True
+microcap250,INE0NAZ01010,SMARTWORKS,Smartworks Coworking Spaces Ltd.,2026-05-12,,False,True
+microcap250,,SMLISUZU,,2021-05-10,2021-10-29,True,False
+microcap250,INE294B01019,SMLMAH,SML Mahindra Ltd.,2026-05-12,,False,True
+microcap250,,SMSPHARMA,,2021-10-29,2022-04-07,False,False
+microcap250,,SNOWMAN,,2021-05-10,2022-04-07,True,False
+microcap250,,SOMANYCERA,,2021-05-10,2024-04-26,True,False
+microcap250,,SOTL,,2021-05-10,2022-10-25,True,False
+microcap250,INE683A01023,SOUTHBANK,South Indian Bank Ltd.,2021-05-10,,True,True
+microcap250,,SPANDANA,,2022-04-07,2025-10-28,False,False
+microcap250,INE232I01014,SPARC,Sun Pharma Advanced Research Company Ltd.,2021-05-10,,True,True
+microcap250,,SPENCERS,,2021-05-10,2021-10-29,True,False
+microcap250,,SPICEJET,,2022-10-25,2023-10-26,False,False
+microcap250,,SPLPETRO,,2022-10-25,2024-04-26,False,False
+microcap250,,SRIPIPES,,2021-05-10,2021-10-29,True,False
+microcap250,INE939A01011,STAR,Strides Pharma Science Ltd.,2022-10-25,,False,True
+microcap250,INE460H01021,STARCEMENT,Star Cement Ltd.,2022-04-07,2022-10-25,False,False
+microcap250,INE460H01021,STARCEMENT,Star Cement Ltd.,2023-02-17,,False,True
+microcap250,,STEELXIND,,2022-10-25,2023-04-28,False,False
+microcap250,INE089C01029,STLTECH,Sterlite Technologies Ltd.,2021-05-10,,True,True
+microcap250,INE04VU01023,STYL,Seshaasai Technologies Ltd.,2026-05-12,,False,True
+microcap250,,STYLAMIND,,2021-05-10,2025-10-28,True,False
+microcap250,INE189B01011,STYRENIX,Styrenix Performance Materials Ltd.,2021-05-10,2024-04-26,True,False
+microcap250,INE189B01011,STYRENIX,Styrenix Performance Materials Ltd.,2025-10-28,,False,True
+microcap250,,SUBEXLTD,,2021-10-29,2024-04-26,False,False
+microcap250,INE287B01021,SUBROS,Subros Ltd.,2021-05-10,,True,True
+microcap250,INE659A01023,SUDARSCHEM,Sudarshan Chemical Industries Ltd.,2023-04-28,,False,True
+microcap250,INE0QPI01025,SUDEEPPHRM,Sudeep Pharma Ltd.,2026-05-12,,False,True
+microcap250,,SULA,,2023-04-28,2025-10-28,False,False
+microcap250,,SUNCLAYLTD,,2021-10-29,2023-02-17,False,False
+microcap250,,SUNDARMHLD,,2021-05-10,2021-10-29,True,False
+microcap250,,SUNFLAG,,2021-05-10,2026-05-12,True,False
+microcap250,INE805D01034,SUNTECK,Sunteck Realty Ltd.,2021-05-10,,True,True
+microcap250,,SUPRAJIT,,2024-04-26,2025-10-28,False,False
+microcap250,INE07RO01027,SUPRIYA,Supriya Lifescience Ltd.,2022-04-07,,False,True
+microcap250,INE335A01020,SURYAROSNI,Surya Roshni Ltd.,2021-05-10,,True,True
+microcap250,,SURYODAY,,2021-10-29,2023-04-28,False,False
+microcap250,,SWANENERGY,,2021-10-29,2022-10-25,False,False
+microcap250,,SWARAJENG,,2021-05-10,2022-10-25,True,False
+microcap250,INE00M201021,SWSOLAR,Sterling and Wilson Renewable Energy Ltd.,2025-10-28,,False,True
+microcap250,,SYMPHONY,,2023-04-28,2026-05-12,False,False
+microcap250,,TAJGVK,,2021-05-10,2021-10-29,True,False
+microcap250,,TAKE,,2021-05-10,2022-04-07,True,False
+microcap250,INE483C01032,TANLA,Tanla Platforms Ltd.,2025-10-28,,False,True
+microcap250,INE0EK901012,TARC,TARC Ltd.,2024-04-26,,False,True
+microcap250,,TASTYBITE,,2022-04-07,2023-04-28,False,False
+microcap250,,TATAINVEST,,2021-10-29,2022-04-07,False,False
+microcap250,,TATAMETALI,,2021-05-10,2024-03-28,True,False
+microcap250,,TATASTLLP,,2021-05-10,2021-10-29,True,False
+microcap250,,TATVA,,2022-04-07,2024-04-26,False,False
+microcap250,,TCI,,2021-05-10,2024-04-26,True,False
+microcap250,,TCIEXP,,2021-05-10,2024-04-26,True,False
+microcap250,,TCNSBRANDS,,2021-05-10,2025-03-10,True,False
+microcap250,INE419M01027,TDPOWERSYS,TD Power Systems Ltd.,2021-05-10,,True,True
+microcap250,,TEAMLEASE,,2024-04-26,2026-05-12,False,False
+microcap250,,TEGA,,2022-04-07,2026-05-12,False,False
+microcap250,,TEJASNET,,2021-05-10,2022-10-25,True,False
+microcap250,INE621L01012,TEXRAIL,Texmaco Rail & Eng. Ltd.,2021-05-10,2021-10-29,True,False
+microcap250,INE621L01012,TEXRAIL,Texmaco Rail & Eng. Ltd.,2024-04-26,,False,True
+microcap250,INE085J01014,THANGAMAYL,Thangamayil Jewellery Ltd.,2021-05-10,,True,True
+microcap250,INE332A01027,THOMASCOOK,Thomas Cook (India) Ltd.,2021-05-10,,True,True
+microcap250,INE594H01019,THYROCARE,Thyrocare Technologies Ltd.,2023-04-28,2024-04-26,False,False
+microcap250,INE594H01019,THYROCARE,Thyrocare Technologies Ltd.,2025-10-28,,False,True
+microcap250,INE133E01013,TI,Tilaknagar Industries Ltd.,2021-05-10,,True,True
+microcap250,,TIIL,,2022-10-25,2025-10-28,False,False
+microcap250,INE508G01029,TIMETECHNO,Time Technoplast Ltd.,2021-05-10,,True,True
+microcap250,,TINPLATE,,2021-05-10,2024-02-06,True,False
+microcap250,INE716B01029,TIPSMUSIC,Tips Music Ltd.,2021-05-10,,True,True
+microcap250,,TIRUMALCHM,,2021-05-10,2025-10-28,True,False
+microcap250,,TITAGARH,,2021-05-10,2024-04-26,True,False
+microcap250,INE668A01016,TMB,Tamilnad Mercantile Bank Ltd.,2023-02-17,2024-04-26,False,False
+microcap250,INE668A01016,TMB,Tamilnad Mercantile Bank Ltd.,2026-05-12,,False,True
+microcap250,,TNPL,,2021-05-10,2022-04-07,True,False
+microcap250,INE454P01035,TRANSRAILL,Transrail Lighting Ltd.,2021-05-10,,True,True
+microcap250,INE256C01024,TRIVENI,Triveni Engineering & Industries Ltd.,2021-05-10,2022-09-30,True,False
+microcap250,INE256C01024,TRIVENI,Triveni Engineering & Industries Ltd.,2026-05-12,,False,True
+microcap250,INE202Z01029,TSFINV,TSF Investments Ltd.,2021-05-10,,True,True
+microcap250,,TTML,,2021-05-10,2021-10-29,True,False
+microcap250,INE395N01027,TVSSCS,TVS Supply Chain Solutions Ltd.,2024-01-19,,False,True
+microcap250,,TVSSRICHAK,,2021-05-10,2022-10-25,True,False
+microcap250,,UJJIVAN,,2023-04-28,2024-09-03,False,False
+microcap250,INE551W01018,UJJIVANSFB,Ujjivan Small Finance Bank Ltd.,2022-04-07,,False,True
+microcap250,,UNICHEMLAB,,2021-05-10,2022-10-25,True,False
+microcap250,,UNICHEMLAB,,2023-04-28,2024-04-26,False,False
+microcap250,,UNIMECH,,2021-05-10,2026-05-12,True,False
+microcap250,INE12UR01024,UTLSOLAR,Fujiyama Power Systems Ltd.,2026-05-12,,False,True
+microcap250,INE945H01021,V2RETAIL,V2 Retail Ltd.,2025-10-28,,False,True
+microcap250,INE884A01027,VAIBHAVGBL,Vaibhav Global Ltd.,2021-05-10,,True,True
+microcap250,,VAKRANGEE,,2022-10-25,2023-10-26,False,False
+microcap250,INE665L01035,VARROC,Varroc Engineering Ltd.,2021-05-10,,True,True
+microcap250,,VENTIVE,,2021-05-10,2025-10-28,True,False
+microcap250,,VENUSPIPES,,2021-05-10,2025-10-28,True,False
+microcap250,,VESUVIUS,,2021-05-10,2022-04-07,True,False
+microcap250,,VESUVIUS,,2022-12-30,2026-05-12,False,False
+microcap250,INE951I01027,VGUARD,V-Guard Industries Ltd.,2026-05-12,,False,True
+microcap250,,VIDHIING,,2022-10-25,2023-04-28,False,False
+microcap250,INE078V01014,VIKRAMSOLR,Vikram Solar Ltd.,2026-05-12,,False,True
+microcap250,,VINATIORGA,,2025-10-28,2026-05-12,False,False
+microcap250,,VINDHYATEL,,2021-05-10,2022-04-07,True,False
+microcap250,INE054A01027,VIPIND,V.I.P. Industries Ltd.,2021-05-10,,True,True
+microcap250,INE807F01027,VIYASH,Viyash Scientific Ltd.,2021-05-10,,True,True
+microcap250,INE665J01013,VMART,V-Mart Retail Ltd.,2024-04-26,,False,True
+microcap250,INE540H01012,VOLTAMP,Voltamp Transformers Ltd,2021-05-10,,True,True
+microcap250,,VSTIND,,2021-10-29,2026-05-12,False,False
+microcap250,INE299N01021,WAAREERTL,Waaree Renewable Technologies Ltd.,2025-10-28,,False,True
+microcap250,INE956G01038,WABAG,Va Tech Wabag Ltd.,2021-05-10,,True,True
+microcap250,INE0E7301029,WAKEFIT,Wakefit Innovations Ltd.,2026-05-12,,False,True
+microcap250,INE855C01023,WEBELSOLAR,Websol Energy System Ltd.,2021-05-10,,True,True
+microcap250,INE625G01013,WELENT,Welspun Enterprises Ltd.,2021-05-10,,True,True
+microcap250,INE274F01020,WESTLIFE,Westlife Foodworld Ltd.,2025-10-28,,False,True
+microcap250,INE085001019,WEWORK,WeWork India Management Ltd.,2026-05-12,,False,True
+microcap250,,WHEELS,,2021-05-10,2022-04-07,True,False
+microcap250,,WONDERLA,,2021-05-10,2025-10-28,True,False
+microcap250,INE0JO301016,YATHARTH,Yatharth Hospital & Trauma Care Services Ltd.,2024-04-26,,False,True
+microcap250,INE07K301024,ZAGGLE,Zaggle Prepaid Ocean Services Ltd.,2021-05-10,,True,True
+microcap250,,ZYDUSWELL,,2024-04-26,2026-05-12,False,False
+midsmallcap400,INE466L01038,360ONE,360 ONE WAM Ltd.,2020-09-14,,False,True
+midsmallcap400,INE470A01017,3MINDIA,3M India Ltd.,2016-04-01,,True,True
+midsmallcap400,,63MOONS,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE883F01010,AADHARHFC,Aadhar Housing Finance Ltd.,2016-04-01,,True,True
+midsmallcap400,,AARTIDRUGS,,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE769A01020,AARTIIND,Aarti Industries Ltd.,2016-04-01,2019-04-15,True,False
+midsmallcap400,INE769A01020,AARTIIND,Aarti Industries Ltd.,2020-01-16,2022-05-31,False,False
+midsmallcap400,INE769A01020,AARTIIND,Aarti Industries Ltd.,2023-04-28,,False,True
+midsmallcap400,INE216P01012,AAVAS,Aavas Financiers Ltd.,2019-04-15,,False,True
+midsmallcap400,,ABAN,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,ABB,,2020-09-14,2023-04-28,False,False
+midsmallcap400,INE358A01014,ABBOTINDIA,Abbott India Ltd.,2019-12-26,2020-09-14,False,False
+midsmallcap400,INE358A01014,ABBOTINDIA,Abbott India Ltd.,2021-10-29,,False,True
+midsmallcap400,INE674K01013,ABCAPITAL,Aditya Birla Capital Ltd.,2019-04-15,,False,True
+midsmallcap400,INE552Z01027,ABDL,Allied Blenders and Distillers Ltd.,2026-05-12,,False,True
+midsmallcap400,INE647O01011,ABFRL,Aditya Birla Fashion and Retail Ltd.,2016-04-01,,True,True
+midsmallcap400,,ABGSHIP,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,ABIRLANUVO,,2016-10-24,2017-06-23,False,False
+midsmallcap400,INE14LE01019,ABLBL,Aditya Birla Lifestyle Brands Ltd.,2025-12-31,,False,True
+midsmallcap400,INE055A01016,ABREL,Aditya Birla Real Estate Ltd.,2016-04-01,2019-01-28,True,False
+midsmallcap400,INE055A01016,ABREL,Aditya Birla Real Estate Ltd.,2020-09-14,,False,True
+midsmallcap400,INE404A01024,ABSLAMC,Aditya Birla Sun Life AMC Ltd.,2022-04-07,,False,True
+midsmallcap400,INE012A01025,ACC,ACC Ltd.,2016-04-01,,True,True
+midsmallcap400,INE731H01025,ACE,Action Construction Equipment Ltd.,2024-10-10,,False,True
+midsmallcap400,,ACLGATI,,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE622W01025,ACMESOLAR,ACME Solar Holdings Ltd.,2025-04-11,,False,True
+midsmallcap400,INE00FF01025,ACUTAAS,Acutaas Chemicals Ltd.,2026-05-12,,False,True
+midsmallcap400,,ADANIENSOL,,2016-04-01,2020-06-26,True,False
+midsmallcap400,,ADANIENT,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,ADANIPORTS,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,ADANIPOWER,,2023-04-28,2024-10-10,False,False
+midsmallcap400,,ADVANTA,,2016-04-01,2016-09-30,True,False
+midsmallcap400,,ADVENZYMES,,2017-03-31,2022-12-30,False,False
+midsmallcap400,INE208C01025,AEGISLOG,Aegis Logistics Ltd.,2025-04-11,,False,True
+midsmallcap400,INE0INX01018,AEGISVOPAK,Aegis Vopak Terminals Ltd.,2025-12-31,,False,True
+midsmallcap400,INE101I01011,AFCONS,Afcons Infrastructure Ltd.,2025-04-11,,False,True
+midsmallcap400,INE00WC01027,AFFLE,Affle 3i Ltd.,2025-04-11,,False,True
+midsmallcap400,,AGARWALEYE,,2025-12-31,2026-05-12,False,False
+midsmallcap400,,AGI,,2016-04-01,2019-01-28,True,False
+midsmallcap400,,AHLUCONT,,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE212H01026,AIAENG,AIA Engineering Ltd.,2016-04-01,,True,True
+midsmallcap400,INE206F01022,AIIL,Authum Investment & Infrastructure Ltd.,2025-04-11,,False,True
+midsmallcap400,INE031B01049,AJANTPHARM,Ajanta Pharmaceuticals Ltd.,2016-04-01,,True,True
+midsmallcap400,,AKUMS,,2025-03-21,2026-05-12,False,False
+midsmallcap400,,ALBK,,2016-04-01,2020-01-16,True,False
+midsmallcap400,,ALEMBICLTD,,2016-04-01,2022-04-07,True,False
+midsmallcap400,,ALIVUS,,2022-04-07,2025-12-31,False,False
+midsmallcap400,INE540L01014,ALKEM,Alkem Laboratories Ltd.,2025-04-11,,False,True
+midsmallcap400,,ALKYLAMINE,,2020-09-14,2026-05-12,False,False
+midsmallcap400,,ALLCARGO,,2016-04-01,2020-11-25,True,False
+midsmallcap400,,ALLCARGO,,2022-04-07,2023-02-17,False,False
+midsmallcap400,,ALOKINDS,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,ALOKTEXT,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE371P01015,AMBER,Amber Enterprises India Ltd.,2025-04-11,,False,True
+midsmallcap400,,AMTEKAUTO,,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE463V01026,ANANDRATHI,Anand Rathi Wealth Ltd.,2024-10-10,,False,True
+midsmallcap400,INE242C01024,ANANTRAJ,Anant Raj Ltd.,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE242C01024,ANANTRAJ,Anant Raj Ltd.,2025-04-11,,False,True
+midsmallcap400,,ANDHRABANK,,2016-04-01,2020-01-16,True,False
+midsmallcap400,,ANDHRAPAP,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE732I01021,ANGELONE,Angel One Ltd.,2021-04-29,,False,True
+midsmallcap400,INE0CZ201020,ANTHEM,Anthem Biosciences Ltd.,2026-05-12,,False,True
+midsmallcap400,INE930P01018,ANURAS,Anupam Rasayan India Ltd.,2021-10-29,2025-04-11,False,False
+midsmallcap400,INE930P01018,ANURAS,Anupam Rasayan India Ltd.,2026-05-12,,False,True
+midsmallcap400,INE372A01015,APARINDS,Apar Industries Ltd.,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE372A01015,APARINDS,Apar Industries Ltd.,2023-04-28,,False,True
+midsmallcap400,INE702C01027,APLAPOLLO,APL Apollo Tubes Ltd.,2016-10-24,,False,True
+midsmallcap400,,APLLTD,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,APOLLOHOSP,,2017-05-26,2025-04-11,False,False
+midsmallcap400,INE438A01022,APOLLOTYRE,Apollo Tyres Ltd.,2016-04-01,,True,True
+midsmallcap400,INE852O01025,APTUS,Aptus Value Housing Finance India Ltd.,2022-04-07,,False,True
+midsmallcap400,INE885A01032,ARE&M,Amara Raja Energy & Mobility Ltd.,2016-04-01,,True,True
+midsmallcap400,,ARVIND,,2016-04-01,2018-08-08,True,False
+midsmallcap400,,ARVINDFASN,,2019-12-26,2020-11-02,False,False
+midsmallcap400,INE439A01020,ASAHIINDIA,Asahi India Glass Ltd.,2017-03-31,2017-10-30,False,False
+midsmallcap400,INE439A01020,ASAHIINDIA,Asahi India Glass Ltd.,2018-06-29,2018-12-28,False,False
+midsmallcap400,INE439A01020,ASAHIINDIA,Asahi India Glass Ltd.,2020-01-16,2020-11-02,False,False
+midsmallcap400,INE439A01020,ASAHIINDIA,Asahi India Glass Ltd.,2021-04-29,,False,True
+midsmallcap400,,ASHIANA,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,ASHOKA,,2016-04-01,2022-04-07,True,False
+midsmallcap400,INE208A01029,ASHOKLEY,Ashok Leyland Ltd.,2025-04-11,,False,True
+midsmallcap400,INE914M01019,ASTERDM,Aster DM Healthcare Ltd.,2025-04-11,,False,True
+midsmallcap400,INE006I01046,ASTRAL,Astral Ltd.,2016-04-01,,True,True
+midsmallcap400,,ASTRAZEN,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,ASTRAZEN,,2019-04-15,2023-04-28,False,False
+midsmallcap400,,ASTRAZEN,,2024-10-10,2026-05-12,False,False
+midsmallcap400,INE399L01023,ATGL,Adani Total Gas Ltd.,2019-12-26,2022-12-30,False,False
+midsmallcap400,INE399L01023,ATGL,Adani Total Gas Ltd.,2025-04-11,,False,True
+midsmallcap400,INE0LEZ01016,ATHERENERG,Ather Energy Ltd.,2025-12-31,,False,True
+midsmallcap400,INE100A01010,ATUL,Atul Ltd.,2016-04-01,,True,True
+midsmallcap400,INE949L01017,AUBANK,AU Small Finance Bank Ltd.,2017-11-20,,False,True
+midsmallcap400,INE406A01037,AUROPHARMA,Aurobindo Pharma Ltd.,2022-04-07,,False,True
+midsmallcap400,INE699H01024,AWL,AWL Agri Business Ltd.,2022-12-30,2023-04-28,False,False
+midsmallcap400,INE699H01024,AWL,AWL Agri Business Ltd.,2024-10-10,,False,True
+midsmallcap400,,BAJAJ-AUTO,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,BAJAJCON,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,BAJAJELEC,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE377Y01014,BAJAJHFL,Bajaj Housing Finance Ltd.,2026-05-12,,False,True
+midsmallcap400,,BAJAJHIND,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,BAJAJHLDNG,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE787D01026,BALKRISIND,Balkrishna Industries Ltd.,2016-04-01,,True,True
+midsmallcap400,,BALLARPUR,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,BALMLAWRIE,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE119A01028,BALRAMCHIN,Balrampur Chini Mills Ltd.,2016-04-01,,True,True
+midsmallcap400,INE545U01014,BANDHANBNK,Bandhan Bank Ltd.,2023-04-28,,False,True
+midsmallcap400,,BANKBARODA,,2021-04-29,2021-10-29,False,False
+midsmallcap400,INE084A01016,BANKINDIA,Bank of India,2016-04-01,,True,True
+midsmallcap400,,BASF,,2016-04-01,2026-05-12,True,False
+midsmallcap400,INE176A01028,BATAINDIA,Bata India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE462A01022,BAYERCROP,Bayer Cropscience Ltd.,2019-12-26,,False,True
+midsmallcap400,INE050A01025,BBTC,Bombay Burmah Trading Corporation Ltd.,2016-04-01,,True,True
+midsmallcap400,,BCG,,2022-04-07,2024-10-10,False,False
+midsmallcap400,INE171Z01026,BDL,Bharat Dynamics Ltd.,2018-09-28,,False,True
+midsmallcap400,,BEL,,2019-04-15,2025-04-11,False,False
+midsmallcap400,INE894V01022,BELRISE,Belrise Industries Ltd.,2026-05-12,,False,True
+midsmallcap400,INE258A01024,BEML,BEML Ltd.,2016-04-01,2022-05-04,True,False
+midsmallcap400,INE258A01024,BEML,BEML Ltd.,2025-04-11,,False,True
+midsmallcap400,INE463A01038,BERGEPAINT,Berger Paints India Ltd.,2016-04-01,,True,True
+midsmallcap400,,BFUTILITIE,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,BGRENERGY,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,BHARATFIN,,2016-04-01,2019-01-28,True,False
+midsmallcap400,INE465A01025,BHARATFORG,Bharat Forge Ltd.,2017-05-26,,False,True
+midsmallcap400,,BHARATRAS,,2020-09-14,2022-04-07,False,False
+midsmallcap400,,BHARATRAS,,2022-12-30,2023-04-28,False,False
+midsmallcap400,INE343G01021,BHARTIHEXA,Bharti Hexacom Ltd.,2025-04-11,,False,True
+midsmallcap400,INE257A01026,BHEL,Bharat Heavy Electricals Ltd.,2025-04-11,,False,True
+midsmallcap400,INE00E101023,BIKAJI,Bikaji Foods International Ltd.,2023-04-28,,False,True
+midsmallcap400,INE376G01013,BIOCON,Biocon Ltd.,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE376G01013,BIOCON,Biocon Ltd.,2023-04-28,,False,True
+midsmallcap400,,BLISSGVS,,2016-04-01,2021-10-29,True,False
+midsmallcap400,INE153T01027,BLS,BLS International Services Ltd.,2023-04-28,,False,True
+midsmallcap400,INE233B01017,BLUEDART,Blue Dart Express Ltd.,2016-04-01,,True,True
+midsmallcap400,INE0KBH01020,BLUEJET,Blue Jet Healthcare Ltd.,2025-12-31,,False,True
+midsmallcap400,INE472A01039,BLUESTARCO,Blue Star Ltd.,2016-04-01,,True,True
+midsmallcap400,,BOMDYEING,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,BOSCH-HCIL,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,BOSCH-HCIL,,2019-12-26,2022-04-07,False,False
+midsmallcap400,,BPCL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,BRFL,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,BRFL,,2017-10-30,2018-12-28,False,False
+midsmallcap400,INE791I01019,BRIGADE,Brigade Enterprises Ltd.,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE791I01019,BRIGADE,Brigade Enterprises Ltd.,2025-04-11,,False,True
+midsmallcap400,,BRITANNIA,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE118H01025,BSE,BSE Ltd.,2017-10-30,,False,True
+midsmallcap400,INE836A01035,BSOFT,Birlasoft Ltd.,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE836A01035,BSOFT,Birlasoft Ltd.,2019-12-26,,False,True
+midsmallcap400,,CAMPUS,,2022-09-30,2026-05-12,False,False
+midsmallcap400,INE596I01020,CAMS,Computer Age Management Services Ltd.,2025-04-11,,False,True
+midsmallcap400,,CANBK,,2016-04-01,2023-04-28,True,False
+midsmallcap400,INE477A01020,CANFINHOME,Can Fin Homes Ltd.,2016-04-01,,True,True
+midsmallcap400,INE01TY01017,CANHLIFE,Canara HSBC Life Insurance Company Ltd.,2026-05-12,,False,True
+midsmallcap400,,CAPF,,2016-04-01,2019-01-28,True,False
+midsmallcap400,INE475E01026,CAPLIPOINT,Caplin Point Laboratories Ltd.,2016-04-01,2023-04-28,True,False
+midsmallcap400,INE475E01026,CAPLIPOINT,Caplin Point Laboratories Ltd.,2024-10-10,,False,True
+midsmallcap400,INE120A01034,CARBORUNIV,Carborundum Universal Ltd.,2016-10-24,,False,True
+midsmallcap400,,CARERATING,,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE290S01011,CARTRADE,Cartrade Tech Ltd.,2026-05-12,,False,True
+midsmallcap400,,CASTEXTECH,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE172A01027,CASTROLIND,Castrol India Ltd.,2017-05-26,,False,True
+midsmallcap400,,CCAVENUE,,2016-10-24,2021-03-31,False,False
+midsmallcap400,,CCAVENUE,,2021-09-30,2024-10-10,False,False
+midsmallcap400,INE421D01022,CCL,CCL Products (I) Ltd.,2016-04-01,,True,True
+midsmallcap400,INE736A01011,CDSL,Central Depository Services (India) Ltd.,2025-04-11,,False,True
+midsmallcap400,INE482A01020,CEATLTD,Ceat Ltd.,2016-04-01,,True,True
+midsmallcap400,INE686A01026,CEMPRO,Cemindia Projects Ltd.,2016-10-24,2020-09-14,False,False
+midsmallcap400,INE686A01026,CEMPRO,Cemindia Projects Ltd.,2026-05-12,,False,True
+midsmallcap400,INE483A01010,CENTRALBK,Central Bank of India,2016-04-01,,True,True
+midsmallcap400,,CENTURYPLY,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,CERA,,2016-04-01,2026-05-12,True,False
+midsmallcap400,INE486A01021,CESC,CESC Ltd.,2016-04-01,2018-04-02,True,False
+midsmallcap400,INE486A01021,CESC,CESC Ltd.,2025-04-11,,False,True
+midsmallcap400,INE180C01042,CGCL,Capri Global Capital Ltd.,2019-12-26,2022-04-07,False,False
+midsmallcap400,INE180C01042,CGCL,Capri Global Capital Ltd.,2022-05-04,,False,True
+midsmallcap400,,CGPOWER,,2016-10-24,2019-12-27,False,False
+midsmallcap400,INE427F01016,CHALET,Chalet Hotels Ltd.,2019-09-24,,False,True
+midsmallcap400,INE085A01013,CHAMBLFERT,Chambal Fertilizers & Chemicals Ltd.,2016-04-01,,True,True
+midsmallcap400,INE178A01016,CHENNPETRO,Chennai Petroleum Corporation Ltd.,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE178A01016,CHENNPETRO,Chennai Petroleum Corporation Ltd.,2024-10-10,,False,True
+midsmallcap400,INE102B01014,CHOICEIN,Choice International Ltd.,2025-12-31,,False,True
+midsmallcap400,,CHOLAFIN,,2016-04-01,2021-10-29,True,False
+midsmallcap400,INE149A01033,CHOLAHLDNG,Cholamandalam Financial Holdings Ltd.,2018-04-02,,False,True
+midsmallcap400,INE536H01010,CIEINDIA,CIE Automotive India Ltd.,2026-07-06,,False,True
+midsmallcap400,INE227W01023,CLEAN,Clean Science and Technology Ltd.,2022-04-07,,False,True
+midsmallcap400,INE704P01025,COCHINSHIP,Cochin Shipyard Ltd.,2018-04-02,,False,True
+midsmallcap400,,COFFEEDAY,,2016-10-24,2019-12-27,False,False
+midsmallcap400,INE591G01025,COFORGE,Coforge Ltd.,2025-04-11,,False,True
+midsmallcap400,INE03QK01018,COHANCE,Cohance Lifesciences Ltd.,2025-04-11,,False,True
+midsmallcap400,INE259A01022,COLPAL,Colgate Palmolive (India) Ltd.,2016-04-01,,True,True
+midsmallcap400,INE111A01025,CONCOR,Container Corporation of India Ltd.,2021-04-29,,False,True
+midsmallcap400,INE338H01029,CONCORDBIO,Concord Biotech Ltd.,2024-03-28,,False,True
+midsmallcap400,,CONFIPET,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE169A01031,COROMANDEL,Coromandel International Ltd.,2016-04-01,,True,True
+midsmallcap400,,CORPBANK,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,CORPBANK,,2019-03-29,2020-01-16,False,False
+midsmallcap400,INE819V01029,CPPLUS,Aditya Infotech Ltd.,2026-05-12,,False,True
+midsmallcap400,INE00LO01017,CRAFTSMAN,Craftsman Automation Ltd.,2023-04-28,,False,True
+midsmallcap400,INE741K01010,CREDITACC,CreditAccess Grameen Ltd.,2019-03-29,,False,True
+midsmallcap400,INE007A01025,CRISIL,CRISIL Ltd.,2016-04-01,,True,True
+midsmallcap400,INE299U01018,CROMPTON,Crompton Greaves Consumer Electricals Ltd.,2017-05-26,,False,True
+midsmallcap400,INE491A01021,CUB,City Union Bank Ltd.,2016-04-01,,True,True
+midsmallcap400,,CUMMINSIND,,2018-12-28,2026-05-12,False,False
+midsmallcap400,INE136B01020,CYIENT,Cyient Ltd.,2016-04-01,,True,True
+midsmallcap400,INE016A01026,DABUR,Dabur India Ltd.,2025-12-31,,False,True
+midsmallcap400,INE00R701025,DALBHARAT,Dalmia Bharat Ltd.,2019-09-24,,False,True
+midsmallcap400,,DALMIABHA,,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE0IX101010,DATAPATTNS,Data Patterns (India) Ltd.,2023-04-28,,False,True
+midsmallcap400,,DBCORP,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,DBL,,2017-05-26,2023-04-28,False,False
+midsmallcap400,,DBREALTY,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,DBREALTY,,2025-04-11,2026-05-12,False,False
+midsmallcap400,,DCAL,,2018-06-29,2021-10-29,False,False
+midsmallcap400,,DCBBANK,,2016-04-01,2022-04-07,True,False
+midsmallcap400,INE499A01024,DCMSHRIRAM,DCM Shriram Ltd.,2016-04-01,,True,True
+midsmallcap400,INE501A01019,DEEPAKFERT,Deepak Fertilisers & Petrochemicals Corp. Ltd.,2016-04-01,2019-12-26,True,False
+midsmallcap400,INE501A01019,DEEPAKFERT,Deepak Fertilisers & Petrochemicals Corp. Ltd.,2022-12-30,,False,True
+midsmallcap400,INE288B01029,DEEPAKNTR,Deepak Nitrite Ltd.,2019-04-15,,False,True
+midsmallcap400,INE148O01028,DELHIVERY,Delhivery Ltd.,2022-09-30,,False,True
+midsmallcap400,,DELTACORP,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,DEN,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,DEN,,2019-12-26,2025-04-11,False,False
+midsmallcap400,,DENABANK,,2016-04-01,2019-03-29,True,False
+midsmallcap400,INE872J01023,DEVYANI,Devyani International Ltd.,2025-04-11,,False,True
+midsmallcap400,,DHANI,,2017-10-30,2023-04-28,False,False
+midsmallcap400,,DHANUKA,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,DHANUKA,,2020-09-14,2025-04-11,False,False
+midsmallcap400,,DHFL,,2016-04-01,2020-09-14,True,False
+midsmallcap400,,DISHMAN,,2016-04-01,2017-03-31,True,False
+midsmallcap400,,DISHTV,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,DIVISLAB,,2017-10-30,2019-04-15,False,False
+midsmallcap400,INE935N01020,DIXON,Dixon Technologies (India) Ltd.,2018-06-29,,False,True
+midsmallcap400,,DLF,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE321T01012,DOMS,DOMS Industries Ltd.,2024-10-10,,False,True
+midsmallcap400,,DREAMFOLKS,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,DREDGECORP,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,DYNAMATECH,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE738I01010,ECLERX,eClerx Services Ltd.,2016-04-01,,True,True
+midsmallcap400,,EDELWEISS,,2016-04-01,2023-07-13,True,False
+midsmallcap400,INE126A01031,EIDPARRY,E.I.D. Parry (India) Ltd.,2016-04-01,,True,True
+midsmallcap400,INE230A01023,EIHOTEL,EIH Ltd.,2016-04-01,,True,True
+midsmallcap400,INE205B01031,ELECON,Elecon Engineering Co. Ltd.,2024-10-10,,False,True
+midsmallcap400,,ELECTCAST,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE285A01027,ELGIEQUIP,Elgi Equipments Ltd.,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE285A01027,ELGIEQUIP,Elgi Equipments Ltd.,2018-12-28,,False,True
+midsmallcap400,INE548C01032,EMAMILTD,Emami Ltd.,2025-04-11,,False,True
+midsmallcap400,INE168P01015,EMCURE,Emcure Pharmaceuticals Ltd.,2024-10-16,,False,True
+midsmallcap400,INE1C6T01020,EMMVEE,Emmvee Photovoltaic Power Ltd.,2026-05-12,,False,True
+midsmallcap400,INE913H01037,ENDURANCE,Endurance Technologies Ltd.,2017-05-26,,False,True
+midsmallcap400,INE510A01028,ENGINERSIN,Engineers India Ltd.,2016-04-01,,True,True
+midsmallcap400,,EPIGRAL,,2023-04-28,2024-10-10,False,False
+midsmallcap400,,EPL,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,EQUITAS,,2016-10-24,2022-12-30,False,False
+midsmallcap400,INE406M01024,ERIS,Eris Lifesciences Ltd.,2018-06-29,2022-12-30,False,False
+midsmallcap400,INE406M01024,ERIS,Eris Lifesciences Ltd.,2023-07-13,,False,True
+midsmallcap400,,EROSMEDIA,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,ESABINDIA,,2020-09-14,2021-04-29,False,False
+midsmallcap400,,ESAFSFB,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE042A01014,ESCORTS,Escorts Kubota Ltd.,2016-04-01,,True,True
+midsmallcap400,,ESSDEE,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,EVEREADY,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,EXCELCROP,,2018-12-28,2019-06-28,False,False
+midsmallcap400,INE302A01020,EXIDEIND,Exide Industries Ltd.,2016-04-01,,True,True
+midsmallcap400,INE188A01015,FACT,Fertilisers and Chemicals Travancore Ltd.,2021-10-29,,False,True
+midsmallcap400,,FCONSUMER,,2016-04-01,2021-10-29,True,False
+midsmallcap400,,FDC,,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE171A01029,FEDERALBNK,Federal Bank Ltd.,2016-04-01,,True,True
+midsmallcap400,INE235A01022,FINCABLES,Finolex Cables Ltd.,2016-04-01,,True,True
+midsmallcap400,,FINPIPE,,2016-04-01,2026-05-12,True,False
+midsmallcap400,INE02RE01045,FIRSTCRY,Brainbees Solutions Ltd.,2025-04-11,,False,True
+midsmallcap400,INE128S01021,FIVESTAR,Five-Star Business Finance Ltd.,2025-04-11,,False,True
+midsmallcap400,,FLFL,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,FLFL,,2017-10-30,2020-09-14,False,False
+midsmallcap400,INE09N301011,FLUOROCHEM,Gujarat Fluorochemicals Ltd.,2020-09-14,,False,True
+midsmallcap400,,FMGOETZE,,2017-05-26,2017-10-30,False,False
+midsmallcap400,,FMGOETZE,,2019-12-26,2020-09-14,False,False
+midsmallcap400,INE451A01017,FORCEMOT,Force Motors Ltd.,2025-12-31,,False,True
+midsmallcap400,INE061F01013,FORTIS,Fortis Healthcare Ltd.,2016-04-01,2018-04-02,True,False
+midsmallcap400,INE061F01013,FORTIS,Fortis Healthcare Ltd.,2025-04-11,,False,True
+midsmallcap400,,FRETAIL,,2017-05-26,2017-11-13,False,False
+midsmallcap400,,FRETAIL,,2018-08-08,2022-04-07,False,False
+midsmallcap400,INE684F01012,FSL,Firstsource Solutions Ltd.,2025-04-11,,False,True
+midsmallcap400,,FUSION,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE524A01029,GABRIEL,Gabriel India Ltd.,2026-05-12,,False,True
+midsmallcap400,,GALAXYSURF,,2018-12-28,2024-10-10,False,False
+midsmallcap400,INE297H01019,GALLANTT,Gallantt Ispat Ltd.,2026-05-12,,False,True
+midsmallcap400,,GAYAPROJ,,2016-04-01,2018-02-05,True,False
+midsmallcap400,,GAYAPROJ,,2018-12-28,2020-09-14,False,False
+midsmallcap400,,GDL,,2016-04-01,2019-12-26,True,False
+midsmallcap400,INE017A01032,GESHIP,Great Eastern Shipping Co. Ltd.,2016-04-01,,True,True
+midsmallcap400,,GFLLIMITED,,2016-04-01,2019-09-24,True,False
+midsmallcap400,,GHCL,,2017-05-26,2021-09-30,False,False
+midsmallcap400,INE481Y01014,GICRE,General Insurance Corporation of India,2025-04-11,,False,True
+midsmallcap400,INE322A01010,GILLETTE,Gillette India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE068V01023,GLAND,Gland Pharma Ltd.,2023-04-28,,False,True
+midsmallcap400,INE159A01016,GLAXO,Glaxosmithkline Pharmaceuticals Ltd.,2018-06-29,,False,True
+midsmallcap400,INE935A01035,GLENMARK,Glenmark Pharmaceuticals Ltd.,2018-06-29,,False,True
+midsmallcap400,,GLOBOFFS,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE131A01031,GMDCLTD,Gujarat Mineral Development Corporation Ltd.,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE131A01031,GMDCLTD,Gujarat Mineral Development Corporation Ltd.,2024-10-10,,False,True
+midsmallcap400,INE776C01039,GMRAIRPORT,GMR Airports Ltd.,2016-04-01,2022-03-31,True,False
+midsmallcap400,INE776C01039,GMRAIRPORT,GMR Airports Ltd.,2022-05-31,,False,True
+midsmallcap400,,GNFC,,2017-05-26,2025-12-31,False,False
+midsmallcap400,,GOCOLORS,,2022-04-07,2025-04-11,False,False
+midsmallcap400,INE260B01028,GODFRYPHLP,Godfrey Phillips India Ltd.,2025-04-11,,False,True
+midsmallcap400,INE03JT01014,GODIGIT,Go Digit General Insurance Ltd.,2016-04-01,,True,True
+midsmallcap400,,GODREJAGRO,,2018-06-29,2026-05-12,False,False
+midsmallcap400,INE233A01035,GODREJIND,Godrej Industries Ltd.,2016-04-01,,True,True
+midsmallcap400,INE484J01027,GODREJPROP,Godrej Properties Ltd.,2016-04-01,,True,True
+midsmallcap400,INE177H01039,GPIL,Godawari Power & Ispat Ltd.,2016-04-01,,True,True
+midsmallcap400,,GPPL,,2016-04-01,2025-12-31,True,False
+midsmallcap400,INE101D01020,GRANULES,Granules India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE371A01025,GRAPHITE,Graphite India Ltd.,2018-06-29,,False,True
+midsmallcap400,INE024L01027,GRAVITA,Gravita India Ltd.,2016-04-01,,True,True
+midsmallcap400,,GREAVESCOT,,2016-04-01,2022-04-07,True,False
+midsmallcap400,,GREENPLY,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,GRINDWELL,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,GRINDWELL,,2018-12-28,2025-04-11,False,False
+midsmallcap400,,GRINFRA,,2022-04-07,2024-10-10,False,False
+midsmallcap400,INE0HOQ01053,GROWW,Billionbrains Garage Ventures Ltd.,2026-05-12,,False,True
+midsmallcap400,INE382Z01011,GRSE,Garden Reach Shipbuilders & Engineers Ltd.,2020-09-14,2021-10-29,False,False
+midsmallcap400,INE382Z01011,GRSE,Garden Reach Shipbuilders & Engineers Ltd.,2024-10-10,,False,True
+midsmallcap400,,GRUH,,2016-04-01,2019-12-26,True,False
+midsmallcap400,,GSKCONS,,2018-06-29,2019-12-26,False,False
+midsmallcap400,,GSPL,,2016-04-01,2026-07-06,True,False
+midsmallcap400,,GUJALKALI,,2017-05-26,2025-04-11,False,False
+midsmallcap400,,GUJENERGY,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,GULFOILLUB,,2016-09-30,2021-10-29,False,False
+midsmallcap400,,GVKPIL,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,GVPIL,,2016-04-01,2021-10-29,True,False
+midsmallcap400,INE200A01026,GVT&D,GE Vernova T&D India Ltd.,2016-04-01,,True,True
+midsmallcap400,,HAL,,2018-12-28,2022-12-30,False,False
+midsmallcap400,,HAPPSTMNDS,,2021-04-29,2026-05-12,False,False
+midsmallcap400,,HAPPYFORGE,,2024-10-10,2025-04-11,False,False
+midsmallcap400,,HARSHA,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,HATHWAY,,2016-04-01,2020-01-16,True,False
+midsmallcap400,,HATHWAY,,2020-09-14,2021-04-29,False,False
+midsmallcap400,,HATHWAY,,2021-10-29,2022-12-30,False,False
+midsmallcap400,,HATSUN,,2018-04-02,2023-04-28,False,False
+midsmallcap400,INE176B01034,HAVELLS,Havells India Ltd.,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE176B01034,HAVELLS,Havells India Ltd.,2026-05-12,,False,True
+midsmallcap400,INE292B01021,HBLENGINE,HBL Engineering Ltd.,2024-10-10,,False,True
+midsmallcap400,,HCC,,2016-04-01,2019-04-15,True,False
+midsmallcap400,INE756I01012,HDBFS,HDB Financial Services Ltd.,2026-05-12,,False,True
+midsmallcap400,,HDFCAMC,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,HDIL,,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE545A01024,HEG,H.E.G. Ltd.,2018-06-29,,False,True
+midsmallcap400,,HEIDELBERG,,2016-04-01,2022-04-07,True,False
+midsmallcap400,,HEMIPROP,,2021-04-29,2022-12-30,False,False
+midsmallcap400,,HERITGFOOD,,2017-10-30,2021-04-29,False,False
+midsmallcap400,INE158A01026,HEROMOTOCO,Hero MotoCorp Ltd.,2025-12-31,,False,True
+midsmallcap400,INE093A01041,HEXT,Hexaware Technologies Ltd.,2025-12-31,,False,True
+midsmallcap400,INE548A01028,HFCL,HFCL Ltd.,2016-04-01,,True,True
+midsmallcap400,INE531E01026,HINDCOPPER,Hindustan Copper Ltd.,2016-04-01,,True,True
+midsmallcap400,,HINDOILEXP,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE094A01015,HINDPETRO,Hindustan Petroleum Corporation Ltd.,2025-04-11,,False,True
+midsmallcap400,,HINDWAREAP,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,HINDZINC,,2021-04-29,2025-12-31,False,False
+midsmallcap400,,HLEGLAS,,2022-04-07,2024-10-10,False,False
+midsmallcap400,,HLVLTD,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,HMT,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,HMVL,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,HNDFDS,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE481N01025,HOMEFIRST,Home First Finance Company India Ltd.,2021-10-29,,False,True
+midsmallcap400,INE0J5401028,HONASA,Honasa Consumer Ltd.,2024-10-10,,False,True
+midsmallcap400,INE671A01010,HONAUT,Honeywell Automation India Ltd.,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE671A01010,HONAUT,Honeywell Automation India Ltd.,2018-06-29,,False,True
+midsmallcap400,INE019C01026,HSCL,Himadri Speciality Chemical Ltd.,2018-06-29,2021-10-29,False,False
+midsmallcap400,INE019C01026,HSCL,Himadri Speciality Chemical Ltd.,2025-04-11,,False,True
+midsmallcap400,,HTMEDIA,,2016-04-01,2018-08-08,True,False
+midsmallcap400,INE031A01017,HUDCO,Housing & Urban Development Corporation Ltd.,2025-04-11,,False,True
+midsmallcap400,,HUHTAMAKI,,2016-04-01,2021-10-29,True,False
+midsmallcap400,,IBULLSLTD,,2019-04-15,2020-09-14,False,False
+midsmallcap400,INE346A01027,ICICIAMC,ICICI Prudential Asset Management Company Ltd.,2026-05-12,,False,True
+midsmallcap400,INE765G01017,ICICIGI,ICICI Lombard General Insurance Company Ltd.,2018-06-29,2018-12-28,False,False
+midsmallcap400,INE765G01017,ICICIGI,ICICI Lombard General Insurance Company Ltd.,2026-05-12,,False,True
+midsmallcap400,INE726G01019,ICICIPRULI,ICICI Prudential Life Insurance Company Ltd.,2025-12-31,,False,True
+midsmallcap400,,ICIL,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,ICIL,,2021-04-29,2022-12-30,False,False
+midsmallcap400,,ICRA,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,ICRA,,2019-04-15,2021-04-29,False,False
+midsmallcap400,INE008A01015,IDBI,IDBI Bank Ltd.,2016-04-01,,True,True
+midsmallcap400,INE669E01016,IDEA,Vodafone Idea Ltd.,2025-04-11,,False,True
+midsmallcap400,,IDEAFORGE,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,IDFC,,2016-04-01,2024-10-16,True,False
+midsmallcap400,INE092T01019,IDFCFIRSTB,IDFC First Bank Ltd.,2016-10-24,,False,True
+midsmallcap400,INE022Q01020,IEX,Indian Energy Exchange Ltd.,2025-04-11,,False,True
+midsmallcap400,,IFBIND,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE039A01010,IFCI,IFCI Ltd.,2016-04-01,,True,True
+midsmallcap400,,IGARASHI,,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE0Q9301021,IGIL,International Gemological Institute Ltd.,2025-04-11,,False,True
+midsmallcap400,INE203G01027,IGL,Indraprastha Gas Ltd.,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE203G01027,IGL,Indraprastha Gas Ltd.,2022-04-07,,False,True
+midsmallcap400,INE530B01024,IIFL,IIFL Finance Ltd.,2016-04-01,2017-09-29,True,False
+midsmallcap400,INE530B01024,IIFL,IIFL Finance Ltd.,2018-06-29,2019-01-28,False,False
+midsmallcap400,INE530B01024,IIFL,IIFL Finance Ltd.,2019-12-26,,False,True
+midsmallcap400,INE115Q01022,IKS,Inventurus Knowledge Solutions Ltd.,2025-04-11,,False,True
+midsmallcap400,INE065X01017,INDGN,Indegene Ltd.,2016-04-01,,True,True
+midsmallcap400,,INDHOTEL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE383A01012,INDIACEM,India Cements Ltd.,2016-04-01,,True,True
+midsmallcap400,INE933S01016,INDIAMART,Indiamart Intermesh Ltd.,2020-01-16,,False,True
+midsmallcap400,INE562A01011,INDIANB,Indian Bank,2016-04-01,,True,True
+midsmallcap400,,INDOCO,,2016-04-01,2019-12-26,True,False
+midsmallcap400,,INDOCO,,2020-09-14,2023-04-28,False,False
+midsmallcap400,INE095A01012,INDUSINDBK,IndusInd Bank Ltd.,2025-12-31,,False,True
+midsmallcap400,INE121J01017,INDUSTOWER,Indus Towers Ltd.,2016-04-01,,True,True
+midsmallcap400,,INGERRAND,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,INGERRAND,,2017-10-30,2018-06-29,False,False
+midsmallcap400,,INGERRAND,,2020-09-14,2022-04-07,False,False
+midsmallcap400,,INGERRAND,,2023-04-28,2024-10-10,False,False
+midsmallcap400,,INOXINDIA,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,INOXLEISUR,,2016-04-01,2023-03-31,True,False
+midsmallcap400,INE066P01011,INOXWIND,Inox Wind Ltd.,2016-04-01,2019-12-26,True,False
+midsmallcap400,INE066P01011,INOXWIND,Inox Wind Ltd.,2025-04-11,,False,True
+midsmallcap400,INE306R01017,INTELLECT,Intellect Design Arena Ltd.,2021-04-29,,False,True
+midsmallcap400,INE565A01014,IOB,Indian Overseas Bank,2016-04-01,,True,True
+midsmallcap400,,IOLCP,,2016-04-01,2022-04-07,True,False
+midsmallcap400,INE571A01038,IPCALAB,Ipca Laboratories Ltd.,2016-04-01,,True,True
+midsmallcap400,,IPL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE821I01022,IRB,IRB Infrastructure Developers Ltd.,2016-04-01,,True,True
+midsmallcap400,INE962Y01021,IRCON,IRCON International Ltd.,2019-04-15,,False,True
+midsmallcap400,INE335Y01020,IRCTC,Indian Railway Catering And Tourism Corporation Ltd.,2020-09-14,,False,True
+midsmallcap400,INE202E01016,IREDA,Indian Renewable Energy Development Agency Ltd.,2024-10-10,,False,True
+midsmallcap400,,IRFC,,2021-10-29,2024-10-10,False,False
+midsmallcap400,,ISEC,,2018-12-28,2025-03-28,False,False
+midsmallcap400,INE379A01028,ITCHOTELS,ITC Hotels Ltd.,2025-12-31,,False,True
+midsmallcap400,INE248A01017,ITI,ITI Ltd.,2025-04-11,,False,True
+midsmallcap400,INE168A01041,J&KBANK,Jammu & Kashmir Bank Ltd.,2016-04-01,,True,True
+midsmallcap400,,JAGRAN,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,JAICORPLTD,,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE0YD401026,JAINREC,Jain Resource Recycling Ltd.,2026-05-12,,False,True
+midsmallcap400,,JAMNAAUTO,,2019-04-15,2024-10-10,False,False
+midsmallcap400,INE572A01036,JBCHEPHARM,J.B. Chemicals & Pharmaceuticals Ltd.,2016-04-01,,True,True
+midsmallcap400,,JBFIND,,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE927D01051,JBMA,JBM Auto Ltd.,2022-12-30,,False,True
+midsmallcap400,,JETAIRWAYS,,2016-04-01,2019-09-27,True,False
+midsmallcap400,,JINDALPOLY,,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE324A01032,JINDALSAW,Jindal Saw Ltd.,2016-04-01,2016-09-30,True,False
+midsmallcap400,INE324A01032,JINDALSAW,Jindal Saw Ltd.,2017-10-30,,False,True
+midsmallcap400,,JINDALSTEL,,2016-04-01,2021-10-29,True,False
+midsmallcap400,,JINDALSTEL,,2022-04-07,2023-10-26,False,False
+midsmallcap400,,JISLJALEQS,,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE823G01014,JKCEMENT,J.K. Cement Ltd.,2016-04-01,,True,True
+midsmallcap400,,JKIL,,2016-04-01,2019-04-15,True,False
+midsmallcap400,INE573A01042,JKTYRE,JK Tyre & Industries Ltd.,2016-04-01,,True,True
+midsmallcap400,,JLHL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE780C01023,JMFINANCIL,JM Financial Ltd.,2016-04-01,,True,True
+midsmallcap400,,JMTAUTOLTD,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,JPASSOCIAT,,2016-04-01,2019-12-26,True,False
+midsmallcap400,,JPINFRATEC,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE351F01018,JPPOWER,Jaiprakash Power Ventures Ltd.,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE351F01018,JPPOWER,Jaiprakash Power Ventures Ltd.,2017-10-30,,False,True
+midsmallcap400,INE220G01021,JSL,Jindal Stainless Ltd.,2017-10-30,,False,True
+midsmallcap400,,JSLHISAR,,2017-10-30,2022-08-08,False,False
+midsmallcap400,INE718I01012,JSWCEMENT,JSW Cement Ltd.,2026-03-30,,False,True
+midsmallcap400,INE133A01011,JSWDULUX,JSW Dulux Ltd.,2016-04-01,2021-10-29,True,False
+midsmallcap400,INE133A01011,JSWDULUX,JSW Dulux Ltd.,2025-12-31,,False,True
+midsmallcap400,INE121E01018,JSWENERGY,JSW Energy Ltd.,2026-05-12,,False,True
+midsmallcap400,,JSWHL,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,JSWHL,,2025-04-11,2025-12-31,False,False
+midsmallcap400,INE880J01026,JSWINFRA,JSW Infrastructure Ltd.,2024-10-10,,False,True
+midsmallcap400,,JTEKTINDIA,,2020-11-02,2025-04-11,False,False
+midsmallcap400,INE797F01020,JUBLFOOD,Jubilant Foodworks Ltd.,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE797F01020,JUBLFOOD,Jubilant Foodworks Ltd.,2022-12-30,,False,True
+midsmallcap400,INE0BY001018,JUBLINGREA,Jubilant Ingrevia Ltd.,2021-10-29,,False,True
+midsmallcap400,INE700A01033,JUBLPHARMA,Jubilant Pharmova Ltd.,2021-10-29,,False,True
+midsmallcap400,,JUNIPER,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,JUSTDIAL,,2016-04-01,2025-12-31,True,False
+midsmallcap400,INE209L01016,JWL,Jupiter Wagons Ltd.,2024-10-10,,False,True
+midsmallcap400,,JYOTHYLAB,,2016-04-01,2026-05-12,True,False
+midsmallcap400,INE980O01024,JYOTICNC,Jyoti CNC Automation Ltd.,2025-04-11,,False,True
+midsmallcap400,INE217B01036,KAJARIACER,Kajaria Ceramics Ltd.,2016-04-01,,True,True
+midsmallcap400,,KALAMANDIR,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE303R01014,KALYANKJIL,Kalyan Jewellers India Ltd.,2025-04-11,,False,True
+midsmallcap400,,KANSAINER,,2016-04-01,2025-12-31,True,False
+midsmallcap400,INE036D01028,KARURVYSYA,Karur Vysya Bank Ltd.,2016-04-01,,True,True
+midsmallcap400,INE918Z01012,KAYNES,Kaynes Technology India Ltd.,2025-04-11,,False,True
+midsmallcap400,INE389H01022,KEC,Kec International Ltd.,2025-04-11,,False,True
+midsmallcap400,INE878B01027,KEI,KEI Industries Ltd.,2025-04-11,,False,True
+midsmallcap400,,KENNAMET,,2020-01-16,2020-09-14,False,False
+midsmallcap400,,KESORAMIND,,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE138Y01010,KFINTECH,Kfin Technologies Ltd.,2025-04-11,,False,True
+midsmallcap400,INE967H01025,KIMS,Krishna Institute of Medical Sciences Ltd.,2022-04-07,,False,True
+midsmallcap400,,KIOCL,,2018-08-08,2019-12-26,False,False
+midsmallcap400,,KIRLFER,,2016-04-01,2024-03-28,True,False
+midsmallcap400,,KIRLOSBROS,,2016-04-01,2026-05-12,True,False
+midsmallcap400,INE146L01010,KIRLOSENG,Kirloskar Oil Eng Ltd.,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE146L01010,KIRLOSENG,Kirloskar Oil Eng Ltd.,2019-04-15,,False,True
+midsmallcap400,,KITEX,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,KNRCON,,2017-05-26,2017-10-30,False,False
+midsmallcap400,,KNRCON,,2018-06-29,2025-12-31,False,False
+midsmallcap400,,KOLTEPATIL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE220B01022,KPIL,Kalpataru Projects International Ltd.,2016-04-01,,True,True
+midsmallcap400,INE04I401011,KPITTECH,KPIT Technologies Ltd.,2019-12-26,2020-11-02,False,False
+midsmallcap400,INE04I401011,KPITTECH,KPIT Technologies Ltd.,2021-04-29,,False,True
+midsmallcap400,INE930H01031,KPRMILL,K.P.R. Mill Ltd.,2021-04-29,,False,True
+midsmallcap400,,KSB,,2016-10-24,2017-05-26,False,False
+midsmallcap400,,KSB,,2020-09-14,2022-04-07,False,False
+midsmallcap400,,KSB,,2025-12-31,2026-05-12,False,False
+midsmallcap400,,KSCL,,2016-04-01,2022-04-07,True,False
+midsmallcap400,,KSK,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,KTKBANK,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,KWALITY,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,LAKSHVILAS,,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE600L01024,LALPATHLAB,Dr. Lal Path Labs Ltd.,2016-10-24,,False,True
+midsmallcap400,,LANDMARK,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,LAOPALA,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,LAOPALA,,2020-09-14,2022-04-07,False,False
+midsmallcap400,INE0I7C01011,LATENTVIEW,Latent View Analytics Ltd.,2022-04-07,,False,True
+midsmallcap400,INE947Q01028,LAURUSLABS,Laurus Labs Ltd.,2017-06-23,,False,True
+midsmallcap400,INE970X01018,LEMONTREE,Lemon Tree Hotels Ltd.,2018-12-28,2022-04-07,False,False
+midsmallcap400,INE970X01018,LEMONTREE,Lemon Tree Hotels Ltd.,2023-02-17,,False,True
+midsmallcap400,INE956O01016,LENSKART,Lenskart Solutions Ltd.,2026-05-12,,False,True
+midsmallcap400,INE324D01010,LGEINDIA,LG Electronics India Ltd.,2026-05-12,,False,True
+midsmallcap400,INE115A01026,LICHSGFIN,LIC Housing Finance Ltd.,2019-04-15,,False,True
+midsmallcap400,INE0J1Y01017,LICI,Life Insurance Corporation of India,2026-05-12,,False,True
+midsmallcap400,INE473A01011,LINDEINDIA,Linde India Ltd.,2016-10-24,2017-05-26,False,False
+midsmallcap400,INE473A01011,LINDEINDIA,Linde India Ltd.,2017-10-30,2018-06-29,False,False
+midsmallcap400,INE473A01011,LINDEINDIA,Linde India Ltd.,2018-12-28,,False,True
+midsmallcap400,,LITL,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE281B01032,LLOYDSME,Lloyds Metals And Energy Ltd.,2024-10-10,,False,True
+midsmallcap400,,LMW,,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE498L01015,LTF,L&T Finance Ltd.,2016-04-01,,True,True
+midsmallcap400,INE818H01020,LTFOODS,LT Foods Ltd.,2016-04-01,,True,True
+midsmallcap400,,LTM,,2017-05-26,2020-06-26,False,False
+midsmallcap400,INE010V01017,LTTS,L&T Technology Services Ltd.,2017-05-26,,False,True
+midsmallcap400,INE326A01037,LUPIN,Lupin Ltd.,2022-12-30,,False,True
+midsmallcap400,,LUXIND,,2018-12-28,2024-10-10,False,False
+midsmallcap400,INE774D01024,M&MFIN,Mahindra & Mahindra Financial Services Ltd.,2016-04-01,,True,True
+midsmallcap400,INE457A01014,MAHABANK,Bank of Maharashtra,2019-04-15,,False,True
+midsmallcap400,,MAHLIFE,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,MAHLOG,,2018-12-28,2025-04-11,False,False
+midsmallcap400,,MAHSCOOTER,,2019-04-15,2021-10-29,False,False
+midsmallcap400,,MAHSCOOTER,,2025-12-31,2026-05-12,False,False
+midsmallcap400,,MAHSEAMLES,,2019-04-15,2021-10-29,False,False
+midsmallcap400,,MAHSEAMLES,,2024-10-10,2026-05-12,False,False
+midsmallcap400,,MAITHANALL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE522D01027,MANAPPURAM,Manappuram Finance Ltd.,2016-04-01,,True,True
+midsmallcap400,INE634S01028,MANKIND,Mankind Pharma Ltd.,2025-04-11,,False,True
+midsmallcap400,,MANPASAND,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,MANYAVAR,,2022-12-30,2026-05-12,False,False
+midsmallcap400,INE0BV301023,MAPMYINDIA,C.E. Info Systems Ltd.,2022-04-07,,False,True
+midsmallcap400,INE196A01026,MARICO,Marico Ltd.,2025-04-11,,False,True
+midsmallcap400,,MARKSANS,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,MASFIN,,2018-06-29,2021-10-29,False,False
+midsmallcap400,,MASTEK,,2021-10-29,2025-12-31,False,False
+midsmallcap400,,MAXHEALTH,,2025-04-11,2025-12-31,False,False
+midsmallcap400,,MAXINDIA,,2017-05-26,2020-01-16,False,False
+midsmallcap400,,MAYURUNIQ,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,MAZDOCK,,2021-04-29,2025-12-31,False,False
+midsmallcap400,,MCLEODRUSS,,2016-04-01,2019-04-15,True,False
+midsmallcap400,INE745G01043,MCX,Multi Commodity Exchange of India Ltd.,2019-12-26,,False,True
+midsmallcap400,INE474Q01031,MEDANTA,Global Health Ltd.,2023-04-28,,False,True
+midsmallcap400,INE0VDM01015,MEESHO,Meesho Ltd.,2026-05-12,,False,True
+midsmallcap400,,METROBRAND,,2022-04-07,2025-04-11,False,False
+midsmallcap400,,METROPOLIS,,2019-12-26,2026-05-12,False,False
+midsmallcap400,INE180A01020,MFSL,Max Financial Services Ltd.,2016-10-24,2017-03-31,False,False
+midsmallcap400,INE180A01020,MFSL,Max Financial Services Ltd.,2017-10-30,,False,True
+midsmallcap400,INE002S01010,MGL,Mahanagar Gas Ltd.,2017-05-26,,False,True
+midsmallcap400,,MHRIL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,MIDHANI,,2019-12-27,2022-04-07,False,False
+midsmallcap400,INE842C01021,MINDACORP,Minda Corporation Ltd.,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE842C01021,MINDACORP,Minda Corporation Ltd.,2017-05-26,2022-04-07,False,False
+midsmallcap400,INE842C01021,MINDACORP,Minda Corporation Ltd.,2025-04-11,,False,True
+midsmallcap400,,MINDTREE,,2016-04-01,2022-04-07,True,False
+midsmallcap400,INE123F01029,MMTC,MMTC Ltd.,2016-04-01,,True,True
+midsmallcap400,,MOIL,,2016-04-01,2023-04-28,True,False
+midsmallcap400,,MONSANTO,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,MONSANTO,,2018-12-28,2019-09-24,False,False
+midsmallcap400,INE338I01027,MOTILALOFS,Motilal Oswal Financial Services Ltd.,2025-04-11,,False,True
+midsmallcap400,INE356A01018,MPHASIS,MphasiS Ltd.,2016-04-01,2022-12-30,True,False
+midsmallcap400,INE356A01018,MPHASIS,MphasiS Ltd.,2023-04-28,,False,True
+midsmallcap400,INE883A01011,MRF,MRF Ltd.,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE883A01011,MRF,MRF Ltd.,2019-12-26,2021-04-29,False,False
+midsmallcap400,INE883A01011,MRF,MRF Ltd.,2021-10-29,,False,True
+midsmallcap400,INE103A01014,MRPL,Mangalore Refinery & Petrochemicals Ltd.,2016-04-01,,True,True
+midsmallcap400,INE0FS801015,MSUMI,Motherson Sumi Wiring India Ltd.,2022-12-30,,False,True
+midsmallcap400,,MTNL,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,MUTHOOTFIN,,2016-04-01,2020-09-14,True,False
+midsmallcap400,,MUTHOOTFIN,,2024-10-10,2026-05-12,False,False
+midsmallcap400,,MUTHOOTMF,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,MYSOREBANK,,2016-10-24,2017-05-26,False,False
+midsmallcap400,INE298J01013,NAM-INDIA,Nippon Life India Asset Management Ltd.,2018-12-28,,False,True
+midsmallcap400,INE987B01026,NATCOPHARM,NATCO Pharma Ltd.,2016-04-01,,True,True
+midsmallcap400,INE139A01034,NATIONALUM,National Aluminium Co. Ltd.,2016-04-01,,True,True
+midsmallcap400,INE663F01032,NAUKRI,Info Edge (India) Ltd.,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE663F01032,NAUKRI,Info Edge (India) Ltd.,2026-05-12,,False,True
+midsmallcap400,INE725A01030,NAVA,Nava Ltd.,2017-05-26,,False,True
+midsmallcap400,INE048G01026,NAVINFLUOR,Navin Fluorine International Ltd.,2016-10-24,,False,True
+midsmallcap400,,NAVKARCORP,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,NAVNETEDUL,,2017-05-26,2018-06-29,False,False
+midsmallcap400,,NAVNETEDUL,,2020-06-26,2021-04-29,False,False
+midsmallcap400,,NAZARA,,2021-10-29,2024-10-10,False,False
+midsmallcap400,INE095N01031,NBCC,NBCC (India) Ltd.,2016-04-01,,True,True
+midsmallcap400,INE868B01028,NCC,NCC Ltd.,2016-04-01,,True,True
+midsmallcap400,,NESCO,,2018-06-29,2022-12-30,False,False
+midsmallcap400,INE0NT901020,NETWEB,Netweb Technologies India Ltd.,2016-04-01,,True,True
+midsmallcap400,,NETWORK18,,2016-04-01,2020-09-14,True,False
+midsmallcap400,,NETWORK18,,2025-04-11,2025-12-31,False,False
+midsmallcap400,INE794A01010,NEULANDLAB,Neuland Laboratories Ltd.,2016-04-01,,True,True
+midsmallcap400,INE619B01017,NEWGEN,Newgen Software Technologies Ltd.,2025-04-11,,False,True
+midsmallcap400,,NFL,,2017-10-30,2022-04-07,False,False
+midsmallcap400,INE410P01011,NH,Narayana Hrudayalaya Ltd.,2016-10-24,,False,True
+midsmallcap400,INE848E01016,NHPC,NHPC Ltd.,2025-04-11,,False,True
+midsmallcap400,INE470Y01017,NIACL,The New India Assurance Company Ltd.,2020-09-14,,False,True
+midsmallcap400,,NIITLTD,,2022-12-30,2023-02-17,False,False
+midsmallcap400,,NIITMTS,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,NILKAMAL,,2016-10-24,2022-04-07,False,False
+midsmallcap400,,NITINFIRE,,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE995S01015,NIVABUPA,Niva Bupa Health Insurance Company Ltd.,2025-04-11,,False,True
+midsmallcap400,INE589A01014,NLCINDIA,NLC India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE584A01023,NMDC,NMDC Ltd.,2023-04-28,,False,True
+midsmallcap400,,NRBBEARING,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE0NNS01018,NSLNISP,NMDC Steel Ltd.,2023-07-13,,False,True
+midsmallcap400,INE0ONG01011,NTPCGREEN,NTPC Green Energy Ltd.,2025-04-11,,False,True
+midsmallcap400,INE531F01023,NUVAMA,Nuvama Wealth Management Ltd.,2025-04-11,,False,True
+midsmallcap400,INE118D01016,NUVOCO,Nuvoco Vistas Corporation Ltd.,2025-12-31,,False,True
+midsmallcap400,INE388Y01029,NYKAA,FSN E-Commerce Ventures Ltd.,2016-04-01,,True,True
+midsmallcap400,INE093I01010,OBEROIRLTY,Oberoi Realty Ltd.,2016-04-01,,True,True
+midsmallcap400,,OCL,,2016-10-24,2017-03-31,False,False
+midsmallcap400,INE881D01027,OFSS,Oracle Financial Services Software Ltd.,2025-04-11,,False,True
+midsmallcap400,INE274J01014,OIL,Oil India Ltd.,2025-04-11,,False,True
+midsmallcap400,INE0LXG01040,OLAELEC,Ola Electric Mobility Ltd.,2025-04-11,,False,True
+midsmallcap400,INE260D01016,OLECTRA,Olectra Greentech Ltd.,2022-12-30,,False,True
+midsmallcap400,,OMAXE,,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE013P01021,ONESOURCE,Onesource Specialty Pharma Ltd.,2025-12-31,,False,True
+midsmallcap400,,ORIENTBANK,,2016-04-01,2020-01-16,True,False
+midsmallcap400,,ORIENTCEM,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,ORIENTELEC,,2019-04-15,2025-04-11,False,False
+midsmallcap400,,ORISSAMINE,,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE761H01022,PAGEIND,Page Industries Ltd.,2016-04-01,2023-04-28,True,False
+midsmallcap400,INE761H01022,PAGEIND,Page Industries Ltd.,2025-04-11,,False,True
+midsmallcap400,INE088F01024,PARADEEP,Paradeep Phosphates Ltd.,2026-05-12,,False,True
+midsmallcap400,,PARAGMILK,,2017-05-26,2020-09-14,False,False
+midsmallcap400,,PARSVNATH,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE619A01035,PATANJALI,Patanjali Foods Ltd.,2025-04-11,,False,True
+midsmallcap400,INE982J01020,PAYTM,One 97 Communications Ltd.,2025-04-11,,False,True
+midsmallcap400,INE602A01031,PCBL,PCBL Chemical Ltd.,2025-04-11,,False,True
+midsmallcap400,,PCJEWELLER,,2016-04-01,2020-09-14,True,False
+midsmallcap400,,PEL,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,PEL,,2023-04-28,2025-09-30,False,False
+midsmallcap400,INE262H01021,PERSISTENT,Persistent Systems Ltd.,2016-04-01,,True,True
+midsmallcap400,INE347G01014,PETRONET,Petronet LNG Ltd.,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE347G01014,PETRONET,Petronet LNG Ltd.,2021-10-29,,False,True
+midsmallcap400,,PFC,,2018-12-28,2019-12-26,False,False
+midsmallcap400,,PFC,,2021-04-29,2024-10-10,False,False
+midsmallcap400,INE182A01018,PFIZER,Pfizer Ltd.,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE182A01018,PFIZER,Pfizer Ltd.,2025-04-11,,False,True
+midsmallcap400,,PFS,,2016-04-01,2019-04-15,True,False
+midsmallcap400,INE457L01029,PGEL,PG Electroplast Ltd.,2016-04-01,,True,True
+midsmallcap400,,PGHH,,2024-10-10,2025-04-11,False,False
+midsmallcap400,,PGHH,,2025-12-31,2026-05-12,False,False
+midsmallcap400,,PGHL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE211B01039,PHOENIXLTD,Phoenix Mills Ltd.,2025-04-11,,False,True
+midsmallcap400,INE603J01030,PIIND,PI Industries Ltd.,2016-04-01,2021-10-29,True,False
+midsmallcap400,INE603J01030,PIIND,PI Industries Ltd.,2024-10-10,,False,True
+midsmallcap400,INE15B701018,PINELABS,Pine Labs Ltd.,2026-05-12,,False,True
+midsmallcap400,INE202B01038,PIRAMALFIN,Piramal Finance Ltd.,2026-05-12,,False,True
+midsmallcap400,,PNB,,2018-12-28,2019-12-26,False,False
+midsmallcap400,INE572E01012,PNBHOUSING,PNB Housing Finance Ltd.,2025-04-11,,False,True
+midsmallcap400,,PNCINFRA,,2016-04-01,2025-12-31,True,False
+midsmallcap400,,POLARIS,,2016-04-01,2018-04-02,True,False
+midsmallcap400,INE417T01026,POLICYBZR,PB Fintech Ltd.,2025-04-11,,False,True
+midsmallcap400,INE455K01017,POLYCAB,Polycab India Ltd.,2019-12-26,,False,True
+midsmallcap400,INE205C01021,POLYMED,Poly Medicure Ltd.,2020-09-14,,False,True
+midsmallcap400,,POLYPLEX,,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE511C01022,POONAWALLA,Poonawalla Fincorp Ltd.,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE511C01022,POONAWALLA,Poonawalla Fincorp Ltd.,2021-10-29,,False,True
+midsmallcap400,INE07Y701011,POWERINDIA,Hitachi Energy India Ltd.,2025-04-11,,False,True
+midsmallcap400,INE0DK501011,PPLPHARMA,Piramal Pharma Ltd.,2023-03-31,,False,True
+midsmallcap400,,PRAJIND,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,PRAJIND,,2021-10-29,2026-05-12,False,False
+midsmallcap400,INE0BS701011,PREMIERENE,Premier Energies Ltd.,2025-04-11,,False,True
+midsmallcap400,INE811K01011,PRESTIGE,Prestige Estates Projects Ltd.,2025-04-11,,False,True
+midsmallcap400,,PRIVISCL,,2022-04-07,2023-04-28,False,False
+midsmallcap400,,PSPPROJECT,,2020-11-02,2021-04-29,False,False
+midsmallcap400,,PTC,,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE596F01018,PTCIL,PTC Industries Ltd.,2016-04-01,,True,True
+midsmallcap400,,PUNJLLOYD,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,PURVA,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE191H01014,PVRINOX,PVR INOX Ltd.,2016-04-01,,True,True
+midsmallcap400,INE0LP301011,PWL,Physicswallah Ltd.,2026-05-12,,False,True
+midsmallcap400,,QUESS,,2017-05-26,2025-09-23,False,False
+midsmallcap400,INE944F01028,RADICO,Radico Khaitan Ltd,2016-04-01,,True,True
+midsmallcap400,INE0DD101019,RAILTEL,Railtel Corporation Of India Ltd.,2021-10-29,2022-12-30,False,False
+midsmallcap400,INE0DD101019,RAILTEL,Railtel Corporation Of India Ltd.,2024-10-10,,False,True
+midsmallcap400,,RAIN,,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE961O01016,RAINBOW,Rainbow Childrens Medicare Ltd.,2023-02-17,,False,True
+midsmallcap400,,RALLIS,,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE331A01037,RAMCOCEM,The Ramco Cements Ltd.,2016-04-01,,True,True
+midsmallcap400,,RAMCOSYS,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,RAMKY,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,RATNAMANI,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,RATNAMANI,,2017-05-26,2017-10-30,False,False
+midsmallcap400,,RATNAMANI,,2019-12-26,2025-04-11,False,False
+midsmallcap400,,RAYMOND,,2016-04-01,2021-10-29,True,False
+midsmallcap400,,RAYMOND,,2022-12-30,2025-12-31,False,False
+midsmallcap400,,RAYMONDLSL,,2025-04-11,2025-12-31,False,False
+midsmallcap400,INE976G01028,RBLBANK,RBL Bank Ltd.,2017-03-31,,False,True
+midsmallcap400,,RCF,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,RCOM,,2016-10-24,2019-12-26,False,False
+midsmallcap400,,RECLTD,,2016-10-24,2017-05-26,False,False
+midsmallcap400,,RECLTD,,2018-12-28,2024-10-10,False,False
+midsmallcap400,INE891D01026,REDINGTON,Redington Ltd.,2016-04-01,,True,True
+midsmallcap400,,RELAXO,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,RELAXO,,2017-11-20,2024-10-10,False,False
+midsmallcap400,,RELCAPITAL,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,RELCAPITAL,,2018-04-02,2020-09-14,False,False
+midsmallcap400,,RELIGARE,,2016-10-24,2018-12-28,False,False
+midsmallcap400,,RELINFRA,,2016-04-01,2020-09-14,True,False
+midsmallcap400,,RELINFRA,,2025-09-30,2026-05-12,False,False
+midsmallcap400,,RENUKA,,2022-04-07,2025-12-31,False,False
+midsmallcap400,,REPCOHOME,,2016-04-01,2020-11-02,True,False
+midsmallcap400,,RESPONIND,,2019-12-27,2020-09-14,False,False
+midsmallcap400,,RESPONIND,,2021-04-29,2021-10-29,False,False
+midsmallcap400,,RHFL,,2018-06-29,2019-12-26,False,False
+midsmallcap400,INE743M01012,RHIM,RHI MAGNESITA INDIA LTD.,2019-12-26,,False,True
+midsmallcap400,,RIIL,,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE320J01015,RITES,RITES Ltd.,2019-01-28,,False,True
+midsmallcap400,INE399G01023,RKFORGE,Ramkrishna Forgings Ltd.,2016-04-01,2019-12-26,True,False
+midsmallcap400,INE399G01023,RKFORGE,Ramkrishna Forgings Ltd.,2024-10-10,,False,True
+midsmallcap400,,RNAVAL,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,ROLEXRINGS,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,ROLTA,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,ROSSARI,,2021-04-29,2024-10-10,False,False
+midsmallcap400,,ROUTE,,2021-04-29,2025-12-31,False,False
+midsmallcap400,INE614G01033,RPOWER,Reliance Power Ltd.,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE614G01033,RPOWER,Reliance Power Ltd.,2025-04-11,,False,True
+midsmallcap400,INE777K01022,RRKABEL,R R Kabel Ltd.,2024-10-10,,False,True
+midsmallcap400,,RTNINDIA,,2022-04-07,2025-12-31,False,False
+midsmallcap400,,RTNPOWER,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,RUCHISOYA,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,RUPA,,2017-10-30,2019-12-26,False,False
+midsmallcap400,INE415G01027,RVNL,Rail Vikas Nigam Ltd.,2025-04-11,,False,True
+midsmallcap400,,SADBHIN,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,SADBHIN,,2018-06-29,2019-04-15,False,False
+midsmallcap400,INE0W2G01015,SAGILITY,Sagility Ltd.,2025-04-11,,False,True
+midsmallcap400,INE114A01011,SAIL,Steel Authority of India Ltd.,2019-12-26,2021-10-29,False,False
+midsmallcap400,INE114A01011,SAIL,Steel Authority of India Ltd.,2022-12-30,,False,True
+midsmallcap400,INE570L01029,SAILIFE,Sai Life Sciences Ltd.,2025-04-11,,False,True
+midsmallcap400,INE148I01020,SAMMAANCAP,Sammaan Capital Ltd.,2020-09-14,,False,True
+midsmallcap400,,SANDUMA,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,SANGHIIND,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,SANGHVIMOV,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE806T01020,SAPPHIRE,Sapphire Foods India Ltd.,2022-04-07,,False,True
+midsmallcap400,INE385C01021,SARDAEN,Sarda Energy and Minerals Ltd.,2016-04-01,,True,True
+midsmallcap400,INE979A01025,SAREGAMA,Saregama India Ltd,2022-04-07,,False,True
+midsmallcap400,,SBBJ,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE423Y01016,SBFC,SBFC Finance Ltd.,2024-10-10,,False,True
+midsmallcap400,INE018E01016,SBICARD,SBI Cards and Payment Services Ltd.,2016-04-01,,True,True
+midsmallcap400,,SBT,,2016-10-24,2017-05-26,False,False
+midsmallcap400,INE513A01022,SCHAEFFLER,Schaeffler India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE839M01018,SCHNEIDER,Schneider Electric Infrastructure Ltd.,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE839M01018,SCHNEIDER,Schneider Electric Infrastructure Ltd.,2020-09-14,2022-04-07,False,False
+midsmallcap400,INE839M01018,SCHNEIDER,Schneider Electric Infrastructure Ltd.,2024-10-10,,False,True
+midsmallcap400,INE109A01011,SCI,Shipping Corporation of India Ltd.,2016-04-01,2019-12-26,True,False
+midsmallcap400,INE109A01011,SCI,Shipping Corporation of India Ltd.,2020-09-14,,False,True
+midsmallcap400,,SECURKLOUD,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,SFCL,,2016-10-24,2017-03-31,False,False
+midsmallcap400,,SFL,,2017-09-29,2018-12-28,False,False
+midsmallcap400,,SFL,,2019-01-28,2024-10-10,False,False
+midsmallcap400,,SHANKARA,,2018-06-29,2019-12-26,False,False
+midsmallcap400,,SHARDACROP,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,SHARDACROP,,2019-04-15,2019-12-26,False,False
+midsmallcap400,,SHARDACROP,,2021-04-29,2022-04-07,False,False
+midsmallcap400,,SHARDACROP,,2022-12-30,2024-10-10,False,False
+midsmallcap400,,SHARDAMOTR,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,SHILPAMED,,2016-04-01,2018-06-29,True,False
+midsmallcap400,,SHILPAMED,,2020-06-26,2023-04-28,False,False
+midsmallcap400,,SHILPI,,2017-05-26,2017-11-20,False,False
+midsmallcap400,,SHK,,2016-09-30,2020-09-14,False,False
+midsmallcap400,,SHOPERSTOP,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,SHOPERSTOP,,2017-10-30,2021-10-29,False,False
+midsmallcap400,,SHOPERSTOP,,2022-12-30,2024-10-10,False,False
+midsmallcap400,,SHRIRAMCIT,,2016-04-01,2022-09-30,True,False
+midsmallcap400,INE810G01011,SHYAMMETL,Shyam Metalics and Energy Ltd.,2022-04-07,,False,True
+midsmallcap400,INE903U01023,SIGNATURE,Signatureglobal (India) Ltd.,2024-10-10,,False,True
+midsmallcap400,,SIMPLEXINF,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,SINDHUTRAD,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,SINTEX,,2016-04-01,2017-05-26,True,False
+midsmallcap400,,SIS,,2018-06-29,2023-04-28,False,False
+midsmallcap400,,SITINET,,2016-04-01,2017-05-26,True,False
+midsmallcap400,INE002L01015,SJVN,SJVN Ltd.,2016-04-01,,True,True
+midsmallcap400,,SKFINDIA,,2016-04-01,2026-03-30,True,False
+midsmallcap400,,SMLMAH,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,SNOWMAN,,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE671H01015,SOBHA,Sobha Ltd.,2016-04-01,,True,True
+midsmallcap400,,SOLARA,,2016-04-01,2022-12-30,True,False
+midsmallcap400,,SOLARINDS,,2016-04-01,2025-12-31,True,False
+midsmallcap400,,SOMANYCERA,,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE073K01018,SONACOMS,Sona BLW Precision Forgings Ltd.,2025-04-11,,False,True
+midsmallcap400,INE269A01021,SONATSOFTW,Sonata Software Ltd.,2016-04-01,,True,True
+midsmallcap400,,SOUTHBANK,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,SPANDANA,,2020-01-16,2020-11-02,False,False
+midsmallcap400,,SPANDANA,,2021-04-29,2022-04-07,False,False
+midsmallcap400,,SPICEJET,,2020-01-16,2022-12-30,False,False
+midsmallcap400,INE663A01033,SPLPETRO,Supreme Petrochem Ltd.,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE663A01033,SPLPETRO,Supreme Petrochem Ltd.,2026-05-12,,False,True
+midsmallcap400,,SPTL,,2018-06-29,2019-12-26,False,False
+midsmallcap400,,SREINFRA,,2016-04-01,2019-12-26,True,False
+midsmallcap400,INE647A01010,SRF,SRF Ltd.,2016-04-01,,True,True
+midsmallcap400,,SSWL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,STAR,,2016-04-01,2018-04-02,True,False
+midsmallcap400,,STAR,,2018-12-28,2022-12-30,False,False
+midsmallcap400,,STARCEMENT,,2018-02-05,2022-04-07,False,False
+midsmallcap400,INE575P01011,STARHEALTH,Star Health and Allied Insurance Company Ltd.,2022-04-07,,False,True
+midsmallcap400,,STCINDIA,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,STYRENIX,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,SUDARCOLOR,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,SUDARSCHEM,,2017-05-26,2023-04-28,False,False
+midsmallcap400,INE258G01013,SUMICHEM,Sumitomo Chemical India Ltd.,2020-09-14,,False,True
+midsmallcap400,INE660A01013,SUNDARMFIN,Sundaram Finance Ltd.,2016-04-01,2017-11-20,True,False
+midsmallcap400,INE660A01013,SUNDARMFIN,Sundaram Finance Ltd.,2018-12-28,,False,True
+midsmallcap400,,SUNDRMFAST,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,SUNDRMFAST,,2025-09-23,2026-05-12,False,False
+midsmallcap400,INE424H01027,SUNTV,Sun TV Network Ltd.,2016-04-01,2017-06-23,True,False
+midsmallcap400,INE424H01027,SUNTV,Sun TV Network Ltd.,2019-04-15,,False,True
+midsmallcap400,,SUPPETRO,,2017-10-30,2022-04-12,False,False
+midsmallcap400,,SUPRAJIT,,2016-10-24,2017-05-26,False,False
+midsmallcap400,,SUPRAJIT,,2017-10-30,2018-06-29,False,False
+midsmallcap400,,SUPRAJIT,,2019-04-15,2024-10-10,False,False
+midsmallcap400,INE195A01028,SUPREMEIND,Supreme Industries Ltd.,2025-04-11,,False,True
+midsmallcap400,,SUVEN,,2016-04-01,2020-03-19,True,False
+midsmallcap400,INE040H01021,SUZLON,Suzlon Energy Ltd.,2016-04-01,,True,True
+midsmallcap400,INE665A01038,SWANCORP,Swan Corp Ltd.,2016-04-01,2021-10-29,True,False
+midsmallcap400,INE665A01038,SWANCORP,Swan Corp Ltd.,2022-12-30,,False,True
+midsmallcap400,,SWARAJENG,,2020-11-02,2021-04-29,False,False
+midsmallcap400,INE00H001014,SWIGGY,Swiggy Ltd.,2025-12-31,,False,True
+midsmallcap400,,SWSOLAR,,2020-06-26,2025-12-31,False,False
+midsmallcap400,,SYMPHONY,,2016-04-01,2024-10-10,True,False
+midsmallcap400,,SYNDIBANK,,2016-04-01,2020-01-16,True,False
+midsmallcap400,INE398R01022,SYNGENE,Syngene International Ltd.,2016-04-01,,True,True
+midsmallcap400,INE0DYJ01015,SYRMA,Syrma SGS Technology Ltd.,2016-04-01,,True,True
+midsmallcap400,,TANLA,,2021-04-29,2025-12-31,False,False
+midsmallcap400,INE763I01026,TARIL,Transformers And Rectifiers (India) Ltd.,2025-04-11,,False,True
+midsmallcap400,,TASTYBITE,,2020-01-16,2022-04-07,False,False
+midsmallcap400,INE092A01019,TATACHEM,Tata Chemicals Ltd.,2016-04-01,,True,True
+midsmallcap400,,TATACOFFEE,,2016-04-01,2019-12-26,True,False
+midsmallcap400,,TATACOFFEE,,2020-11-02,2023-04-28,False,False
+midsmallcap400,INE151A01013,TATACOMM,Tata Communications Ltd.,2016-04-01,2018-08-08,True,False
+midsmallcap400,INE151A01013,TATACOMM,Tata Communications Ltd.,2020-09-14,,False,True
+midsmallcap400,INE670A01012,TATAELXSI,Tata Elxsi Ltd.,2016-04-01,,True,True
+midsmallcap400,INE672A01026,TATAINVEST,Tata Investment Corporation Ltd.,2017-05-26,2021-10-29,False,False
+midsmallcap400,INE672A01026,TATAINVEST,Tata Investment Corporation Ltd.,2022-04-07,,False,True
+midsmallcap400,,TATAPOWER,,2018-06-29,2022-09-30,False,False
+midsmallcap400,,TATASTEEL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,TATASTLBSL,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,TATASTLBSL,,2020-03-19,2021-09-30,False,False
+midsmallcap400,,TATASTLLP,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,TATASTLLP,,2021-10-29,2022-12-30,False,False
+midsmallcap400,INE142M01025,TATATECH,Tata Technologies Ltd.,2024-10-10,,False,True
+midsmallcap400,INE673O01025,TBOTEK,TBO Tek Ltd.,2016-04-01,,True,True
+midsmallcap400,,TBZ,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,TCI,,2016-04-01,2016-09-30,True,False
+midsmallcap400,,TCIEXP,,2019-12-26,2025-04-11,False,False
+midsmallcap400,,TEAMLEASE,,2018-12-28,2024-10-10,False,False
+midsmallcap400,,TECHNO,,2016-04-01,2018-09-28,True,False
+midsmallcap400,INE285K01026,TECHNOE,Techno Electric & Engineering Company Ltd.,2019-12-26,,False,True
+midsmallcap400,INE011K01018,TEGA,Tega Industries Ltd.,2026-05-12,,False,True
+midsmallcap400,INE010J01012,TEJASNET,Tejas Networks Ltd.,2022-12-30,,False,True
+midsmallcap400,INE19RI01016,TENNIND,Tenneco Clean Air India Ltd.,2026-05-12,,False,True
+midsmallcap400,,TEXRAIL,,2016-04-01,2019-04-15,True,False
+midsmallcap400,INE0AQ201015,THELEELA,Leela Palaces Hotels & Resorts Ltd.,2025-12-31,,False,True
+midsmallcap400,INE152A01029,THERMAX,Thermax Ltd.,2016-04-01,,True,True
+midsmallcap400,,THOMASCOOK,,2016-04-01,2019-12-26,True,False
+midsmallcap400,,THYROCARE,,2017-05-26,2023-04-28,False,False
+midsmallcap400,INE974X01010,TIINDIA,Tube Investments of India Ltd.,2025-04-11,,False,True
+midsmallcap400,INE325A01013,TIMKEN,Timken India Ltd.,2016-04-01,,True,True
+midsmallcap400,,TIRUMALCHM,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE615H01020,TITAGARH,Titagarh Rail Systems Ltd.,2024-10-10,,False,True
+midsmallcap400,,TNPL,,2016-04-01,2019-12-26,True,False
+midsmallcap400,,TORNTPHARM,,2018-06-29,2020-09-14,False,False
+midsmallcap400,INE813H01021,TORNTPOWER,Torrent Power Ltd.,2025-04-11,,False,True
+midsmallcap400,INE103V01028,TRAVELFOOD,Travel Food Services Ltd.,2026-05-12,,False,True
+midsmallcap400,,TREEHOUSE,,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE064C01022,TRIDENT,Trident Ltd.,2016-04-01,,True,True
+midsmallcap400,INE152M01016,TRITURBINE,Triveni Turbine Ltd.,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE152M01016,TRITURBINE,Triveni Turbine Ltd.,2019-04-15,2019-12-26,False,False
+midsmallcap400,INE152M01016,TRITURBINE,Triveni Turbine Ltd.,2020-01-16,2020-09-14,False,False
+midsmallcap400,INE152M01016,TRITURBINE,Triveni Turbine Ltd.,2021-04-29,,False,True
+midsmallcap400,,TRIVENI,,2022-08-08,2026-05-12,False,False
+midsmallcap400,,TTKPRESTIG,,2016-04-01,2024-10-10,True,False
+midsmallcap400,INE517B01013,TTML,Tata Teleservices (Maharashtra) Ltd.,2016-04-01,2016-10-24,True,False
+midsmallcap400,INE517B01013,TTML,Tata Teleservices (Maharashtra) Ltd.,2021-10-29,,False,True
+midsmallcap400,,TUBEINVEST,,2016-04-01,2017-06-23,True,False
+midsmallcap400,,TV18BRDCST,,2016-04-01,2025-03-21,True,False
+midsmallcap400,,TVSHLTD,,2019-06-28,2020-09-14,False,False
+midsmallcap400,,TVSHLTD,,2021-04-29,2021-10-29,False,False
+midsmallcap400,,TVSSRICHAK,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,TVTODAY,,2016-09-30,2021-04-29,False,False
+midsmallcap400,INE686F01025,UBL,United Breweries Ltd.,2017-10-30,2019-04-15,False,False
+midsmallcap400,INE686F01025,UBL,United Breweries Ltd.,2021-10-29,,False,True
+midsmallcap400,INE691A01018,UCOBANK,UCO Bank,2016-04-01,2022-12-30,True,False
+midsmallcap400,INE691A01018,UCOBANK,UCO Bank,2023-02-17,,False,True
+midsmallcap400,,UJJIVAN,,2017-03-31,2022-04-07,False,False
+midsmallcap400,,UJJIVANSFB,,2020-09-14,2022-04-07,False,False
+midsmallcap400,,UNICHEMLAB,,2016-04-01,2019-04-15,True,False
+midsmallcap400,,UNIONBANK,,2025-04-11,2026-05-12,False,False
+midsmallcap400,,UNITECH,,2016-04-01,2018-12-28,True,False
+midsmallcap400,,UNITEDBNK,,2017-10-30,2018-06-29,False,False
+midsmallcap400,INE405E01023,UNOMINDA,UNO Minda Ltd.,2017-05-26,,False,True
+midsmallcap400,INE628A01036,UPL,UPL Ltd.,2024-10-10,,False,True
+midsmallcap400,INE0CAZ01013,URBANCO,Urban Company Ltd.,2026-05-12,,False,True
+midsmallcap400,INE228A01035,USHAMART,Usha Martin Ltd.,2016-04-01,,True,True
+midsmallcap400,INE094J01016,UTIAMC,UTI Asset Management Company Ltd.,2021-04-29,,False,True
+midsmallcap400,,UTKARSHBNK,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,VAIBHAVGBL,,2016-04-01,2016-10-24,True,False
+midsmallcap400,,VAKRANGEE,,2016-04-01,2022-12-30,True,False
+midsmallcap400,,VALIANTORG,,2021-04-29,2022-04-07,False,False
+midsmallcap400,,VBL,,2017-06-23,2023-04-28,False,False
+midsmallcap400,,VEEDOL,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,VENKEYS,,2018-12-28,2025-04-11,False,False
+midsmallcap400,,VENTIVE,,2025-12-31,2026-05-12,False,False
+midsmallcap400,,VESUVIUS,,2017-10-30,2018-06-29,False,False
+midsmallcap400,,VGUARD,,2016-04-01,2026-05-12,True,False
+midsmallcap400,,VIDEOIND,,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE043W01024,VIJAYA,Vijaya Diagnostic Centre Ltd.,2022-04-07,,False,True
+midsmallcap400,,VIJAYABANK,,2016-04-01,2019-03-29,True,False
+midsmallcap400,,VINATIORGA,,2016-04-01,2025-04-11,True,False
+midsmallcap400,,VIYASH,,2016-10-24,2017-05-26,False,False
+midsmallcap400,,VIYASH,,2020-09-14,2022-12-30,False,False
+midsmallcap400,,VMART,,2018-12-28,2024-10-10,False,False
+midsmallcap400,INE01EA01019,VMM,Vishal Mega Mart Ltd.,2025-04-11,,False,True
+midsmallcap400,INE226A01021,VOLTAS,Voltas Ltd.,2016-04-01,,True,True
+midsmallcap400,,VRLLOG,,2016-04-01,2021-04-29,True,False
+midsmallcap400,,VSTIND,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,VSTIND,,2019-04-15,2021-10-29,False,False
+midsmallcap400,INE825A01020,VTL,Vardhman Textiles Ltd.,2016-04-01,,True,True
+midsmallcap400,INE377N01017,WAAREEENER,Waaree Energies Ltd.,2025-04-11,,False,True
+midsmallcap400,,WABAG,,2016-04-01,2020-09-14,True,False
+midsmallcap400,INE191B01025,WELCORP,Welspun Corp Ltd.,2025-04-11,,False,True
+midsmallcap400,INE192B01031,WELSPUNLIV,Welspun Living Ltd.,2016-04-01,,True,True
+midsmallcap400,,WESTLIFE,,2020-01-16,2025-12-31,False,False
+midsmallcap400,INE716A01013,WHIRLPOOL,Whirlpool of India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE049B01025,WOCKPHARMA,Wockhardt Ltd.,2016-04-01,,True,True
+midsmallcap400,,WONDERLA,,2016-04-01,2017-10-30,True,False
+midsmallcap400,,WSTCSTPAPR,,2016-04-01,2025-04-11,True,False
+midsmallcap400,INE528G01035,YESBANK,Yes Bank Ltd.,2016-04-01,2021-04-29,True,False
+midsmallcap400,INE528G01035,YESBANK,Yes Bank Ltd.,2025-04-11,,False,True
+midsmallcap400,INE256A01028,ZEEL,Zee Entertainment Enterprises Ltd.,2016-04-01,,True,True
+midsmallcap400,,ZEELEARN,,2016-04-01,2018-12-28,True,False
+midsmallcap400,INE520A01027,ZENSARTECH,Zensar Technolgies Ltd.,2016-04-01,2018-06-29,True,False
+midsmallcap400,INE520A01027,ZENSARTECH,Zensar Technolgies Ltd.,2018-12-28,,False,True
+midsmallcap400,INE251B01027,ZENTEC,Zen Technologies Ltd.,2016-04-01,,True,True
+midsmallcap400,INE342J01019,ZFCVINDIA,ZF Commercial Vehicle Control Systems India Ltd.,2016-04-01,,True,True
+midsmallcap400,INE768C01028,ZYDUSWELL,Zydus Wellness Ltd.,2016-04-01,2017-10-30,True,False
+midsmallcap400,INE768C01028,ZYDUSWELL,Zydus Wellness Ltd.,2018-12-28,2024-10-10,False,False
+midsmallcap400,INE768C01028,ZYDUSWELL,Zydus Wellness Ltd.,2026-05-12,,False,True

@@ -44,6 +44,11 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
   <div class="tiny" id="dataStatus">Loading data bundle...</div>
   <div class="progress"><div class="bar" id="loadBar"></div></div>
 
+  <h3>Universe</h3>
+  <div class="look"><label class="check"><input type="checkbox" class="uni" value="midsmallcap400">Nifty MidSmallcap 400</label></div>
+  <div class="look"><label class="check"><input type="checkbox" class="uni" value="microcap250">Nifty Microcap 250</label></div>
+  <div class="tiny">Select one, or both to rank the merged pool together. Microcap 250 is point-in-time only from its 2021 launch.</div>
+
   <h3>Backtest Window</h3>
   <div class="row"><div><label>Start</label><input id="start" type="date"></div><div><label>End</label><input id="end" type="date"></div></div>
 
@@ -130,27 +135,53 @@ function num(id){return Number($(id).value)}function checked(id){return $(id).ch
 function cfg(){
   const lookbacks=[...document.querySelectorAll('.lb:checked')].map(x=>x.value);
   const weights={};document.querySelectorAll('.wt').forEach(x=>weights[x.dataset.lb]=Number(x.value));
-  return {start:$('start').value,end:$('end').value,lookbacks,weights,vol_adjust:checked('vol_adjust'),vol_lookback:$('vol_lookback').value,skip_1m:checked('skip_1m'),top_n:num('top_n'),entry_rank:num('entry_rank'),exit_rank:num('exit_rank'),rebalance_frequency:$('rebalance_frequency').value,rebalance_day:num('rebalance_day'),weighting:$('weighting').value,initial_capital:num('initial_capital'),include_brokerage:checked('include_brokerage'),brokerage_rate:num('brokerage_rate'),include_stt:checked('include_stt'),stt_rate:num('stt_rate'),include_sebi:checked('include_sebi'),sebi_rate:num('sebi_rate'),include_stamp:checked('include_stamp'),stamp_duty_rate:num('stamp_duty_rate'),include_slippage:checked('include_slippage'),slippage_rate:num('slippage_rate'),include_tax:checked('include_tax'),stcg_rate:num('stcg_rate'),ltcg_rate:num('ltcg_rate'),ltcg_exemption:num('ltcg_exemption'),long_term_days:365,trend_filter:$('trend_filter').value,trend_source:$('trend_source').value,trend_timeframe:$('trend_timeframe').value,supertrend_atr_period:num('supertrend_atr_period'),supertrend_multiplier:num('supertrend_multiplier'),bearish_exposure:num('bearish_exposure'),bearish_asset:$('bearish_asset').value,bearish_symbol:'GOLDBEES'};
+  const universe=[...document.querySelectorAll('.uni:checked')].map(x=>x.value);
+  return {universe:universe.length?universe:['midsmallcap400'],start:$('start').value,end:$('end').value,lookbacks,weights,vol_adjust:checked('vol_adjust'),vol_lookback:$('vol_lookback').value,skip_1m:checked('skip_1m'),top_n:num('top_n'),entry_rank:num('entry_rank'),exit_rank:num('exit_rank'),rebalance_frequency:$('rebalance_frequency').value,rebalance_day:num('rebalance_day'),weighting:$('weighting').value,initial_capital:num('initial_capital'),include_brokerage:checked('include_brokerage'),brokerage_rate:num('brokerage_rate'),include_stt:checked('include_stt'),stt_rate:num('stt_rate'),include_sebi:checked('include_sebi'),sebi_rate:num('sebi_rate'),include_stamp:checked('include_stamp'),stamp_duty_rate:num('stamp_duty_rate'),include_slippage:checked('include_slippage'),slippage_rate:num('slippage_rate'),include_tax:checked('include_tax'),stcg_rate:num('stcg_rate'),ltcg_rate:num('ltcg_rate'),ltcg_exemption:num('ltcg_exemption'),long_term_days:365,trend_filter:$('trend_filter').value,trend_source:$('trend_source').value,trend_timeframe:$('trend_timeframe').value,supertrend_atr_period:num('supertrend_atr_period'),supertrend_multiplier:num('supertrend_multiplier'),bearish_exposure:num('bearish_exposure'),bearish_asset:$('bearish_asset').value,bearish_symbol:'GOLDBEES'};
 }
 function applyDefaults(d){
+  const uni=d.universe||['midsmallcap400'];
+  document.querySelectorAll('.uni').forEach(x=>x.checked=uni.includes(x.value));
   $('start').value=d.start;$('end').value=d.end;
   document.querySelectorAll('.lb').forEach(x=>x.checked=d.lookbacks.includes(x.value));
   document.querySelectorAll('.wt').forEach(x=>x.value=d.weights[x.dataset.lb]??1);
   ['vol_adjust','skip_1m','include_brokerage','include_stt','include_sebi','include_stamp','include_slippage','include_tax'].forEach(id=>$(id).checked=!!d[id]);
   ['vol_lookback','top_n','entry_rank','exit_rank','rebalance_frequency','rebalance_day','weighting','initial_capital','brokerage_rate','stt_rate','sebi_rate','stamp_duty_rate','slippage_rate','stcg_rate','ltcg_rate','ltcg_exemption','trend_filter','trend_source','trend_timeframe','supertrend_atr_period','supertrend_multiplier','bearish_exposure','bearish_asset'].forEach(id=>$(id).value=d[id]);
 }
-function universeAt(idx){
-  const date=MARKET.dates[idx];let best=MARKET.universe[0].symbols;
-  for(const snap of MARKET.universe){if(snap.date<=date)best=snap.symbols;else break}
+function universeSnapAt(timeline,date){
+  let best=timeline.length?timeline[0].symbols:[];
+  for(const snap of timeline){if(snap.date<=date)best=snap.symbols;else break}
   return best;
+}
+function universeAt(idx,selected){
+  const date=MARKET.dates[idx];
+  const keys=(selected&&selected.length)?selected:['midsmallcap400'];
+  const uni=MARKET.universes||{midsmallcap400:MARKET.universe};
+  if(keys.length===1){return universeSnapAt(uni[keys[0]]||MARKET.universe,date)}
+  const set=new Set();
+  for(const k of keys){const tl=uni[k];if(tl)for(const s of universeSnapAt(tl,date))set.add(s)}
+  return [...set];
 }
 function rebalanceDates(c,startIdx,endIdx){
   const out=[];const dates=MARKET.dates;
-  if(c.rebalance_frequency==='weekly'){for(let i=startIdx;i<=endIdx;i++){const day=new Date(dates[i]+'T00:00:00Z').getUTCDay();if(day===1)out.push(i)}return out.length?out:[startIdx];}
+  if(c.rebalance_frequency==='weekly'){
+    // Mirror Python get_rebalance_dates: anchor on every calendar Monday, then
+    // take the first trading day on/after that Monday (rolls forward across a
+    // holiday Monday instead of dropping the week).
+    const endTs=dateTs(c.end), seen=new Set();
+    const d=new Date(c.start+'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate()+((8-d.getUTCDay())%7)); // first Monday on/after start
+    for(;d.getTime()<=endTs;d.setUTCDate(d.getUTCDate()+7)){
+      const anchor=d.getTime();let lo=startIdx,hi=endIdx,idx=-1;
+      while(lo<=hi){const mid=(lo+hi)>>1;if(dateTs(dates[mid])>=anchor){idx=mid;hi=mid-1}else lo=mid+1}
+      if(idx>=0&&!seen.has(idx)){seen.add(idx);out.push(idx)}
+    }
+    return out.length?out.sort((a,b)=>a-b):[startIdx];
+  }
   const seen=new Set();
   for(let i=startIdx;i<=endIdx;i++){
     const dt=new Date(dates[i]+'T00:00:00Z'), key=dt.getUTCFullYear()+'-'+dt.getUTCMonth();
-    if(c.rebalance_frequency==='quarterly' && ![2,5,8,11].includes(dt.getUTCMonth()))continue;
+    // Quarterly anchors on Jan/Apr/Jul/Oct (pandas freq="QS"), matching Python.
+    if(c.rebalance_frequency==='quarterly' && ![0,3,6,9].includes(dt.getUTCMonth()))continue;
     if(dt.getUTCDate()>=c.rebalance_day && !seen.has(key)){seen.add(key);out.push(i)}
   }
   return out;
@@ -166,8 +197,11 @@ function computeScores(day,universe,c){
     let score=0, ok=true;
     for(const lb of c.lookbacks){const past=value(s,end-LB[lb]);if(past==null||past<=0){ok=false;break}score+=(c.weights[lb]??1)*(now/past-1)}
     if(!ok)continue;
+    // Volatility uses the recent window ending at the rank date (day), NOT the
+    // month-shifted momentum point (end) -- matches Python compute_scores, where
+    // skip_1m shifts only the return signal, not the vol-scaling window.
     const vLb=LB[c.vol_lookback]||63, rets=[];
-    for(let i=end-vLb+2;i<=end;i++){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)rets.push(b/a-1)}
+    for(let i=day-vLb+2;i<=day;i++){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)rets.push(b/a-1)}
     const vol=stdev(rets)*Math.sqrt(252);if(!(vol>0))continue;
     if(c.vol_adjust)score/=vol;
     rows.push({s,score,vol});
@@ -178,29 +212,35 @@ function charges(c,buy){let r=0;if(c.include_brokerage)r+=c.brokerage_rate;if(c.
 function fy(date){const d=new Date(date+'T00:00:00Z'), y=d.getUTCFullYear(), m=d.getUTCMonth()+1, s=m>=4?y:y-1;return 'FY'+s+'-'+String(s+1).slice(-2)}
 function tax(gain,isLong,date,state,c){if(!c.include_tax)return 0;if(gain<=0){if(isLong)state.ltLoss+=-gain;else state.stLoss+=-gain;return 0}let taxable=gain;if(isLong){const off=Math.min(taxable,state.ltLoss);taxable-=off;state.ltLoss-=off;const off2=Math.min(taxable,state.stLoss);taxable-=off2;state.stLoss-=off2;const f=fy(date);state.exempt[f]??=0;const ex=Math.min(taxable,Math.max(c.ltcg_exemption-state.exempt[f],0));taxable-=ex;state.exempt[f]+=ex;return taxable*c.ltcg_rate}const off=Math.min(taxable,state.stLoss);taxable-=off;state.stLoss-=off;return taxable*c.stcg_rate}
 function supertrendState(c){
-  if(c.trend_filter!=='supertrend')return MARKET.dates.map(()=>true);
-  const b=MARKET.benchmarks[c.trend_source]||MARKET.benchmarks.nifty500;if(!b||!b.ohlc)return MARKET.dates.map(()=>true);
-  let o=b.ohlc.open,h=b.ohlc.high,l=b.ohlc.low,cl=b.ohlc.close, map=MARKET.dates.map((_,i)=>i);
+  const md=MARKET.dates, allTrue=md.map(()=>true);
+  if(c.trend_filter!=='supertrend')return allTrue;
+  const b=MARKET.benchmarks[c.trend_source]||MARKET.benchmarks.nifty500;
+  if(!b||!b.ohlc||!b.ohlc.dates)return allTrue;
+  // Work on the benchmark's OWN bars (native calendar), dropping any null close.
+  let bd=[],o=[],h=[],l=[],cl=[];
+  for(let i=0;i<b.ohlc.dates.length;i++){
+    if(b.ohlc.close[i]==null)continue;
+    bd.push(b.ohlc.dates[i]);o.push(b.ohlc.open[i]);h.push(b.ohlc.high[i]);l.push(b.ohlc.low[i]);cl.push(b.ohlc.close[i]);
+  }
+  let barDates=bd;
   if(c.trend_timeframe==='weekly'){
-    const rows=[], idxs=[];let cur='';
-    for(let i=0;i<MARKET.dates.length;i++){
-      if(cl[i]==null)continue;
-      const d=new Date(MARKET.dates[i]+'T00:00:00Z'), daysToSunday=(7-d.getUTCDay())%7, sunday=new Date(d.getTime()+daysToSunday*86400000), key=sunday.toISOString().slice(0,10);
-      if(key!==cur){rows.push({o:o[i],h:h[i],l:l[i],c:cl[i]});idxs.push(i);cur=key}
-      else{const r=rows[rows.length-1];r.h=Math.max(r.h,h[i]);r.l=Math.min(r.l,l[i]);r.c=cl[i];idxs[idxs.length-1]=i}
+    // W-SUN resample: first/max/min/last within each Mon-Sun week, labelled by Sunday.
+    const ro=[],rh=[],rl=[],rc=[],rd=[];let cur='';
+    for(let i=0;i<bd.length;i++){
+      const d=new Date(bd[i]+'T00:00:00Z'), daysToSunday=(7-d.getUTCDay())%7, sunday=new Date(d.getTime()+daysToSunday*86400000), key=sunday.toISOString().slice(0,10);
+      if(key!==cur){ro.push(o[i]);rh.push(h[i]);rl.push(l[i]);rc.push(cl[i]);rd.push(key);cur=key}
+      else{const j=rc.length-1;rh[j]=Math.max(rh[j],h[i]);rl[j]=Math.min(rl[j],l[i]);rc[j]=cl[i]}
     }
-    o=rows.map(r=>r.o);h=rows.map(r=>r.h);l=rows.map(r=>r.l);cl=rows.map(r=>r.c);map=idxs;
+    o=ro;h=rh;l=rl;cl=rc;barDates=rd;
   }
   const n=cl.length, atr=Array(n).fill(null), basicU=Array(n).fill(null), basicL=Array(n).fill(null), finalU=Array(n).fill(null), finalL=Array(n).fill(null), bull=Array(n).fill(true), p=Math.max(1,c.supertrend_atr_period), m=c.supertrend_multiplier;
   const tr=[];
   for(let i=0;i<n;i++){
-    if(cl[i]==null){tr.push(null);continue}
     const vals=[h[i]-l[i]];
-    if(i>0&&cl[i-1]!=null){vals.push(Math.abs(h[i]-cl[i-1]),Math.abs(l[i]-cl[i-1]))}
+    if(i>0)vals.push(Math.abs(h[i]-cl[i-1]),Math.abs(l[i]-cl[i-1]));
     tr.push(Math.max(...vals));
-    const win=tr.slice(Math.max(0,i-p+1),i+1).filter(x=>x!=null);
-    if(win.length===p){
-      atr[i]=mean(win);
+    if(i>=p-1){
+      atr[i]=mean(tr.slice(i-p+1,i+1));
       const mid=(h[i]+l[i])/2;
       basicU[i]=mid+m*atr[i]; basicL[i]=mid-m*atr[i];
       finalU[i]=basicU[i]; finalL[i]=basicL[i];
@@ -214,8 +254,24 @@ function supertrendState(c){
     else if(cl[i]<finalL[i-1])bull[i]=false;
     else bull[i]=bull[i-1];
   }
-  if(c.trend_timeframe==='daily')return bull;
-  const daily=MARKET.dates.map(()=>true);let last=true,j=0;for(let i=0;i<daily.length;i++){while(j<map.length&&map[j]<=i){last=bull[j];j++}daily[i]=last}return daily;
+  // Non-daily bars are re-stamped to the last trading day on/before the bucket
+  // end (so a holiday-Sunday label still applies on that week's real close).
+  let stateDates=barDates;
+  if(c.trend_timeframe!=='daily'){
+    stateDates=barDates.map(be=>{
+      const beTs=dateTs(be);let lo=0,hi=md.length-1,ans=null;
+      while(lo<=hi){const mid=(lo+hi)>>1;if(dateTs(md[mid])<=beTs){ans=md[mid];lo=mid+1}else hi=mid-1}
+      return ans??be;
+    });
+  }
+  // Forward-fill the trend state onto the trading calendar (ffill, default True).
+  const daily=md.map(()=>true);let last=true,j=0;
+  for(let i=0;i<md.length;i++){
+    const ts=dateTs(md[i]);
+    while(j<n&&dateTs(stateDates[j])<=ts){last=bull[j];j++}
+    daily[i]=last;
+  }
+  return daily;
 }
 function trendActionDates(trend,startIdx,endIdx){
   const out=[];
@@ -260,7 +316,7 @@ function runBacktest(c){
   function sell(s,day,qty){let lots=positions.get(s)||[], px=value(s,day,true)??value(s,day,false);if(!px||qty<=0)return;let rem=Math.min(qty,shares(s)), sale=0,taxDue=0, kept=[];for(const lot of lots){const take=Math.min(lot.shares,rem);if(take>0){const frac=take/lot.shares, lotSale=take*px, lotCost=lot.cost*frac;sale+=lotSale;taxDue+=tax(lotSale-lotCost,(dateTs(MARKET.dates[day])-dateTs(lot.entry))/86400000>=c.long_term_days,MARKET.dates[day],taxState,c);lot.shares-=take;lot.cost*=1-frac;rem-=take}if(lot.shares>1e-9)kept.push(lot)}if(kept.length)positions.set(s,kept);else positions.delete(s);const ch=sale*sellRate;cash+=sale-ch-taxDue;totalCharges+=ch;totalTax+=taxDue}
   function buy(s,day,amount){const px=value(s,day,true)??value(s,day,false);if(!px||amount<=0)return;const gross=Math.min(cash,amount)/(1+buyRate);const ch=gross*buyRate;if(gross<=0)return;cash-=gross+ch;totalCharges+=ch;const lots=positions.get(s)||[];lots.push({shares:gross/px,cost:gross,entry:MARKET.dates[day]});positions.set(s,lots)}
   for(let k=0;k<rb.length;k++){
-    const day=rb[k], rankDay=Math.max(startIdx,day-1), scores=computeScores(rankDay,universeAt(day),c), rank=new Map(scores.map((r,i)=>[r.s,i+1])), scoreBy=new Map(scores.map(r=>[r.s,r])), bullish=trend[day], useGold=!bullish&&c.bearish_asset==='goldbees'&&goldIdx>=0;
+    const day=rb[k], rankDay=day>0?day-1:day, scores=computeScores(rankDay,universeAt(day,c.universe),c), rank=new Map(scores.map((r,i)=>[r.s,i+1])), scoreBy=new Map(scores.map(r=>[r.s,r])), bullish=trend[day], useGold=!bullish&&c.bearish_asset==='goldbees'&&goldIdx>=0;
     const survivors=[...current].filter(s=>(rank.get(s)||999999)<=c.exit_rank), target=new Set();
     if(bullish){survivors.forEach(s=>target.add(s));for(const r of scores.slice(0,c.entry_rank)){if(target.size>=c.top_n)break;if(!target.has(r.s))target.add(r.s)}}
     else if(useGold)target.add(goldIdx);else if(c.bearish_exposure>0)survivors.forEach(s=>target.add(s));

@@ -30,7 +30,8 @@ LOOKBACK_OPTIONS = {
 }
 
 DEFAULTS = {
-    "start": "2016-05-01",
+    "universe": ["midsmallcap400"],
+    "start": "2016-04-01",
     "end": "2026-07-01",
     "lookbacks": ["3m", "6m", "9m"],
     "weights": {"3m": 1.0, "6m": 1.0, "9m": 1.0},
@@ -185,6 +186,43 @@ def load_inputs() -> tuple[pd.DataFrame, pd.DataFrame, dict]:
     return _PRICE_WIDE, _OPEN_WIDE, _TIMELINE
 
 
+# Selectable universes -> point-in-time timeline. midsmallcap400 is the original;
+# microcap250 is optional (present only once changes_microcap250.csv is built).
+_TIMELINES: dict[str, dict] | None = None
+UNIVERSE_FILES = {
+    "midsmallcap400": "changes.csv",
+    "microcap250": "changes_microcap250.csv",
+}
+
+
+def load_timelines() -> dict[str, dict]:
+    global _TIMELINES
+    if _TIMELINES is None:
+        _TIMELINES = {}
+        for key, fname in UNIVERSE_FILES.items():
+            path = ROOT / fname
+            if path.exists():
+                _TIMELINES[key] = build_universe_timeline(path)
+    return _TIMELINES
+
+
+def combined_universe_as_of(date: pd.Timestamp, selected: list[str]) -> tuple[set[str], bool]:
+    """Union the point-in-time members of every selected universe (merged pool)."""
+    timelines = load_timelines()
+    if not selected:
+        selected = ["midsmallcap400"]
+    members: set[str] = set()
+    approximated = False
+    for key in selected:
+        tl = timelines.get(key)
+        if not tl:
+            continue
+        subset, approx = get_universe_as_of(date, tl)
+        members |= subset
+        approximated = approximated or approx
+    return members, approximated
+
+
 def merged_config(payload: dict) -> dict:
     cfg = json.loads(json.dumps(DEFAULTS))
     for key, value in payload.items():
@@ -200,6 +238,10 @@ def merged_config(payload: dict) -> dict:
     cfg["supertrend_atr_period"] = max(int(cfg["supertrend_atr_period"]), 1)
     cfg["supertrend_multiplier"] = float(cfg["supertrend_multiplier"])
     cfg["bearish_exposure"] = min(max(float(cfg["bearish_exposure"]), 0.0), 1.0)
+    uni = cfg.get("universe") or ["midsmallcap400"]
+    if isinstance(uni, str):
+        uni = [uni]
+    cfg["universe"] = [u for u in uni if u in UNIVERSE_FILES] or ["midsmallcap400"]
     return cfg
 
 
@@ -299,11 +341,17 @@ def supertrend_bullish(ohlc: pd.DataFrame, atr_period: int, multiplier: float) -
         if pd.isna(atr.iloc[i]):
             bullish.iloc[i] = bullish.iloc[i - 1]
             continue
-        if basic_upper.iloc[i] < final_upper.iloc[i - 1] or close.iloc[i - 1] > final_upper.iloc[i - 1]:
+        # When atr_period > 1 the ATR (and thus the basic/final bands) is NaN for
+        # the warm-up bars. At the first bar with a valid ATR the previous final
+        # band is still NaN, so every carry comparison below is NaN (always
+        # False) and would latch final_upper/final_lower to NaN forever -- leaving
+        # the trend permanently bullish. Seed the final bands directly from the
+        # basic bands whenever the prior final band is unavailable.
+        if pd.isna(final_upper.iloc[i - 1]) or basic_upper.iloc[i] < final_upper.iloc[i - 1] or close.iloc[i - 1] > final_upper.iloc[i - 1]:
             final_upper.iloc[i] = basic_upper.iloc[i]
         else:
             final_upper.iloc[i] = final_upper.iloc[i - 1]
-        if basic_lower.iloc[i] > final_lower.iloc[i - 1] or close.iloc[i - 1] < final_lower.iloc[i - 1]:
+        if pd.isna(final_lower.iloc[i - 1]) or basic_lower.iloc[i] > final_lower.iloc[i - 1] or close.iloc[i - 1] < final_lower.iloc[i - 1]:
             final_lower.iloc[i] = basic_lower.iloc[i]
         else:
             final_lower.iloc[i] = final_lower.iloc[i - 1]
@@ -734,7 +782,7 @@ def run_dashboard_backtest(cfg: dict) -> dict:
     for i, date in enumerate(dates):
         action_key = date.date().isoformat()
         is_trend_event = action_key in trend_event_info
-        universe, approximated = get_universe_as_of(date, timeline)
+        universe, approximated = combined_universe_as_of(date, cfg.get("universe") or ["midsmallcap400"])
         # Rank on the PREVIOUS close (data known before the entry-day open), then
         # enter at this day's open -- no look-ahead.
         loc = price_wide.index.get_loc(date)

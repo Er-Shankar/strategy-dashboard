@@ -88,11 +88,39 @@ def main() -> None:
     symbols = [str(c) for c in close.columns]
     symbol_index = {s: i for i, s in enumerate(symbols)}
 
-    timeline = build_universe_timeline(ROOT / "changes.csv")
-    universe = []
-    for date, members in timeline.items():
-        ids = sorted(symbol_index[s] for s in members if s in symbol_index)
-        universe.append({"date": pd.to_datetime(date).date().isoformat(), "symbols": ids})
+    def build_universe(changes_path: Path) -> tuple[list[dict], set[str]]:
+        timeline = build_universe_timeline(changes_path)
+        snapshots, members_all = [], set()
+        for date, members in timeline.items():
+            members_all |= set(members)
+            ids = sorted(symbol_index[s] for s in members if s in symbol_index)
+            snapshots.append({"date": pd.to_datetime(date).date().isoformat(), "symbols": ids})
+        return snapshots, members_all
+
+    # Each selectable universe maps to its own point-in-time constituent timeline.
+    universes: dict[str, list[dict]] = {}
+    all_members: set[str] = set()
+    universes["midsmallcap400"], m400 = build_universe(ROOT / "changes.csv")
+    all_members |= m400
+    if (ROOT / "changes_microcap250.csv").exists():
+        universes["microcap250"], mmicro = build_universe(ROOT / "changes_microcap250.csv")
+        all_members |= mmicro
+    # Backward-compatible alias for the original single-universe key.
+    universe = universes["midsmallcap400"]
+
+    # Transparency: stocks that were once in a tracked universe but have no price
+    # data (delisted/merged/defaulted names). They can't be traded, so historical
+    # results carry mild survivorship bias.
+    missing_universe = sorted(all_members - set(symbols))
+    data_coverage = {
+        "universe_symbols_total": len(all_members),
+        "universe_symbols_with_prices": len(all_members) - len(missing_universe),
+        "universe_symbols_missing": len(missing_universe),
+        "missing_symbols": missing_universe,
+        "note": ("Delisted/merged/defaulted stocks that left a tracked index and have "
+                 "no price data. Excluded from backtests -> mild upward survivorship "
+                 "bias in older years. Current constituents are fully covered."),
+    }
 
     benchmarks: dict[str, dict] = {}
     if (ROOT / "nifty500.csv").exists():
@@ -100,9 +128,15 @@ def main() -> None:
     if (ROOT / "nifty50.csv").exists():
         benchmarks["nifty50"] = {"close": series_payload(read_index_csv(ROOT / "nifty50.csv"), dates)}
     if (ROOT / "nifty500_ohlc.csv").exists():
-        ohlc = read_ohlc_csv(ROOT / "nifty500_ohlc.csv").reindex(close.index)
+        # Ship OHLC on the benchmark's OWN trading calendar (not reindexed onto
+        # the stock-universe calendar). The Supertrend trend filter must run on
+        # the benchmark's real bars: reindexing inserted NaN-filled fake bars and
+        # dropped genuine ones, corrupting ATR and shifting trend flips versus the
+        # Python engine. The browser carries the native date axis to recompute it.
+        ohlc = read_ohlc_csv(ROOT / "nifty500_ohlc.csv")
         benchmarks.setdefault("nifty500", {})
         benchmarks["nifty500"]["ohlc"] = {
+            "dates": [d.date().isoformat() for d in ohlc.index],
             "open": [round_or_none(v, 4) for v in ohlc["open"].tolist()],
             "high": [round_or_none(v, 4) for v in ohlc["high"].tolist()],
             "low": [round_or_none(v, 4) for v in ohlc["low"].tolist()],
@@ -117,9 +151,12 @@ def main() -> None:
         "close": matrix_payload(close),
         "open": matrix_payload(open_wide),
         "universe": universe,
+        "universes": universes,
         "benchmarks": benchmarks,
+        "data_coverage": data_coverage,
         "defaults": {
-            "start": "2016-05-01",
+            "universe": ["midsmallcap400"],
+            "start": "2016-04-01",
             "end": dates[-1],
             "lookbacks": ["3m", "6m", "9m"],
             "weights": {"1m": 0, "3m": 1, "6m": 1, "9m": 1, "12m": 1},

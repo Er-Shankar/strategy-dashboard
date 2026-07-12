@@ -7,7 +7,7 @@ on:
     - cron: "0 14 * * 1-5"
 
 permissions:
-  contents: read
+  contents: write   # commit the daily point-in-time universe history back to the repo
   pages: write
   id-token: write
 
@@ -28,6 +28,27 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      # Fetch today's official MidSmallcap 400 list, diff it against the tracked
+      # membership, append any add/remove events (append-only) and rebuild the
+      # master table. Non-fatal: a niftyindices outage must not block the deploy.
+      - name: Update point-in-time universe (Nifty MidSmallcap 400)
+        continue-on-error: true
+        run: python update_universe_daily.py
+
+      - name: Commit universe history
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add changes.csv changes_microcap250.csv universe_membership.csv \
+                  midsmallcap400_current.csv microcap250_current.csv universe_snapshots
+          if git diff --cached --quiet; then
+            echo "No universe changes to commit."
+          else
+            git commit -m "Daily universe update [skip ci]"
+            git push
+          fi
 
       - name: Refresh market data
         run: python refresh_market_data.py

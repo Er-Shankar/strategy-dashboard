@@ -61,18 +61,33 @@ def build_universe_timeline(changes_csv: str) -> dict[pd.Timestamp, set[str]]:
     snapshot_date = df.loc[df["action"] == "snapshot_member", "date"].max()
     current_set = set(df.loc[(df["action"] == "snapshot_member") & (df["date"] == snapshot_date), "symbol"])
 
-    events = df[df["action"].isin(["add", "remove"])].sort_values("date", ascending=False)
+    events = df[df["action"].isin(["add", "remove"])]
 
     timeline = {snapshot_date: set(current_set)}
+
+    # Reverse events strictly BEFORE the snapshot to reconstruct older membership.
     running = set(current_set)
-    for event_date, grp in events.groupby("date", sort=False):
-        if event_date >= snapshot_date:
-            continue
+    past = events[events["date"] < snapshot_date].sort_values("date", ascending=False)
+    for event_date, grp in past.groupby("date", sort=False):
         for _, row in grp.iterrows():
             if row["action"] == "add":
                 running.discard(row["symbol"])   # wasn't there before this add
             elif row["action"] == "remove":
                 running.add(row["symbol"])       # was there before this remove
+        timeline[event_date] = set(running)
+
+    # Apply events strictly AFTER the snapshot going FORWARD. This lets the daily
+    # job append new add/remove rows (append-only) without rewriting the snapshot:
+    # an 'add' after the snapshot means the stock joined on that date, a 'remove'
+    # means it left. Without this, post-snapshot events would be silently ignored.
+    running = set(current_set)
+    future = events[events["date"] > snapshot_date].sort_values("date")
+    for event_date, grp in future.groupby("date", sort=True):
+        for _, row in grp.iterrows():
+            if row["action"] == "add":
+                running.add(row["symbol"])
+            elif row["action"] == "remove":
+                running.discard(row["symbol"])
         timeline[event_date] = set(running)
 
     return dict(sorted(timeline.items()))

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-07-11T12:41:44.644664+00:00",
+  "generated_at": "2026-07-12T19:45:34.784548+00:00",
   "date_start": "2011-01-03",
   "date_end": "2026-07-08",
-  "symbols": 730,
+  "symbols": 878,
   "trading_days": 3828,
   "universe_snapshots": 61,
-  "market_json_bytes": 42194690
+  "market_json_bytes": 49280198
 }
