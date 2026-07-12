@@ -27,12 +27,14 @@ button:disabled{opacity:.6;cursor:wait}
 .grid{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px}
 .tile,.card{background:var(--panel);border:1px solid var(--line);border-radius:8px}.tile{padding:13px}.tile .lbl{font-size:12px;color:var(--muted)}.tile .val{font-size:22px;font-weight:750;margin-top:4px}.tile .cmp{font-size:12px;color:var(--muted)}
 .card{padding:14px;margin-top:14px}.cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-canvas{width:100%;height:320px;display:block}.short canvas{height:240px}
+.chart{position:relative}.chart svg{width:100%;height:auto;display:block}.tip{position:absolute;display:none;pointer-events:none;background:#111827;color:#fff;border-radius:7px;padding:7px 9px;font-size:12px;line-height:1.35;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:3;white-space:nowrap}.axis-label{font-size:11px;fill:var(--muted)}.hover-line{stroke:#777;stroke-width:1;stroke-dasharray:3 3}.hover-dot{stroke:#fff;stroke-width:2}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}th:first-child,td:first-child{text-align:left}.sym{font-weight:700}.pos{color:var(--green)}.neg{color:var(--red)}
 .scroll{overflow:auto;max-height:330px}.err{display:none;background:#fff3f3;border:1px solid #f0b6b6;color:#8b1717;border-radius:8px;padding:10px;margin-top:12px}
 .status{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.pill{border:1px solid var(--line);border-radius:999px;background:#fff;padding:5px 10px;color:var(--muted);font-size:12px}
 .saved-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}.saved-row:last-child{border-bottom:0}
 .progress{height:8px;border-radius:999px;background:#e8ebf0;overflow:hidden;margin-top:10px}.bar{height:100%;background:var(--blue);width:0%}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tab-btn{width:auto;background:#fff;color:var(--ink);border:1px solid var(--line);padding:8px 16px;margin:0;font-weight:700}.tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}.legend{display:flex;gap:14px;color:var(--muted);font-size:12px;margin-bottom:8px;flex-wrap:wrap}.key{display:inline-flex;align-items:center;gap:6px}.key i{width:14px;height:3px;display:inline-block;border-radius:2px}
+.sim-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:10px 0}.sim-group{border:1px solid var(--line);border-radius:8px;padding:10px 12px}.sim-group h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}.sim-group .check{margin:4px 0;font-size:13px}.sim-summary{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin:10px 0}.sim-summary .big{font-size:20px;font-weight:750}.sim-actions{display:flex;gap:10px}.sim-actions button{margin-top:0}.sim-actions button{flex:0 1 180px}.progress-wrap{background:#e8ebf0;border-radius:999px;overflow:hidden;height:10px;margin-top:12px}.progress-bar{background:var(--blue);height:100%;width:0%;transition:width .2s}th.sortable{cursor:pointer;user-select:none}th.sortable:hover,th.sort-active{color:var(--blue)}
 @media(max-width:980px){.app{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}.grid{grid-template-columns:repeat(2,1fr)}.cards2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -92,11 +94,16 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
   <div id="err" class="err"></div>
 </aside>
 <main>
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBacktestBtn">Backtest</button>
+    <button class="tab-btn" id="tabSimulationBtn">Simulation</button>
+  </div>
   <div class="status">
     <span class="pill" id="refreshPill">Data: -</span>
     <span class="pill" id="rangePill">Range: -</span>
     <span class="pill" id="symbolPill">Symbols: -</span>
   </div>
+  <div id="backtestView">
   <div class="grid">
     <div class="tile"><div class="lbl">Gross CAGR</div><div class="val" id="grossCagr">-</div><div class="cmp">before costs/tax</div></div>
     <div class="tile"><div class="lbl">Net CAGR</div><div class="val" id="netCagr">-</div><div class="cmp">after costs/tax</div></div>
@@ -110,13 +117,39 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
     <div class="tile"><div class="lbl">Latest Holdings</div><div class="val" id="holdingCount">-</div><div class="cmp">names</div></div>
   </div>
 
-  <div class="card"><h2>Growth of Rs 100</h2><canvas id="equityChart"></canvas></div>
-  <div class="card short"><h2>Drawdown</h2><canvas id="ddChart"></canvas></div>
+  <div class="card"><h2>Growth of Rs 100</h2><div class="legend"><span class="key"><i style="background:var(--blue)"></i>Gross</span><span class="key"><i style="background:var(--red)"></i>Net</span><span class="key"><i style="background:var(--green)"></i>Nifty 500</span></div><div id="equityChart"></div></div>
+  <div class="card short"><h2>Drawdown</h2><div class="legend"><span class="key"><i style="background:var(--blue)"></i>Gross DD</span><span class="key"><i style="background:var(--red)"></i>Net DD</span><span class="key"><i style="background:var(--green)"></i>Nifty 500 DD</span></div><div id="ddChart"></div></div>
   <div class="cards2">
     <div class="card"><h2>Latest Holdings</h2><div class="scroll"><table id="holdings"><thead><tr><th>Symbol</th><th>Weight</th></tr></thead><tbody></tbody></table></div></div>
     <div class="card"><h2>Saved Backtests</h2><div class="row"><input id="saveName" type="text" placeholder="Name current result"><button id="saveNamed">Save</button></div><div id="savedList" style="margin-top:10px"></div></div>
   </div>
   <div class="card"><h2>Recent Entries / Exits</h2><div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <div id="simulationView" style="display:none">
+    <div class="card">
+      <h2>Simulation</h2>
+      <p class="sub">Runs a local parameter sweep using the current sidebar dates, rank rules, costs and tax settings. Keep the default grid for a quick signal check, or select more values for a broader simulation.</p>
+      <div class="sim-groups" id="simGroups"></div>
+      <div class="sim-summary">
+        <div><div class="big" id="simCount">-</div><div class="tiny">combinations selected</div></div>
+        <div><div class="big" id="simEta">-</div><div class="tiny">estimated time</div></div>
+      </div>
+      <div class="sim-actions">
+        <button id="simRun">Run Simulation</button>
+        <button id="simCancel" class="danger" style="display:none">Cancel</button>
+      </div>
+      <div id="simProgressWrap" style="display:none">
+        <div class="progress-wrap"><div class="progress-bar" id="simBar"></div></div>
+        <div class="tiny" id="simStatus" style="margin-top:6px"></div>
+      </div>
+      <div id="simErr" class="err"></div>
+    </div>
+    <div class="card">
+      <h2>Results <span class="tiny" id="simResultCount"></span></h2>
+      <p class="sub" id="simResultsNote">Click a column header to sort. Results are ranked by Sharpe by default.</p>
+      <div class="scroll"><table id="simTable"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </div>
 </main>
 </div>
 <script>
@@ -339,20 +372,73 @@ function runBacktest(c){
   gross=dedupeSeries(gross,'first'); net=dedupeSeries(net,'last');
   return {gross,net,drawdown:{gross:drawdown(gross),net:drawdown(net)},benchmark:benchmarkEquity(startIdx,endIdx),gross_metrics:metrics(gross),net_metrics:metrics(net),summary:{rebalances:rb.length,scheduled_rebalances:scheduled.length,trend_actions:trendActions.length,total_charges:totalCharges,total_tax:totalTax,trend_mode:holdings.at(-1)?.mode||'-'},latest_holdings:holdings.at(-1)?.holdings||[],changes:changes.slice(-500)};
 }
+function svgEl(tag,attrs={},parent){const node=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v));if(parent)parent.appendChild(node);return node}
+function fmtDate(value){return new Date(value+'T00:00:00Z').toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'2-digit'})}
+function fmtNum(value){return Number(value).toLocaleString('en-IN',{maximumFractionDigits:2})}
+function linePath(data,X,Y){return 'M'+data.map(p=>X(dateTs(p[0]))+','+Y(p[1])).join('L')}
+function nearestPoint(data,targetTs){let best=data[0],bestDist=Math.abs(dateTs(best[0])-targetTs);for(const point of data){const dist=Math.abs(dateTs(point[0])-targetTs);if(dist<bestDist){best=point;bestDist=dist}}return best}
 function drawChart(id,series){
-  const cv=$(id), ctx=cv.getContext('2d'), rect=cv.getBoundingClientRect(), dpr=devicePixelRatio||1;cv.width=rect.width*dpr;cv.height=rect.height*dpr;ctx.scale(dpr,dpr);ctx.clearRect(0,0,rect.width,rect.height);
-  const all=series.flatMap(s=>s.data||[]);if(!all.length)return;const W=rect.width,H=rect.height,P={l:48,r:18,t:16,b:30}, xs=all.map(p=>dateTs(p[0])), ys=all.map(p=>p[1]), x0=Math.min(...xs),x1=Math.max(...xs), y0=Math.min(0,...ys), y1=Math.max(...ys);
+  const mount=$(id);mount.innerHTML='';mount.classList.add('chart');
+  const tip=document.createElement('div');tip.className='tip';mount.appendChild(tip);
+  const nonEmpty=series.filter(s=>s.data&&s.data.length);if(!nonEmpty.length)return;
+  const W=980,H=id==='ddChart'?280:350,P={l:58,r:22,t:16,b:44};
+  const svg=svgEl('svg',{viewBox:`0 0 ${W} ${H}`},mount);
+  const all=nonEmpty.flatMap(s=>s.data), xs=all.map(p=>dateTs(p[0])), ys=all.map(p=>p[1]), x0=Math.min(...xs),x1=Math.max(...xs), y0=Math.min(0,...ys), y1=Math.max(...ys);
   const X=t=>P.l+(t-x0)/(x1-x0||1)*(W-P.l-P.r), Y=v=>P.t+(1-(v-y0)/(y1-y0||1))*(H-P.t-P.b);
-  ctx.strokeStyle='#dde2ea';ctx.fillStyle='#687082';ctx.font='11px system-ui';for(let i=0;i<=4;i++){const v=y0+(y1-y0)*i/4,y=Y(v);ctx.beginPath();ctx.moveTo(P.l,y);ctx.lineTo(W-P.r,y);ctx.stroke();ctx.fillText(Math.round(v),6,y+4)}
-  for(const s of series){if(!s.data?.length)continue;ctx.strokeStyle=s.color;ctx.lineWidth=2;ctx.beginPath();s.data.forEach((p,i)=>{const x=X(dateTs(p[0])),y=Y(p[1]);if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y)});ctx.stroke();ctx.fillStyle=s.color;ctx.fillText(s.label,P.l+8+(series.indexOf(s)*110),14)}
+  for(let i=0;i<=5;i++){const v=y0+(y1-y0)*i/5,y=Y(v);svgEl('line',{x1:P.l,x2:W-P.r,y1:y,y2:y,stroke:'#dfe3ea'},svg);const text=svgEl('text',{x:P.l-8,y:y+4,'text-anchor':'end',class:'axis-label'},svg);text.textContent=Math.round(v)}
+  const ticks=6;for(let i=0;i<ticks;i++){const ts=x0+(x1-x0)*i/(ticks-1),x=X(ts),d=new Date(ts);svgEl('line',{x1:x,x2:x,y1:H-P.b,y2:H-P.b+5,stroke:'#aab2c0'},svg);const text=svgEl('text',{x:x,y:H-15,'text-anchor':'middle',class:'axis-label'},svg);text.textContent=d.getUTCFullYear()}
+  svgEl('line',{x1:P.l,x2:W-P.r,y1:H-P.b,y2:H-P.b,stroke:'#aab2c0'},svg);svgEl('line',{x1:P.l,x2:P.l,y1:P.t,y2:H-P.b,stroke:'#aab2c0'},svg);
+  nonEmpty.forEach(s=>svgEl('path',{d:linePath(s.data,X,Y),fill:'none',stroke:s.color,'stroke-width':2,'stroke-linejoin':'round','stroke-linecap':'round'},svg));
+  const hover=svgEl('g',{style:'display:none'},svg), vline=svgEl('line',{y1:P.t,y2:H-P.b,class:'hover-line'},hover), dots=nonEmpty.map(s=>svgEl('circle',{r:4,fill:s.color,class:'hover-dot'},hover));
+  const overlay=svgEl('rect',{x:P.l,y:P.t,width:W-P.l-P.r,height:H-P.t-P.b,fill:'transparent'},svg);
+  overlay.addEventListener('mousemove',ev=>{const rect=svg.getBoundingClientRect(),mx=(ev.clientX-rect.left)*(W/rect.width),ts=x0+(mx-P.l)/(W-P.l-P.r)*(x1-x0),points=nonEmpty.map(s=>({series:s,point:nearestPoint(s.data,ts)})),x=X(dateTs(points[0].point[0]));hover.style.display='';vline.setAttribute('x1',x);vline.setAttribute('x2',x);dots.forEach((dot,i)=>{dot.setAttribute('cx',X(dateTs(points[i].point[0])));dot.setAttribute('cy',Y(points[i].point[1]))});tip.innerHTML=`<strong>${fmtDate(points[0].point[0])}</strong>`+points.map(p=>`<br><span style="color:${p.series.color}">●</span> ${p.series.label}: ${fmtNum(p.point[1])}`).join('');const left=Math.min(Math.max((ev.clientX-rect.left)+12,8),mount.clientWidth-tip.offsetWidth-8),top=Math.min(Math.max((ev.clientY-rect.top)-8,8),mount.clientHeight-tip.offsetHeight-8);tip.style.left=left+'px';tip.style.top=top+'px';tip.style.display='block'});
+  overlay.addEventListener('mouseleave',()=>{hover.style.display='none';tip.style.display='none'});
 }
 function render(r){
   RESULT=r;$('grossCagr').textContent=pct(r.gross_metrics.cagr);$('netCagr').textContent=pct(r.net_metrics.cagr);$('netFinal').textContent=money(r.net_metrics.final/100*cfg().initial_capital);$('grossDd').textContent=pct(r.gross_metrics.maxdd);$('netDd').textContent=pct(r.net_metrics.maxdd);$('sharpe').textContent=r.net_metrics.sharpe.toFixed(2);$('costTax').textContent=money(r.summary.total_charges+r.summary.total_tax);$('rebalances').textContent=r.summary.rebalances;$('trendMode').textContent=r.summary.trend_mode;$('holdingCount').textContent=r.latest_holdings.length;
   drawChart('equityChart',[{label:'Gross',color:'#2458d3',data:r.gross},{label:'Net',color:'#c93a3a',data:r.net},{label:'Nifty 500',color:'#157a5b',data:r.benchmark}]);
-  drawChart('ddChart',[{label:'Gross DD',color:'#2458d3',data:r.drawdown.gross},{label:'Net DD',color:'#c93a3a',data:r.drawdown.net}]);
+  drawChart('ddChart',[{label:'Gross DD',color:'#2458d3',data:r.drawdown.gross},{label:'Net DD',color:'#c93a3a',data:r.drawdown.net},{label:'Nifty 500 DD',color:'#157a5b',data:drawdown(r.benchmark)}]);
   document.querySelector('#holdings tbody').innerHTML=r.latest_holdings.map(x=>`<tr><td class="sym">${x.symbol}</td><td>${(x.weight*100).toFixed(1)}%</td></tr>`).join('');
   document.querySelector('#changes tbody').innerHTML=r.changes.slice().reverse().map(x=>`<tr><td>${x.date}</td><td class="${x.action==='ENTER'?'pos':'neg'}">${x.action}</td><td class="sym">${x.symbol}</td><td>${x.rank??'-'}</td></tr>`).join('');
 }
+const SIM_LOOKBACK_SETS={
+  '3m_6m_9m':{lookbacks:['3m','6m','9m'],weights:{'3m':1,'6m':1,'9m':1}},
+  '6m_12m':{lookbacks:['6m','12m'],weights:{'6m':1,'12m':1}},
+  '12m':{lookbacks:['12m'],weights:{'12m':1}},
+  '6m':{lookbacks:['6m'],weights:{'6m':1}},
+  '3m_6m_9m_12m':{lookbacks:['3m','6m','9m','12m'],weights:{'3m':1,'6m':1,'9m':1,'12m':1}},
+  '1m_3m_6m':{lookbacks:['1m','3m','6m'],weights:{'1m':1,'3m':1,'6m':1}}
+};
+const SIM_PARAMS=[
+  {key:'universe',label:'Universe',options:[{value:['midsmallcap400'],label:'SmallMid 400'},{value:['microcap250'],label:'Microcap 250'},{value:['midsmallcap400','microcap250'],label:'Both'}]},
+  {key:'lookback_set',label:'Lookback set',options:Object.keys(SIM_LOOKBACK_SETS).map(k=>({value:k,label:k.replaceAll('_','+').toUpperCase()}))},
+  {key:'skip_1m',label:'Skip most recent 1M',options:[{value:false,label:'No'},{value:true,label:'Yes'}]},
+  {key:'vol_adjust',label:'Volatility adjust',options:[{value:true,label:'On'},{value:false,label:'Off'}]},
+  {key:'top_n',label:'Holdings',options:[10,15,20,30].map(v=>({value:v,label:String(v)}))},
+  {key:'rebalance_frequency',label:'Frequency',options:[{value:'monthly',label:'Monthly'},{value:'quarterly',label:'Quarterly'}]},
+  {key:'weighting',label:'Weighting',options:[{value:'equal',label:'Equal'},{value:'inverse_vol',label:'Inverse vol'}]},
+  {key:'trend_filter',label:'Trend filter',options:[{value:'none',label:'Off'},{value:'supertrend',label:'On'}]},
+  {key:'supertrend_multiplier',label:'Supertrend multiplier',options:[2,2.5,3].map(v=>({value:v,label:String(v)}))},
+  {key:'trend_timeframe',label:'Supertrend timeframe',options:[{value:'weekly',label:'Weekly'},{value:'daily',label:'Daily'}]},
+  {key:'bearish_asset',label:'Bearish destination',options:[{value:'cash',label:'Cash'},{value:'goldbees',label:'GoldBees'}]}
+];
+const SIM_DEFAULTS={universe:[['midsmallcap400'],['microcap250'],['midsmallcap400','microcap250']],lookback_set:Object.keys(SIM_LOOKBACK_SETS),skip_1m:[false,true],vol_adjust:[true,false],top_n:[20],rebalance_frequency:['monthly'],weighting:['equal'],trend_filter:['none'],supertrend_multiplier:[2.5],trend_timeframe:['weekly'],bearish_asset:['cash']};
+const SIM_LABELS={cagr:'Net CAGR %',gross_cagr:'Gross CAGR %',sharpe:'Sharpe',vol:'Vol %',maxdd:'Net MaxDD %',gross_maxdd:'Gross MaxDD %',final:'Net Final',rebalances:'Rebalances',error:'Error'};
+let simRunning=false, simCancel=false, simSort={key:'sharpe',dir:'desc'}, SIM_RESULTS=[], simAvgSec=null;
+function switchTab(tab){const backtest=tab==='backtest';$('backtestView').style.display=backtest?'':'none';$('simulationView').style.display=backtest?'none':'';$('tabBacktestBtn').classList.toggle('active',backtest);$('tabSimulationBtn').classList.toggle('active',!backtest);if(!backtest&&!$('simGroups').children.length)renderSimGroups()}
+function fmtDuration(sec){sec=Math.max(0,sec);if(sec<60)return Math.ceil(sec)+'s';const m=Math.floor(sec/60),s=Math.round(sec%60);if(m<60)return m+'m '+s+'s';return Math.floor(m/60)+'h '+(m%60)+'m'}
+function renderSimGroups(){const box=$('simGroups');box.innerHTML='';SIM_PARAMS.forEach(p=>{const div=document.createElement('div');div.className='sim-group';const h=document.createElement('h4');h.textContent=p.label;div.appendChild(h);const defs=new Set((SIM_DEFAULTS[p.key]||[]).map(v=>JSON.stringify(v)));p.options.forEach(opt=>{const label=document.createElement('label');label.className='check';const cb=document.createElement('input');cb.type='checkbox';cb.className='sim-opt';cb.dataset.param=p.key;cb.dataset.value=JSON.stringify(opt.value);cb.checked=defs.has(JSON.stringify(opt.value));cb.addEventListener('change',updateSimSummary);label.appendChild(cb);label.appendChild(document.createTextNode(' '+opt.label));div.appendChild(label)});box.appendChild(div)});updateSimSummary()}
+function currentSimSelection(){const sel={};document.querySelectorAll('.sim-opt:checked').forEach(cb=>{const key=cb.dataset.param;(sel[key]=sel[key]||[]).push(JSON.parse(cb.dataset.value))});return sel}
+function simCombinationCount(sel){let count=1;for(const p of SIM_PARAMS){const n=(sel[p.key]||[]).length;if(!n)return 0;count*=n}return count}
+function updateSimSummary(){const count=simCombinationCount(currentSimSelection()),secPer=simAvgSec??0.22;$('simCount').textContent=count.toLocaleString('en-IN');$('simEta').textContent=count?fmtDuration(count*secPer):'-';$('simRun').disabled=!count||simRunning}
+function expandSimCombos(sel){const keys=SIM_PARAMS.map(p=>p.key), out=[];function rec(i,row){if(i===keys.length){out.push({...row});return}for(const v of sel[keys[i]]||[])rec(i+1,{...row,[keys[i]]:v})}rec(0,{});return out}
+function comboOverrides(combo){const out={};for(const [k,v] of Object.entries(combo)){if(k==='lookback_set'){out.lookbacks=SIM_LOOKBACK_SETS[v].lookbacks;out.weights=SIM_LOOKBACK_SETS[v].weights}else out[k]=v}return out}
+function runSimCombo(base,combo){const row={...combo};try{const r=runBacktest({...base,...comboOverrides(combo)});row.cagr=r.net_metrics.cagr;row.gross_cagr=r.gross_metrics.cagr;row.sharpe=r.net_metrics.sharpe;row.vol=r.net_metrics.vol;row.maxdd=r.net_metrics.maxdd;row.gross_maxdd=r.gross_metrics.maxdd;row.final=r.net_metrics.final;row.rebalances=r.summary.rebalances}catch(e){row.error=e.message}return row}
+function simColumnLabel(key){const p=SIM_PARAMS.find(p=>p.key===key);return p?p.label:(SIM_LABELS[key]||key)}
+function simValueLabel(key,value){const p=SIM_PARAMS.find(p=>p.key===key);if(p){const opt=p.options.find(o=>JSON.stringify(o.value)===JSON.stringify(value));if(opt)return opt.label}return typeof value==='number'?fmtNum(value):String(value)}
+function simColumns(rows){if(!rows.length)return [];const sample=rows.find(r=>!r.error)||rows[0], params=SIM_PARAMS.map(p=>p.key).filter(k=>k in sample), metrics=Object.keys(SIM_LABELS).filter(k=>k!=='error'&&rows.some(r=>k in r));return [...params,...metrics,...(rows.some(r=>'error'in r)?['error']:[])]}
+function renderSimTable(rows){SIM_RESULTS=rows||[];const cols=simColumns(SIM_RESULTS);$('simResultCount').textContent=SIM_RESULTS.length?`(${SIM_RESULTS.length.toLocaleString('en-IN')} completed)`:'';const thead=document.querySelector('#simTable thead');thead.innerHTML='<tr>'+cols.map(c=>{const active=simSort.key===c,arrow=active?(simSort.dir==='desc'?' ▼':' ▲'):'';return `<th class="sortable${active?' sort-active':''}" data-col="${c}">${simColumnLabel(c)}${arrow}</th>`}).join('')+'</tr>';thead.querySelectorAll('th.sortable').forEach(th=>th.onclick=()=>{const col=th.dataset.col;simSort=simSort.key===col?{key:col,dir:simSort.dir==='desc'?'asc':'desc'}:{key:col,dir:'desc'};renderSimTable(SIM_RESULTS)});const sorted=[...SIM_RESULTS].sort((a,b)=>{let av=a[simSort.key],bv=b[simSort.key];if(av==null)av=-Infinity;if(bv==null)bv=-Infinity;if(typeof av==='string'||typeof bv==='string')return simSort.dir==='desc'?String(bv).localeCompare(String(av)):String(av).localeCompare(String(bv));return simSort.dir==='desc'?bv-av:av-bv});document.querySelector('#simTable tbody').innerHTML=sorted.map(r=>'<tr>'+cols.map(c=>{const v=r[c],cls=(c==='cagr'||c==='sharpe')&&typeof v==='number'?(v>=0?'pos':'neg'):'';return `<td class="${cls}">${v==null?'-':simValueLabel(c,v)}</td>`}).join('')+'</tr>').join('')||`<tr><td colspan="${cols.length||1}">No results yet.</td></tr>`}
+async function startSimulation(){const sel=currentSimSelection(),combos=expandSimCombos(sel);if(!combos.length)return;$('simErr').style.display='none';$('simProgressWrap').style.display='';$('simRun').style.display='none';$('simCancel').style.display='';$('simCancel').disabled=false;simRunning=true;simCancel=false;SIM_RESULTS=[];renderSimTable([]);const base=cfg(),started=performance.now();for(let i=0;i<combos.length;i++){if(simCancel)break;SIM_RESULTS.push(runSimCombo(base,combos[i]));const pct=Math.round(100*SIM_RESULTS.length/combos.length),elapsed=(performance.now()-started)/1000,eta=SIM_RESULTS.length?elapsed/SIM_RESULTS.length*(combos.length-SIM_RESULTS.length):0;$('simBar').style.width=pct+'%';$('simStatus').textContent=`${SIM_RESULTS.length}/${combos.length} (${pct}%) | elapsed ${fmtDuration(elapsed)}, ETA ${fmtDuration(eta)}`;renderSimTable(SIM_RESULTS);await new Promise(res=>setTimeout(res,0))}const elapsed=(performance.now()-started)/1000;if(SIM_RESULTS.length)simAvgSec=elapsed/SIM_RESULTS.length;simRunning=false;$('simRun').style.display='';$('simCancel').style.display='none';$('simResultsNote').textContent=simCancel?'Simulation cancelled early.':'Simulation complete.';$('simStatus').textContent=simCancel?`Cancelled after ${SIM_RESULTS.length}/${combos.length} runs.`:`Done: ${SIM_RESULTS.length}/${combos.length} runs in ${fmtDuration(elapsed)}.`;updateSimSummary()}
 async function openDb(){return new Promise((res,rej)=>{const r=indexedDB.open('momentum-lab',1);r.onupgradeneeded=()=>r.result.createObjectStore('runs',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function dbAll(){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readonly'), req=tx.objectStore('runs').getAll();req.onsuccess=()=>res(req.result.sort((a,b)=>b.saved_at.localeCompare(a.saved_at)))})}
 async function dbPut(row){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').put(row);tx.oncomplete=res})}
@@ -366,6 +452,10 @@ async function loadMarket(){
 $('run').onclick=()=>{try{$('err').style.display='none';render(runBacktest(cfg()))}catch(e){$('err').textContent=e.message;$('err').style.display='block'}};
 $('save').onclick=()=>$('saveName').focus();
 $('saveNamed').onclick=()=>saveRun($('saveName').value.trim()||'Backtest '+new Date().toLocaleString('en-IN'));
+$('tabBacktestBtn').onclick=()=>switchTab('backtest');
+$('tabSimulationBtn').onclick=()=>switchTab('simulation');
+$('simRun').onclick=startSimulation;
+$('simCancel').onclick=()=>{simCancel=true;$('simCancel').disabled=true};
 window.addEventListener('resize',()=>RESULT&&render(RESULT));
 loadMarket().catch(e=>{$('dataStatus').textContent='Failed to load data.';$('err').textContent=e.message;$('err').style.display='block'});
 </script>
