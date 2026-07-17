@@ -97,6 +97,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
   <div class="tabs">
     <button class="tab-btn active" id="tabBacktestBtn">Backtest</button>
     <button class="tab-btn" id="tabSimulationBtn">Simulation</button>
+    <button class="tab-btn" id="tabPaperBtn">Paper Trading</button>
   </div>
   <div class="status">
     <span class="pill" id="refreshPill">Data: -</span>
@@ -149,6 +150,54 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
       <h2>Results <span class="tiny" id="simResultCount"></span></h2>
       <p class="sub" id="simResultsNote">Click a column header to sort. Results are ranked by Sharpe by default.</p>
       <div class="scroll"><table id="simTable"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+  <div id="paperView" style="display:none">
+    <div class="card" id="paperSetup" style="display:none">
+      <h2>Start Paper Trading</h2>
+      <p class="sub">Track the strategy forward with simulated money. The current sidebar settings (universe, lookbacks, ranks, rebalance rules, costs) are locked in as this portfolio's rules. Orders are generated for you to confirm — nothing trades automatically.</p>
+      <div class="row3">
+        <div><label>Starting capital</label><input id="paperCapital" type="number" step="100000" value="1000000"></div>
+        <div><label>Inception date</label><input id="paperStart" type="date"></div>
+        <div style="align-self:end"><button id="paperCreate" style="width:100%">Create Portfolio</button></div>
+      </div>
+    </div>
+    <div id="paperMain" style="display:none">
+      <div class="status">
+        <span class="pill" id="paperSourcePill">State: -</span>
+        <span class="pill" id="paperNextRbPill">Next rebalance: -</span>
+        <span class="pill" id="paperCfgPill">Rules: -</span>
+      </div>
+      <div class="err" id="paperWarn"></div>
+      <div class="grid">
+        <div class="tile"><div class="lbl">Portfolio Value</div><div class="val" id="pVal">-</div><div class="cmp" id="pValCmp">since -</div></div>
+        <div class="tile"><div class="lbl">Total P&amp;L</div><div class="val" id="pPnl">-</div><div class="cmp" id="pPnlCmp">-</div></div>
+        <div class="tile"><div class="lbl">CAGR</div><div class="val" id="pCagr">-</div><div class="cmp">needs 90+ days</div></div>
+        <div class="tile"><div class="lbl">Max Drawdown</div><div class="val" id="pDd">-</div><div class="cmp">daily closes</div></div>
+        <div class="tile"><div class="lbl">Cash</div><div class="val" id="pCash">-</div><div class="cmp">uninvested</div></div>
+        <div class="tile"><div class="lbl">Holdings</div><div class="val" id="pHold">-</div><div class="cmp">names</div></div>
+        <div class="tile"><div class="lbl">Charges Paid</div><div class="val" id="pChg">-</div><div class="cmp">all trades</div></div>
+        <div class="tile"><div class="lbl">Est. Tax</div><div class="val" id="pTax">-</div><div class="cmp">simplified, not deducted</div></div>
+        <div class="tile"><div class="lbl">vs Backtest</div><div class="val" id="pVsEng">-</div><div class="cmp">pp, same period</div></div>
+        <div class="tile"><div class="lbl">vs Nifty 500</div><div class="val" id="pVsBench">-</div><div class="cmp">pp, same period</div></div>
+      </div>
+      <div class="card" id="paperPending" style="display:none">
+        <h2>Rebalance Due — Order List</h2>
+        <p class="sub" id="paperPendingNote"></p>
+        <div class="scroll"><table id="paperOrders"><thead><tr><th>Symbol</th><th>Side</th><th>Rank</th><th>Ref Price</th><th>Qty</th><th>Fill Price</th><th>Include</th></tr></thead><tbody></tbody></table></div>
+        <div class="row" style="margin-top:10px"><div><label>Execution date</label><input id="paperFillDate" type="date"></div><div style="align-self:end"><button id="paperConfirm" style="width:100%">Confirm Rebalance</button></div></div>
+      </div>
+      <div class="card"><h2>Paper NAV (base 100)</h2><div class="legend"><span class="key"><i style="background:var(--blue)"></i>Paper</span><span class="key"><i style="background:#a56400"></i>Backtest engine (pre-tax)</span><span class="key"><i style="background:var(--green)"></i>Nifty 500</span></div><div id="paperChart"></div></div>
+      <div class="cards2">
+        <div class="card"><h2>Holdings</h2><div class="scroll"><table id="paperHoldings"><thead><tr><th>Symbol</th><th>Qty</th><th>Avg Cost</th><th>Last</th><th>Value</th><th>Weight</th><th>P&amp;L %</th><th>Rank</th></tr></thead><tbody></tbody></table></div></div>
+        <div class="card"><h2>Trade Ledger</h2><div class="scroll"><table id="paperLedger"><thead><tr><th>Date</th><th>Side</th><th>Symbol</th><th>Qty</th><th>Price</th><th>Charges</th><th>Value</th></tr></thead><tbody></tbody></table></div></div>
+      </div>
+      <div class="card">
+        <h2>Portfolio Data</h2>
+        <p class="sub">State lives in this browser (IndexedDB). To make it durable and visible on other devices, export the JSON and commit it as <code>site/data/paper_portfolio.json</code>. To fix a bad fill or record a split, export, edit the JSON, and import it back.</p>
+        <div class="sim-actions"><button id="paperExport" class="secondary">Export JSON</button><button id="paperImportBtn" class="secondary">Import JSON</button><button id="paperReset" class="danger">Reset Local Copy</button></div>
+        <input type="file" id="paperImportFile" accept="application/json" style="display:none">
+      </div>
     </div>
   </div>
 </main>
@@ -428,7 +477,15 @@ const SIM_PARAMS=[
 const SIM_DEFAULTS={universe:[['midsmallcap400'],['microcap250'],['midsmallcap400','microcap250']],lookback_set:Object.keys(SIM_LOOKBACK_SETS),skip_1m:[false,true],vol_adjust:[true,false],top_n:[20],entry_rank:[20],exit_rank:[50],rebalance_frequency:['monthly'],weighting:['equal'],trend_filter:['none'],supertrend_multiplier:[2.5],trend_timeframe:['weekly'],bearish_asset:['cash']};
 const SIM_LABELS={cagr:'Net CAGR %',gross_cagr:'Gross CAGR %',sharpe:'Sharpe',vol:'Vol %',maxdd:'Net MaxDD %',gross_maxdd:'Gross MaxDD %',final:'Net Final',rebalances:'Rebalances',error:'Error'};
 let simRunning=false, simCancel=false, simSort={key:'sharpe',dir:'desc'}, SIM_RESULTS=[], STATIC_SIM_RESULTS=[], LIVE_SIM_RESULTS=[], simAvgSec=null, staticSimLoaded=false;
-function switchTab(tab){const backtest=tab==='backtest';$('backtestView').style.display=backtest?'':'none';$('simulationView').style.display=backtest?'none':'';$('tabBacktestBtn').classList.toggle('active',backtest);$('tabSimulationBtn').classList.toggle('active',!backtest);if(!backtest){if(!$('simGroups').children.length)renderSimGroups();loadStaticSimulationResults()}}
+function switchTab(tab){
+  const views={backtest:'backtestView',simulation:'simulationView',paper:'paperView'};
+  for(const [k,id] of Object.entries(views))$(id).style.display=k===tab?'':'none';
+  $('tabBacktestBtn').classList.toggle('active',tab==='backtest');
+  $('tabSimulationBtn').classList.toggle('active',tab==='simulation');
+  $('tabPaperBtn').classList.toggle('active',tab==='paper');
+  if(tab==='simulation'){if(!$('simGroups').children.length)renderSimGroups();loadStaticSimulationResults()}
+  if(tab==='paper')renderPaper();
+}
 function fmtDuration(sec){sec=Math.max(0,sec);if(sec<60)return Math.ceil(sec)+'s';const m=Math.floor(sec/60),s=Math.round(sec%60);if(m<60)return m+'m '+s+'s';return Math.floor(m/60)+'h '+(m%60)+'m'}
 function renderSimGroups(){const box=$('simGroups');box.innerHTML='';SIM_PARAMS.forEach(p=>{const div=document.createElement('div');div.className='sim-group';const h=document.createElement('h4');h.textContent=p.label;div.appendChild(h);const defs=new Set((SIM_DEFAULTS[p.key]||[]).map(v=>JSON.stringify(v)));p.options.forEach(opt=>{const label=document.createElement('label');label.className='check';const cb=document.createElement('input');cb.type='checkbox';cb.className='sim-opt';cb.dataset.param=p.key;cb.dataset.value=JSON.stringify(opt.value);cb.checked=defs.has(JSON.stringify(opt.value));cb.addEventListener('change',updateSimSummary);label.appendChild(cb);label.appendChild(document.createTextNode(' '+opt.label));div.appendChild(label)});box.appendChild(div)});updateSimSummary()}
 function currentSimSelection(){const sel={};document.querySelectorAll('.sim-opt:checked').forEach(cb=>{const key=cb.dataset.param;(sel[key]=sel[key]||[]).push(JSON.parse(cb.dataset.value))});return sel}
@@ -445,7 +502,7 @@ function renderSimTable(rows){SIM_RESULTS=rows||[];const cols=simColumns(SIM_RES
 function showPrecomputedSimulation(){if(!STATIC_SIM_RESULTS.length)return;renderSimTable(STATIC_SIM_RESULTS);$('simResultsNote').textContent='Showing saved precomputed simulation results. Click any column header to sort.';$('simShowPrecomputed').style.display=LIVE_SIM_RESULTS.length?'':'none'}
 async function loadStaticSimulationResults(){if(staticSimLoaded)return;staticSimLoaded=true;try{const res=await fetch('data/simulation_results.json',{cache:'no-store'});if(!res.ok)throw Error('No saved simulation results found.');const payload=await res.json();if(payload.chunks?.length){const rows=[];for(let i=0;i<payload.chunks.length;i++){const chunk=payload.chunks[i];$('simResultsNote').textContent=`Loading saved results chunk ${i+1}/${payload.chunks.length}...`;const chunkRes=await fetch('data/'+chunk.file,{cache:'no-store'});if(!chunkRes.ok)throw Error('Missing saved results chunk '+chunk.file);const chunkPayload=await chunkRes.json();rows.push(...(chunkPayload.rows||[]))}STATIC_SIM_RESULTS=rows}else STATIC_SIM_RESULTS=payload.results||[];if(STATIC_SIM_RESULTS.length){showPrecomputedSimulation();const generated=payload.generated_at?new Date(payload.generated_at).toLocaleString('en-IN'):'';$('simResultsNote').textContent=`Showing ${STATIC_SIM_RESULTS.length.toLocaleString('en-IN')} saved precomputed results${generated?' generated '+generated:''}. Click any column header to sort.`}}catch(e){$('simResultsNote').textContent='No saved precomputed simulation file yet. Run generate_static_simulations.py locally, then commit site/data/simulation_results.json.'}}
 async function startSimulation(){const sel=currentSimSelection(),combos=expandSimCombos(sel);if(!combos.length)return;$('simErr').style.display='none';$('simProgressWrap').style.display='';$('simRun').style.display='none';$('simCancel').style.display='';$('simCancel').disabled=false;simRunning=true;simCancel=false;LIVE_SIM_RESULTS=[];renderSimTable([]);const base=cfg(),started=performance.now();for(let i=0;i<combos.length;i++){if(simCancel)break;LIVE_SIM_RESULTS.push(runSimCombo(base,combos[i]));const pct=Math.round(100*LIVE_SIM_RESULTS.length/combos.length),elapsed=(performance.now()-started)/1000,eta=LIVE_SIM_RESULTS.length?elapsed/LIVE_SIM_RESULTS.length*(combos.length-LIVE_SIM_RESULTS.length):0;$('simBar').style.width=pct+'%';$('simStatus').textContent=`${LIVE_SIM_RESULTS.length}/${combos.length} (${pct}%) | elapsed ${fmtDuration(elapsed)}, ETA ${fmtDuration(eta)}`;renderSimTable(LIVE_SIM_RESULTS);await new Promise(res=>setTimeout(res,0))}const elapsed=(performance.now()-started)/1000;if(LIVE_SIM_RESULTS.length)simAvgSec=elapsed/LIVE_SIM_RESULTS.length;simRunning=false;$('simRun').style.display='';$('simCancel').style.display='none';$('simShowPrecomputed').style.display=STATIC_SIM_RESULTS.length?'':'none';$('simResultsNote').textContent=simCancel?'Live simulation cancelled early. Saved precomputed results are still available.':'Live simulation complete. Saved precomputed results are still available.';$('simStatus').textContent=simCancel?`Cancelled after ${LIVE_SIM_RESULTS.length}/${combos.length} runs.`:`Done: ${LIVE_SIM_RESULTS.length}/${combos.length} runs in ${fmtDuration(elapsed)}.`;updateSimSummary()}
-async function openDb(){return new Promise((res,rej)=>{const r=indexedDB.open('momentum-lab',1);r.onupgradeneeded=()=>r.result.createObjectStore('runs',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function openDb(){return new Promise((res,rej)=>{const r=indexedDB.open('momentum-lab',2);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains('runs'))db.createObjectStore('runs',{keyPath:'id'});if(!db.objectStoreNames.contains('paper'))db.createObjectStore('paper',{keyPath:'id'})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function dbAll(){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readonly'), req=tx.objectStore('runs').getAll();req.onsuccess=()=>res(req.result.sort((a,b)=>b.saved_at.localeCompare(a.saved_at)))})}
 async function dbPut(row){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').put(row);tx.oncomplete=res})}
 async function dbDel(id){const db=await openDb();return new Promise(res=>{const tx=db.transaction('runs','readwrite');tx.objectStore('runs').delete(id);tx.oncomplete=res})}
@@ -453,13 +510,235 @@ async function renderSaved(){const rows=await dbAll();$('savedList').innerHTML=r
 async function saveRun(name){if(!RESULT)return;await dbPut({id:crypto.randomUUID(),name:name||'Saved backtest',saved_at:new Date().toISOString(),config:cfg(),metrics:RESULT.net_metrics,result:RESULT});renderSaved()}
 async function loadMarket(){
   const res=await fetch('data/market.json');const reader=res.body?.getReader();if(!reader){MARKET=await res.json()}else{const len=Number(res.headers.get('content-length')||0);let got=0,chunks=[];while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);got+=value.length;if(len)$('loadBar').style.width=Math.round(got/len*100)+'%'}const blob=new Blob(chunks);MARKET=JSON.parse(await blob.text())}
-  $('loadBar').style.width='100%';$('dataStatus').textContent='Bundle loaded. Running default backtest...';applyDefaults(MARKET.defaults);$('refreshPill').textContent='Data: '+MARKET.generated_at.slice(0,10);$('rangePill').textContent=`Range: ${MARKET.dates[0]} to ${MARKET.dates.at(-1)}`;$('symbolPill').textContent=`Symbols: ${MARKET.symbols.length}`;render(runBacktest(cfg()));$('dataStatus').textContent='Ready. Backtests run locally in your browser.';renderSaved();
+  $('loadBar').style.width='100%';$('dataStatus').textContent='Bundle loaded. Running default backtest...';applyDefaults(MARKET.defaults);$('refreshPill').textContent='Data: '+MARKET.generated_at.slice(0,10);$('rangePill').textContent=`Range: ${MARKET.dates[0]} to ${MARKET.dates.at(-1)}`;$('symbolPill').textContent=`Symbols: ${MARKET.symbols.length}`;render(runBacktest(cfg()));$('dataStatus').textContent='Ready. Backtests run locally in your browser.';renderSaved();loadPaper();
 }
+// ---------- Paper trading ----------
+let PAPER=null,PAPER_SOURCE='-',PAPER_ORDERS=null;
+const paperClone=o=>JSON.parse(JSON.stringify(o));
+function localToday(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+async function dbPaperGet(){const db=await openDb();return new Promise(res=>{const req=db.transaction('paper','readonly').objectStore('paper').get('portfolio');req.onsuccess=()=>res(req.result||null);req.onerror=()=>res(null)})}
+async function dbPaperPut(state){const db=await openDb();return new Promise(res=>{const tx=db.transaction('paper','readwrite');tx.objectStore('paper').put(state);tx.oncomplete=res})}
+async function dbPaperDel(){const db=await openDb();return new Promise(res=>{const tx=db.transaction('paper','readwrite');tx.objectStore('paper').delete('portfolio');tx.oncomplete=res})}
+function paperSaveLocal(){PAPER.updated_at=new Date().toISOString();dbPaperPut(paperClone(PAPER));PAPER_SOURCE='local browser — export & commit to persist'}
+// The trade ledger is the source of truth: replay it against price history to
+// derive cash, FIFO lots, realized gains and the daily NAV series.
+function paperReplay(state){
+  const dates=MARKET.dates,endIdx=dates.length-1,startIdx=firstIdx(dates,state.inception_date);
+  let cash=state.starting_capital,chargesPaid=0;
+  const lots=new Map(),lastPx=new Map(),realized=[],nav=[];
+  const trades=[...state.trades].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+  const applyTrade=t=>{
+    chargesPaid+=t.charges||0;lastPx.set(t.symbol,t.price);
+    if(t.side==='BUY'){cash-=t.qty*t.price+(t.charges||0);const l=lots.get(t.symbol)||[];l.push({qty:t.qty,price:t.price,entry:t.date});lots.set(t.symbol,l)}
+    else{cash+=t.qty*t.price-(t.charges||0);let rem=t.qty;const ls=lots.get(t.symbol)||[];
+      for(const lot of ls){const take=Math.min(lot.qty,rem);if(take<=0)continue;const heldDays=(dateTs(t.date)-dateTs(lot.entry))/86400000;realized.push({date:t.date,gain:take*(t.price-lot.price),isLong:heldDays>=(state.config.long_term_days||365)});lot.qty-=take;rem-=take}
+      const kept=ls.filter(l=>l.qty>1e-9);if(kept.length)lots.set(t.symbol,kept);else lots.delete(t.symbol)}
+  };
+  const markValue=i=>{let v=cash;for(const [sym,ls] of lots){const si=symbolIndex(sym);const cur=si>=0?value(si,i):null;if(cur!=null)lastPx.set(sym,cur);const px=cur??lastPx.get(sym);const q=ls.reduce((a,l)=>a+l.qty,0);if(px!=null)v+=q*px}return v};
+  let ti=0;
+  for(let i=startIdx;i<=endIdx;i++){
+    while(ti<trades.length&&trades[ti].date<=dates[i]){applyTrade(trades[ti]);ti++}
+    nav.push([dates[i],markValue(i)]);
+  }
+  // Fills recorded today are usually dated after the last data day (data
+  // refreshes overnight); apply them to the final point so state is current.
+  let pendingTrades=false;
+  while(ti<trades.length){applyTrade(trades[ti]);ti++;pendingTrades=true}
+  if(pendingTrades&&nav.length)nav[nav.length-1][1]=markValue(endIdx);
+  const holdingsList=[...lots.entries()].map(([sym,ls])=>{
+    const qty=ls.reduce((a,l)=>a+l.qty,0),cost=ls.reduce((a,l)=>a+l.qty*l.price,0);
+    const si=symbolIndex(sym),last=(si>=0?value(si,endIdx):null)??lastPx.get(sym)??null;
+    return {symbol:sym,qty,avgCost:qty?cost/qty:0,last,value:last!=null?qty*last:0,entry:ls[0].entry};
+  }).sort((a,b)=>a.symbol.localeCompare(b.symbol));
+  return {cash,nav,realized,chargesPaid,holdingsList,pendingTrades};
+}
+function paperTaxEstimate(state,realized){
+  const c=state.config;let st=0,lt=0;for(const r of realized){if(r.isLong)lt+=r.gain;else st+=r.gain}
+  const tax=c.include_tax===false?0:Math.max(0,st)*(c.stcg_rate||0)+Math.max(0,lt-(c.ltcg_exemption||0))*(c.ltcg_rate||0);
+  return {st,lt,tax};
+}
+// Yahoo back-adjusts history on splits/bonuses; a recorded fill price far from
+// today's adjusted close for that date means quantities need manual scaling.
+function paperAdjustmentWarnings(state){
+  const out=[],dates=MARKET.dates;
+  for(const t of state.trades){
+    const si=symbolIndex(t.symbol);
+    if(si<0){out.push(t.symbol+': not in the current data bundle (rename/delisting?).');continue}
+    const di=dates.indexOf(t.date);if(di<0)continue;
+    const px=value(si,di);
+    if(px!=null&&t.price>0&&Math.abs(px/t.price-1)>0.12)out.push(t.symbol+': recorded '+t.side+' at '+fmtNum(t.price)+' on '+t.date+' vs adjusted close '+fmtNum(px)+' ('+((px/t.price-1)*100).toFixed(1)+'%). Possible split/bonus back-adjustment — scale the quantity via export/edit/import.');
+  }
+  return [...new Set(out)];
+}
+function nextCalendarRb(c,after){
+  const a=new Date(after+'T00:00:00Z');
+  if(c.rebalance_frequency==='weekly'){const d=new Date(a);d.setUTCDate(d.getUTCDate()+(((8-d.getUTCDay())%7)||7));return 'on/after '+d.toISOString().slice(0,10)}
+  const allowed=c.rebalance_frequency==='quarterly'?[0,3,6,9]:[0,1,2,3,4,5,6,7,8,9,10,11];
+  const dom=Math.min(c.rebalance_day||21,28);
+  let d=new Date(Date.UTC(a.getUTCFullYear(),a.getUTCMonth(),dom));
+  while(d<=a||!allowed.includes(d.getUTCMonth()))d=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,dom));
+  return 'on/after '+d.toISOString().slice(0,10);
+}
+function paperDue(state){
+  const dates=MARKET.dates,endIdx=dates.length-1;
+  if(!state.rebalances.length)return {due:true,nextLabel:'initial buy pending'};
+  const c={...state.config,start:state.inception_date,end:dates[endIdx]};
+  let sched=[];try{sched=rebalanceDates(c,firstIdx(dates,state.inception_date),endIdx)}catch(e){}
+  const last=state.rebalances[state.rebalances.length-1].date;
+  const dueIdx=sched.find(i=>dates[i]>last);
+  if(dueIdx!=null)return {due:true,nextLabel:''};
+  return {due:false,nextLabel:nextCalendarRb(c,last>dates[endIdx]?last:dates[endIdx])};
+}
+// Mirrors the backtest's target selection (survivors within exit rank + top-N
+// fill, trend filter, weighting) but sizes whole-share orders off latest closes.
+function paperGenerateOrders(state,rep){
+  const c=state.config,day=MARKET.dates.length-1;
+  const trend=supertrendState(c),bullish=trend[day];
+  const goldIdx=symbolIndex(c.bearish_symbol||'GOLDBEES'),useGold=!bullish&&c.bearish_asset==='goldbees'&&goldIdx>=0;
+  const scores=computeScores(day,universeAt(day,c.universe),c);
+  if(!scores.length)throw Error('Not enough price history to rank the universe at the latest date.');
+  const rank=new Map(scores.map((r,i)=>[r.s,i+1])),scoreBy=new Map(scores.map(r=>[r.s,r]));
+  const heldIdx=rep.holdingsList.map(h=>({h,si:symbolIndex(h.symbol)}));
+  const survivors=heldIdx.filter(x=>x.si>=0&&(rank.get(x.si)||1e9)<=c.exit_rank).map(x=>x.si);
+  const target=new Set();
+  if(bullish){survivors.forEach(s=>target.add(s));for(const r of scores.slice(0,c.entry_rank)){if(target.size>=c.top_n)break;target.add(r.s)}}
+  else if(useGold)target.add(goldIdx);
+  else if(c.bearish_exposure>0)survivors.forEach(s=>target.add(s));
+  const weights=new Map();
+  if(target.size){
+    if(c.weighting==='score'){let sum=0;for(const s of target){const w=Math.max(0,scoreBy.get(s)?.score||0);weights.set(s,w);sum+=w}if(sum<=0)for(const s of target)weights.set(s,1/target.size);else for(const s of target)weights.set(s,weights.get(s)/sum)}
+    else if(c.weighting==='inverse_vol'){let sum=0;for(const s of target){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0)for(const s of target)weights.set(s,1/target.size);else for(const s of target)weights.set(s,weights.get(s)/sum)}
+    else for(const s of target)weights.set(s,1/target.size);
+  }
+  if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
+  const px=s=>value(s,day),buyRate=charges(c,true),sellRate=charges(c,false),orders=[];
+  let pv=rep.cash;for(const x of heldIdx){const p=(x.si>=0?px(x.si):null)??x.h.last;pv+=x.h.qty*(p||0)}
+  let estCash=rep.cash;
+  for(const x of heldIdx){
+    if(x.si>=0&&target.has(x.si))continue;
+    const p=(x.si>=0?px(x.si):null)??x.h.last;
+    orders.push({symbol:x.h.symbol,side:'SELL',qty:Math.round(x.h.qty*10000)/10000,ref:p,rank:x.si>=0?(rank.get(x.si)||null):null,reason:'exit'});
+    estCash+=x.h.qty*(p||0)*(1-sellRate);
+  }
+  const qtyBy=new Map(heldIdx.filter(x=>x.si>=0).map(x=>[x.si,x.h.qty]));
+  const tgtSorted=[...target].sort(bySymbol);
+  for(const s of tgtSorted){
+    const p=px(s);if(p==null||p<=0)continue;
+    const tgt=pv*(weights.get(s)||0),cur=(qtyBy.get(s)||0)*p;
+    if(cur>tgt*1.01){const q=Math.floor((cur-tgt)/p);if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'SELL',qty:q,ref:p,rank:rank.get(s)||null,reason:'trim'});estCash+=q*p*(1-sellRate)}}
+  }
+  for(const s of tgtSorted){
+    const p=px(s);if(p==null||p<=0)continue;
+    const tgt=pv*(weights.get(s)||0),cur=(qtyBy.get(s)||0)*p;
+    if(cur<tgt*0.99){const spend=Math.min(tgt-cur,Math.max(0,estCash));const q=Math.floor(spend/(p*(1+buyRate)));if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'BUY',qty:q,ref:p,rank:rank.get(s)||null,reason:qtyBy.has(s)?'add':'enter'});estCash-=q*p*(1+buyRate)}}
+  }
+  return {id:'rb-'+MARKET.dates[day]+'-'+Math.random().toString(36).slice(2,6),mode:bullish?'Bullish':'Bearish',orders,asOf:MARKET.dates[day]};
+}
+function paperRankMap(c){try{const day=MARKET.dates.length-1,scores=computeScores(day,universeAt(day,c.universe),c);return new Map(scores.map((r,i)=>[MARKET.symbols[r.s],i+1]))}catch(e){return new Map()}}
+function renderPaperOrders(){
+  $('paperPending').style.display='';
+  $('paperPendingNote').textContent=(PAPER.rebalances.length?'Scheduled rebalance is due. ':'Initial portfolio purchase. ')+'Ranks and reference prices use the latest closes ('+PAPER_ORDERS.asOf+'). Trend mode: '+PAPER_ORDERS.mode+'. Execute at the next market open, then record actual fill prices below and confirm. Confirming with everything unticked records a no-trade rebalance.';
+  if(!$('paperFillDate').value)$('paperFillDate').value=localToday();
+  document.querySelector('#paperOrders tbody').innerHTML=PAPER_ORDERS.orders.map((o,i)=>`<tr><td class="sym">${o.symbol}</td><td class="${o.side==='BUY'?'pos':'neg'}">${o.side} <span class="tiny">${o.reason}</span></td><td>${o.rank??'-'}</td><td>${o.ref!=null?fmtNum(o.ref):'-'}</td><td><input type="number" min="0" step="any" value="${o.qty}" data-oq="${i}" style="width:90px"></td><td><input type="number" min="0" step="any" value="${o.ref??''}" data-op="${i}" style="width:100px"></td><td style="text-align:center"><input type="checkbox" checked data-oi="${i}"></td></tr>`).join('')||'<tr><td colspan="7">Portfolio already matches targets — confirm to record the rebalance.</td></tr>';
+}
+function renderPaper(){
+  if(!MARKET)return;
+  if(!PAPER){$('paperSetup').style.display='';$('paperMain').style.display='none';if(!$('paperStart').value)$('paperStart').value=MARKET.dates.at(-1);return}
+  $('paperSetup').style.display='none';$('paperMain').style.display='';
+  const c=PAPER.config,cap=PAPER.starting_capital,rep=paperReplay(PAPER),dates=MARKET.dates,endIdx=dates.length-1;
+  $('paperSourcePill').textContent='State: '+PAPER_SOURCE;
+  $('paperCfgPill').textContent='Rules: '+(c.universe||[]).join('+')+' | '+(c.lookbacks||[]).join('+')+(c.vol_adjust?'/vol':'')+' | top '+c.top_n+' | entry '+c.entry_rank+' exit '+c.exit_rank+' | '+c.rebalance_frequency+' day '+c.rebalance_day+(c.trend_filter&&c.trend_filter!=='none'?' | '+c.trend_filter:'');
+  const val=rep.nav.length?rep.nav.at(-1)[1]:cap,pnl=val-cap,days=Math.max(1,(dateTs(dates[endIdx])-dateTs(PAPER.inception_date))/86400000);
+  const paperSeries=rep.nav.map(([d,v])=>[d,v/cap*100]);
+  $('pVal').textContent=money(val);$('pValCmp').textContent='since '+PAPER.inception_date;
+  $('pPnl').textContent=money(pnl);$('pPnl').style.color=pnl>=0?'var(--green)':'var(--red)';$('pPnlCmp').textContent=pct(pnl/cap*100);
+  $('pCagr').textContent=days>=90?pct(((val/cap)**(365.25/days)-1)*100):'-';
+  $('pDd').textContent=pct(metrics(paperSeries).maxdd);
+  $('pCash').textContent=money(rep.cash);
+  $('pHold').textContent=rep.holdingsList.length;
+  $('pChg').textContent=money(rep.chargesPaid);
+  $('pTax').textContent=money(paperTaxEstimate(PAPER,rep.realized).tax);
+  const due=paperDue(PAPER);
+  $('paperNextRbPill').textContent='Next rebalance: '+(due.due?'DUE NOW':due.nextLabel);
+  $('tabPaperBtn').textContent=due.due?'Paper Trading (action due)':'Paper Trading';
+  if(due.due){
+    try{PAPER_ORDERS=paperGenerateOrders(PAPER,rep);renderPaperOrders()}
+    catch(e){PAPER_ORDERS=null;$('paperPending').style.display='';$('paperPendingNote').textContent='Could not generate orders: '+e.message;document.querySelector('#paperOrders tbody').innerHTML=''}
+  } else {$('paperPending').style.display='none';PAPER_ORDERS=null}
+  const startIdx=firstIdx(dates,PAPER.inception_date);
+  // Parity: run the engine over the identical window (pre-tax; paper NAV never
+  // deducts tax from cash either, so the comparison is like-for-like).
+  let engine=null;try{if(endIdx>startIdx)engine=runBacktest({...c,start:PAPER.inception_date,end:dates[endIdx],initial_capital:cap,include_tax:false}).net}catch(e){}
+  const bench=benchmarkEquity(startIdx,endIdx);
+  drawChart('paperChart',[{label:'Paper',color:'#2458d3',data:paperSeries},{label:'Engine (pre-tax)',color:'#a56400',data:engine||[]},{label:'Nifty 500',color:'#157a5b',data:bench}]);
+  const diff=(a,b)=>a&&a.length&&b&&b.length?a.at(-1)[1]-b.at(-1)[1]:null;
+  const vsEng=diff(paperSeries,engine),vsBench=diff(paperSeries,bench);
+  $('pVsEng').textContent=vsEng==null?'-':(vsEng>=0?'+':'')+vsEng.toFixed(1);
+  $('pVsBench').textContent=vsBench==null?'-':(vsBench>=0?'+':'')+vsBench.toFixed(1);
+  const ranks=paperRankMap(c);
+  document.querySelector('#paperHoldings tbody').innerHTML=rep.holdingsList.map(h=>{
+    const plPct=h.avgCost>0&&h.last!=null?(h.last/h.avgCost-1)*100:null,r=ranks.get(h.symbol),exitZone=r!=null&&r>c.exit_rank;
+    return `<tr><td class="sym">${h.symbol}</td><td>${fmtNum(h.qty)}</td><td>${fmtNum(h.avgCost)}</td><td>${h.last!=null?fmtNum(h.last):'-'}</td><td>${money(h.value)}</td><td>${val>0?(h.value/val*100).toFixed(1)+'%':'-'}</td><td class="${plPct==null?'':plPct>=0?'pos':'neg'}">${plPct==null?'-':plPct.toFixed(1)+'%'}</td><td class="${exitZone?'neg':''}">${r??'-'}${exitZone?' (exit zone)':''}</td></tr>`;
+  }).join('')||'<tr><td colspan="8">No holdings yet.</td></tr>';
+  document.querySelector('#paperLedger tbody').innerHTML=[...PAPER.trades].reverse().map(t=>`<tr><td>${t.date}</td><td class="${t.side==='BUY'?'pos':'neg'}">${t.side}</td><td class="sym">${t.symbol}</td><td>${fmtNum(t.qty)}</td><td>${fmtNum(t.price)}</td><td>${fmtNum(t.charges||0)}</td><td>${money(t.qty*t.price)}</td></tr>`).join('')||'<tr><td colspan="7">No trades recorded yet.</td></tr>';
+  const warns=paperAdjustmentWarnings(PAPER);
+  if(rep.cash<-1)warns.unshift('Cash is negative ('+money(rep.cash)+'): recorded fills spent more than available. Fix via export/edit/import or adjust capital.');
+  for(const h of rep.holdingsList)if(h.last==null)warns.push(h.symbol+': no current price in the data bundle; valued at last known/fill price.');
+  $('paperWarn').innerHTML=warns.map(w=>'&#9888; '+w).join('<br>');$('paperWarn').style.display=warns.length?'block':'none';
+}
+function createPaperPortfolio(){
+  const capital=Number($('paperCapital').value);
+  if(!(capital>0)){alert('Enter a starting capital.');return}
+  const inception=$('paperStart').value||MARKET.dates.at(-1);
+  const c=cfg();delete c.start;delete c.end;delete c.initial_capital;
+  PAPER={schema_version:1,id:'portfolio',created_at:new Date().toISOString(),updated_at:new Date().toISOString(),inception_date:inception,starting_capital:capital,config:c,trades:[],rebalances:[]};
+  paperSaveLocal();renderPaper();
+}
+function confirmPaperRebalance(){
+  if(!PAPER_ORDERS)return;
+  const date=$('paperFillDate').value||localToday();
+  const c=PAPER.config,buyRate=charges(c,true),sellRate=charges(c,false),trades=[];
+  PAPER_ORDERS.orders.forEach((o,i)=>{
+    const inc=document.querySelector(`[data-oi="${i}"]`);if(!inc||!inc.checked)return;
+    const qty=Number(document.querySelector(`[data-oq="${i}"]`).value),price=Number(document.querySelector(`[data-op="${i}"]`).value);
+    if(!(qty>0)||!(price>0))return;
+    trades.push({date,symbol:o.symbol,side:o.side,qty,price,charges:Math.round(qty*price*(o.side==='BUY'?buyRate:sellRate)*100)/100,rebalance_id:PAPER_ORDERS.id});
+  });
+  PAPER.trades.push(...trades);
+  PAPER.rebalances.push({id:PAPER_ORDERS.id,date,executed_at:new Date().toISOString(),mode:PAPER_ORDERS.mode,as_of:PAPER_ORDERS.asOf,orders:trades.length});
+  PAPER_ORDERS=null;$('paperFillDate').value='';paperSaveLocal();renderPaper();
+}
+function paperExport(){if(!PAPER)return;const blob=new Blob([JSON.stringify(paperClone(PAPER),null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='paper_portfolio.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+async function importPaperFile(ev){
+  const f=ev.target.files[0];ev.target.value='';if(!f)return;
+  try{const s=JSON.parse(await f.text());if(!(s.starting_capital>0)||!s.inception_date||!s.config||!Array.isArray(s.trades)||!Array.isArray(s.rebalances))throw Error('Not a valid paper portfolio file.');s.id='portfolio';PAPER=s;paperSaveLocal();renderPaper()}
+  catch(e){alert('Import failed: '+e.message)}
+}
+async function resetPaper(){
+  if(!confirm('Delete the local paper portfolio copy from this browser? A committed site/data/paper_portfolio.json will be re-loaded on the next visit.'))return;
+  await dbPaperDel();PAPER=null;PAPER_ORDERS=null;PAPER_SOURCE='-';renderPaper();
+}
+async function loadPaper(){
+  let remote=null;try{const r=await fetch('data/paper_portfolio.json',{cache:'no-store'});if(r.ok)remote=await r.json()}catch(e){}
+  let local=null;try{local=await dbPaperGet()}catch(e){}
+  if(remote&&local){if((remote.updated_at||'')>=(local.updated_at||'')){PAPER=remote;PAPER_SOURCE='repo file'}else{PAPER=local;PAPER_SOURCE='local browser (ahead of repo file — export & commit)'}}
+  else if(remote){PAPER=remote;PAPER_SOURCE='repo file'}
+  else if(local){PAPER=local;PAPER_SOURCE='local browser — export & commit to persist'}
+  if(PAPER){PAPER.id='portfolio';if(MARKET)$('tabPaperBtn').textContent=paperDue(PAPER).due?'Paper Trading (action due)':'Paper Trading'}
+}
+// ---------- end paper trading ----------
 $('run').onclick=()=>{try{$('err').style.display='none';render(runBacktest(cfg()))}catch(e){$('err').textContent=e.message;$('err').style.display='block'}};
 $('save').onclick=()=>$('saveName').focus();
 $('saveNamed').onclick=()=>saveRun($('saveName').value.trim()||'Backtest '+new Date().toLocaleString('en-IN'));
 $('tabBacktestBtn').onclick=()=>switchTab('backtest');
 $('tabSimulationBtn').onclick=()=>switchTab('simulation');
+$('tabPaperBtn').onclick=()=>switchTab('paper');
+$('paperCreate').onclick=createPaperPortfolio;
+$('paperConfirm').onclick=confirmPaperRebalance;
+$('paperExport').onclick=paperExport;
+$('paperImportBtn').onclick=()=>$('paperImportFile').click();
+$('paperImportFile').onchange=importPaperFile;
+$('paperReset').onclick=resetPaper;
 $('simRun').onclick=startSimulation;
 $('simShowPrecomputed').onclick=showPrecomputedSimulation;
 $('simCancel').onclick=()=>{simCancel=true;$('simCancel').disabled=true};
