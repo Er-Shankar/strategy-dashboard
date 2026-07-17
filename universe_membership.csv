@@ -205,6 +205,7 @@ microcap250,,GREENLAM,,2021-05-10,2021-10-29,True,False
 microcap250,,GREENLAM,,2022-04-07,2024-04-26,False,False
 microcap250,,GREENPANEL,,2021-05-10,2026-05-12,True,False
 microcap250,,GREENPLY,,2021-05-10,2025-10-28,True,False
+microcap250,INE536A01023,GRINDWELL,Grindwell Norton Ltd.,2026-07-17,,False,True
 microcap250,,GRINFRA,,2024-04-26,2026-05-12,False,False
 microcap250,,GRSE,,2021-10-29,2024-04-26,False,False
 microcap250,INE291A01017,GRWRHITECH,Garware Hi-Tech Films Ltd.,2022-10-25,2023-04-28,False,False
@@ -382,7 +383,7 @@ microcap250,,PARKHOTELS,,2021-05-10,2026-05-12,True,False
 microcap250,,PATELENG,,2024-04-26,2026-05-12,False,False
 microcap250,INE785M01021,PCJEWELLER,PC Jeweller Ltd.,2021-05-10,2022-04-07,True,False
 microcap250,INE785M01021,PCJEWELLER,PC Jeweller Ltd.,2023-04-28,,False,True
-microcap250,INE367G01038,PFOCUS,Prime Focus Ltd.,2026-05-12,,False,True
+microcap250,,PFOCUS,,2026-05-12,2026-07-17,False,False
 microcap250,,PFS,,2021-05-10,2022-04-07,True,False
 microcap250,INE940H01022,PGIL,Pearl Global Industries Ltd.,2021-05-10,,True,True
 microcap250,INE546C01010,PICCADIL,Piccadily Agro Industries Ltd.,2026-05-12,,False,True
@@ -1040,7 +1041,7 @@ midsmallcap400,,JAGRAN,,2016-04-01,2021-04-29,True,False
 midsmallcap400,,JAICORPLTD,,2016-04-01,2021-04-29,True,False
 midsmallcap400,INE0YD401026,JAINREC,Jain Resource Recycling Ltd.,2026-05-12,,False,True
 midsmallcap400,,JAMNAAUTO,,2019-04-15,2024-10-10,False,False
-midsmallcap400,INE572A01036,JBCHEPHARM,J.B. Chemicals & Pharmaceuticals Ltd.,2016-04-01,,True,True
+midsmallcap400,,JBCHEPHARM,,2016-04-01,2026-07-17,True,False
 midsmallcap400,,JBFIND,,2016-04-01,2018-12-28,True,False
 midsmallcap400,INE927D01051,JBMA,JBM Auto Ltd.,2022-12-30,,False,True
 midsmallcap400,,JETAIRWAYS,,2016-04-01,2019-09-27,True,False
@@ -1256,6 +1257,7 @@ midsmallcap400,,PFC,,2018-12-28,2019-12-26,False,False
 midsmallcap400,,PFC,,2021-04-29,2024-10-10,False,False
 midsmallcap400,INE182A01018,PFIZER,Pfizer Ltd.,2016-04-01,2024-10-10,True,False
 midsmallcap400,INE182A01018,PFIZER,Pfizer Ltd.,2025-04-11,,False,True
+midsmallcap400,INE367G01038,PFOCUS,Prime Focus Ltd.,2026-07-17,,False,True
 midsmallcap400,,PFS,,2016-04-01,2019-04-15,True,False
 midsmallcap400,INE457L01029,PGEL,PG Electroplast Ltd.,2016-04-01,,True,True
 midsmallcap400,,PGHH,,2024-10-10,2025-04-11,False,False
