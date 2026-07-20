@@ -34,4 +34,5 @@
 !.github/**
 !build_static_site.py
 !refresh_market_data.py
+!check_no_regression.py
 !STATIC_DASHBOARD.md

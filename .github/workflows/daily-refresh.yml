@@ -18,6 +18,8 @@ concurrency:
 jobs:
   refresh-and-build:
     runs-on: ubuntu-latest
+    outputs:
+      regressed: ${{ steps.guard.outputs.regressed }}
     steps:
       - uses: actions/checkout@v4
 
@@ -59,14 +61,25 @@ jobs:
       - name: Validate static bundle
         run: python -m json.tool site/data/metadata.json >/dev/null
 
+      # Yahoo sometimes serves the latest trading day with volume but no
+      # finalized OHLC yet, which gets dropped and can make this build cover
+      # FEWER trading days than what's already live. Skip deploying in that
+      # case so a good day is never silently overwritten by a worse one.
+      - name: Guard against data regression
+        id: guard
+        run: python check_no_regression.py
+
       - uses: actions/configure-pages@v5
+        if: steps.guard.outputs.regressed != 'true'
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.guard.outputs.regressed != 'true'
         with:
           path: site
 
   deploy:
     needs: refresh-and-build
+    if: needs.refresh-and-build.outputs.regressed != 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
