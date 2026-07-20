@@ -3,6 +3,13 @@ name: Daily static dashboard refresh
 on:
   workflow_dispatch:
   schedule:
+    # 07:30 IST, before market open. Yahoo occasionally hasn't finished
+    # computing the prior day's adjusted OHLC by the evening run (see the
+    # regression guard below) -- this gives it overnight to catch up, so a
+    # gap doesn't sit unresolved for a full extra day. Safe to run this often
+    # only because the guard means an incomplete fetch just skips, never
+    # regresses the live site.
+    - cron: "0 2 * * 1-5"
     # 19:30 IST, after the normal Indian market close data window.
     - cron: "0 14 * * 1-5"
 
