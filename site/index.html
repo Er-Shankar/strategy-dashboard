@@ -222,7 +222,12 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
         <h2>Rebalance Due — Order List</h2>
         <p class="sub" id="paperPendingNote"></p>
         <div class="scroll"><table id="paperOrders"><thead><tr><th>Symbol</th><th>Side</th><th>Rank</th><th>Ref Price</th><th>Qty</th><th>Fill Price</th><th>Include</th></tr></thead><tbody></tbody></table></div>
-        <div class="row" style="margin-top:10px"><div><label>Execution date</label><input id="paperFillDate" type="date"></div><div style="align-self:end"><button id="paperConfirm" style="width:100%">Confirm Rebalance</button></div></div>
+        <div class="row3" style="margin-top:10px">
+          <div><label>Execution date</label><input id="paperFillDate" type="date"></div>
+          <div style="align-self:end"><button id="paperAutofillOpen" class="secondary" style="width:100%">Autofill from Open</button></div>
+          <div style="align-self:end"><button id="paperConfirm" style="width:100%">Confirm Rebalance</button></div>
+        </div>
+        <div class="tiny" id="paperAutofillNote" style="margin-top:6px"></div>
       </div>
       <div class="card"><h2>Paper NAV (base 100)</h2><div class="legend"><span class="key"><i style="background:var(--blue)"></i>Paper</span><span class="key"><i style="background:#a56400"></i>Backtest engine (pre-tax)</span><span class="key"><i style="background:var(--green)"></i>Nifty 500</span></div><div id="paperChart"></div></div>
       <div class="cards2">
@@ -687,9 +692,28 @@ function paperGenerateOrders(state,rep){
 function paperRankMap(c){try{const day=MARKET.dates.length-1,scores=computeScores(day,universeAt(day,c.universe),c);return new Map(scores.map((r,i)=>[MARKET.symbols[r.s],i+1]))}catch(e){return new Map()}}
 function renderPaperOrders(){
   $('paperPending').style.display='';
-  $('paperPendingNote').textContent=(PAPER.rebalances.length?'Scheduled rebalance is due. ':'Initial portfolio purchase. ')+'Ranks and reference prices use the latest closes ('+PAPER_ORDERS.asOf+'). Trend mode: '+PAPER_ORDERS.mode+'. Execute at the next market open, then record actual fill prices below and confirm. Confirming with everything unticked records a no-trade rebalance.';
+  $('paperPendingNote').textContent=(PAPER.rebalances.length?'Scheduled rebalance is due. ':'Initial portfolio purchase. ')+'Ranks and reference prices use the latest closes ('+PAPER_ORDERS.asOf+'). Trend mode: '+PAPER_ORDERS.mode+'. Execute at the next market open, then record actual fill prices below and confirm (or use Autofill from Open once that date\'s data has arrived). Confirming with everything unticked records a no-trade rebalance.';
   if(!$('paperFillDate').value)$('paperFillDate').value=localToday();
   document.querySelector('#paperOrders tbody').innerHTML=PAPER_ORDERS.orders.map((o,i)=>`<tr><td class="sym">${o.symbol}</td><td class="${o.side==='BUY'?'pos':'neg'}">${o.side} <span class="tiny">${o.reason}</span></td><td>${o.rank??'-'}</td><td>${o.ref!=null?fmtNum(o.ref):'-'}</td><td><input type="number" min="0" step="any" value="${o.qty}" data-oq="${i}" style="width:90px"></td><td><input type="number" min="0" step="any" value="${o.ref??''}" data-op="${i}" style="width:100px"></td><td style="text-align:center"><input type="checkbox" checked data-oi="${i}"></td></tr>`).join('')||'<tr><td colspan="7">Portfolio already matches targets — confirm to record the rebalance.</td></tr>';
+  paperAutofillFromOpen(true);
+}
+// Pre-fills Fill Price from the symbol's actual recorded open on the chosen
+// execution date once that day's bar has landed in the data bundle (it only
+// arrives with the same evening refresh that brings that day's close, so same-day
+// confirms fall back to the reference close until then). Never blocks manual entry.
+function paperAutofillFromOpen(silent){
+  if(!PAPER_ORDERS)return;
+  const date=$('paperFillDate').value, idx=MARKET.dates.indexOf(date), note=$('paperAutofillNote');
+  if(idx<0){if(!silent)note.textContent='No data for '+date+' yet — it lands with that evening\'s refresh. Confirm now with a typed price, or check back later and click Autofill again.';return}
+  let filled=0; const missing=[];
+  PAPER_ORDERS.orders.forEach((o,i)=>{
+    const si=symbolIndex(o.symbol), open=si>=0?value(si,idx,true):null;
+    if(open!=null){const inp=document.querySelector(`[data-op="${i}"]`);if(inp){inp.value=Math.round(open*100)/100;filled++}}
+    else missing.push(o.symbol);
+  });
+  if(!silent||missing.length){
+    note.textContent=`Filled ${filled}/${PAPER_ORDERS.orders.length} rows from the actual open on ${date}.`+(missing.length?' No open price for: '+missing.join(', ')+' — left as reference close, edit manually if needed.':'');
+  } else note.textContent='';
 }
 function paperInitSetupOnce(){
   const sel=$('pfLookbackSet');
@@ -823,7 +847,7 @@ function confirmPaperRebalance(){
   });
   PAPER.trades.push(...trades);
   PAPER.rebalances.push({id:PAPER_ORDERS.id,date,executed_at:new Date().toISOString(),mode:PAPER_ORDERS.mode,as_of:PAPER_ORDERS.asOf,orders:trades.length});
-  PAPER_ORDERS=null;$('paperFillDate').value='';paperSaveLocal();renderPaper();
+  PAPER_ORDERS=null;$('paperFillDate').value='';$('paperAutofillNote').textContent='';paperSaveLocal();renderPaper();
 }
 function paperExport(){
   if(!PAPERS.length)return;
@@ -878,6 +902,8 @@ $('paperNew').onclick=()=>{PAPER_CREATING=true;renderPaper()};
 $('paperSelect').onchange=e=>{PAPER_ACTIVE_ID=e.target.value;PAPER_ORDERS=null;$('paperFillDate').value='';renderPaper()};
 $('paperDelete').onclick=deletePaper;
 $('paperConfirm').onclick=confirmPaperRebalance;
+$('paperAutofillOpen').onclick=()=>paperAutofillFromOpen(false);
+$('paperFillDate').onchange=()=>paperAutofillFromOpen(true);
 $('paperExport').onclick=paperExport;
 $('paperImportBtn').onclick=()=>$('paperImportFile').click();
 $('paperImportFile').onchange=importPaperFile;
