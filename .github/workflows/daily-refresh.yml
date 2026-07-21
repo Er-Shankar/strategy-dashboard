@@ -2,6 +2,11 @@ name: Daily static dashboard refresh
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Force deploy even if the new bundle covers fewer trading days than what's live (use to correct a bad prior deploy, e.g. a phantom same-day entry)"
+        type: boolean
+        default: false
   schedule:
     # 07:30 IST, before market open. Yahoo occasionally hasn't finished
     # computing the prior day's adjusted OHLC by the evening run (see the
@@ -74,6 +79,8 @@ jobs:
       # case so a good day is never silently overwritten by a worse one.
       - name: Guard against data regression
         id: guard
+        env:
+          FORCE_DEPLOY: ${{ github.event.inputs.force }}
         run: python check_no_regression.py
 
       - uses: actions/configure-pages@v5

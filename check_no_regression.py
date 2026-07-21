@@ -13,6 +13,12 @@ This compares the freshly-built site/data/metadata.json against the currently
 deployed one and signals (via a regressed=true/false GitHub Actions output)
 whether the deploy should be skipped, leaving the last good deployment in
 place until a future run gets a complete day from Yahoo.
+
+A manual run can set FORCE_DEPLOY=true to bypass this -- needed when the
+*live* site itself is the thing that's wrong (e.g. a phantom same-day entry
+accepted before the market-close cutoff existed), so a legitimate rollback to
+the last real closed day would otherwise look like a regression and get
+blocked.
 """
 
 import json
@@ -25,6 +31,14 @@ LIVE_METADATA_URL = "https://er-shankar.github.io/strategy-dashboard/data/metada
 def main() -> None:
     new_meta = json.load(open("site/data/metadata.json"))
     new_end = new_meta.get("date_end", "")
+
+    if os.environ.get("FORCE_DEPLOY", "").lower() == "true":
+        print(f"FORCE_DEPLOY set; deploying new date_end={new_end!r} unconditionally.")
+        gh_output = os.environ.get("GITHUB_OUTPUT")
+        if gh_output:
+            with open(gh_output, "a") as f:
+                f.write("regressed=false\n")
+        return
 
     try:
         with urllib.request.urlopen(LIVE_METADATA_URL, timeout=15) as resp:
