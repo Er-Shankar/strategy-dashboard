@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import yfinance as yf
@@ -13,6 +15,25 @@ ROOT = Path(__file__).resolve().parent
 # Yahoo begins 2009-01-02 (the binding limit); ^CRSLDX and ^NSEI go back further
 # but are aligned to the same floor so all benchmark files share one start date.
 BENCHMARK_START = "2009-01-02"
+
+IST = ZoneInfo("Asia/Kolkata")
+# Buffer past NSE's 15:30 IST close before trusting "today" at all.
+MARKET_CLOSE_CUTOFF = (16, 0)
+
+
+def latest_trustworthy_date(now: datetime | None = None):
+    """Most recent IST calendar date that can possibly have a finished session.
+
+    Yahoo returns a live/partial intraday quote for the current session with
+    no NaNs -- it's indistinguishable from a real close by value alone (only
+    a smaller Volume gives it away). A scheduled run can fire later than
+    intended (GitHub's cron has no exact-time guarantee), so this checks
+    actual wall-clock time rather than trusting the run was pre-market.
+    Rows for "today" are only accepted once the market has actually closed.
+    """
+    now = now or datetime.now(IST)
+    cutoff = now.replace(hour=MARKET_CLOSE_CUTOFF[0], minute=MARKET_CLOSE_CUTOFF[1], second=0, microsecond=0)
+    return now.date() if now >= cutoff else (now - timedelta(days=1)).date()
 
 
 def download_adjusted_ohlc(symbols: list[str], start: str, end: str) -> pd.DataFrame:
@@ -51,10 +72,13 @@ def download_adjusted_ohlc(symbols: list[str], start: str, end: str) -> pd.DataF
     return pd.concat(frames, ignore_index=True)
 
 
-def download_index(ticker: str, out: Path, ohlc_out: Path | None = None, start: str = BENCHMARK_START) -> None:
+def download_index(ticker: str, out: Path, ohlc_out: Path | None = None, start: str = BENCHMARK_START,
+                    cutoff_date=None) -> None:
     df = yf.download(ticker, start=start, auto_adjust=False, progress=False, threads=False)
     if df.empty:
         raise RuntimeError(f"No data returned for {ticker}")
+    if cutoff_date is not None:
+        df = df[df.index <= pd.Timestamp(cutoff_date)]
     close = df["Close"]
     if isinstance(close, pd.DataFrame):
         close = close.iloc[:, 0]
@@ -84,6 +108,12 @@ def main() -> None:
     symbols = [str(c) for c in existing_close.columns if str(c) != "GOLDBEES"]
     panel = download_adjusted_ohlc(symbols, args.start, args.end)
     panel = panel.sort_values(["symbol", "date"]).drop_duplicates(["symbol", "date"])
+
+    cutoff_date = latest_trustworthy_date()
+    raw_max = panel["date"].max()
+    panel = panel[panel["date"] <= pd.Timestamp(cutoff_date)]
+    print(f"Trustworthy cutoff (IST-aware): {cutoff_date} "
+          f"(raw fetch reached {raw_max.date() if pd.notna(raw_max) else 'n/a'})")
 
     new_close = panel.pivot(index="date", columns="symbol", values="close").sort_index()
     new_open = panel.pivot(index="date", columns="symbol", values="open").sort_index()
@@ -121,10 +151,11 @@ def main() -> None:
     )
     long_ohlc.to_parquet(ROOT / "prices_ohlc.parquet")
 
-    download_index("^CRSLDX", ROOT / "nifty500.csv", ROOT / "nifty500_ohlc.csv")
-    download_index("^NSEI", ROOT / "nifty50.csv")
+    download_index("^CRSLDX", ROOT / "nifty500.csv", ROOT / "nifty500_ohlc.csv", cutoff_date=cutoff_date)
+    download_index("^NSEI", ROOT / "nifty50.csv", cutoff_date=cutoff_date)
     gold = yf.download("GOLDBEES.NS", start=BENCHMARK_START, end=args.end, auto_adjust=True, progress=False, threads=False)
     if not gold.empty:
+        gold = gold[gold.index <= pd.Timestamp(cutoff_date)]
         close_gold = gold["Close"]
         if isinstance(close_gold, pd.DataFrame):
             close_gold = close_gold.iloc[:, 0]
