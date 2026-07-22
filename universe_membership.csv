@@ -13,7 +13,7 @@ microcap250,INE0BWX01014,AETHER,Aether Industries Ltd.,2021-05-10,,True,True
 microcap250,INE943P01029,AGARWALEYE,Dr. Agarwal's Health Care Ltd.,2026-05-12,,False,True
 microcap250,,AGCNET,,2021-05-10,2021-10-29,True,False
 microcap250,,AGI,,2021-05-10,2026-05-12,True,False
-microcap250,INE1YPB01014,AGL,Allcargo Global Ltd.,2021-05-10,,True,True
+microcap250,,AGL,,2021-05-10,2026-07-22,True,False
 microcap250,INE758C01029,AHLUCONT,Ahluwalia Contracts (India) Ltd.,2021-05-10,2021-10-29,True,False
 microcap250,INE758C01029,AHLUCONT,Ahluwalia Contracts (India) Ltd.,2022-04-07,2023-04-28,False,False
 microcap250,INE758C01029,AHLUCONT,Ahluwalia Contracts (India) Ltd.,2023-10-26,,False,True
@@ -137,6 +137,7 @@ microcap250,,DODLA,,2022-04-07,2026-05-12,False,False
 microcap250,,DOLATALGO,,2021-05-10,2023-04-28,True,False
 microcap250,,DOLLAR,,2021-05-10,2024-04-26,True,False
 microcap250,,DREDGECORP,,2021-05-10,2022-04-07,True,False
+microcap250,DUM256C01024,DUMMYTRVN,Dummy Triveni Ltd.,2026-07-22,,False,True
 microcap250,,DWARKESH,,2022-10-25,2024-04-26,False,False
 microcap250,INE221B01012,DYNAMATECH,Dynamatic Technologies Ltd.,2021-05-10,,True,True
 microcap250,,EASEMYTRIP,,2021-10-29,2026-05-12,False,False
