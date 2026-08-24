@@ -124,7 +124,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
     <div class="card"><h2>Latest Holdings</h2><div class="scroll"><table id="holdings"><thead><tr><th>Symbol</th><th>Weight</th></tr></thead><tbody></tbody></table></div></div>
     <div class="card"><h2>Saved Backtests</h2><div class="row"><input id="saveName" type="text" placeholder="Name current result"><button id="saveNamed">Save</button></div><div id="savedList" style="margin-top:10px"></div></div>
   </div>
-  <div class="card"><h2>Recent Entries / Exits</h2><div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th></tr></thead><tbody></tbody></table></div></div>
+  <div class="card"><h2>Recent Entries / Exits</h2><label class="check"><input type="checkbox" id="showTrimsAdds">Also show trims/adds (position resizing within existing holdings, not just what enters/exits)</label><p class="tiny" id="changesNote" style="margin-top:6px"></p><div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th><th>Detail</th></tr></thead><tbody></tbody></table></div></div>
   </div>
   <div id="simulationView" style="display:none">
     <div class="card">
@@ -454,15 +454,15 @@ function runBacktest(c){
     if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
     const currentSorted=[...current].sort(bySymbol);
     for(const s of [...positions.keys()].sort(bySymbol))if(!current.has(s))sell(s,day,shares(s));
-    let acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01)sell(s,day,(cur-target)/px)}
-    acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99)buy(s,day,target-cur)}
+    let acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01){sell(s,day,(cur-target)/px);changes.push({date:MARKET.dates[day],action:'TRIM',symbol:MARKET.symbols[s],rank:rank.get(s)||null,detail:money(cur)+' → '+money(target)})}}
+    acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99){buy(s,day,target-cur);changes.push({date:MARKET.dates[day],action:'ADD',symbol:MARKET.symbols[s],rank:rank.get(s)||null,detail:money(cur)+' → '+money(target)})}}
     holdings.push({date:MARKET.dates[day],holdings:currentSorted.map(s=>({symbol:MARKET.symbols[s],weight:weights.get(s)||0})),mode:bullish?'Bullish':'Bearish'});
     const next=k+1<rb.length?rb[k+1]:endIdx;
     for(let i=day;i<=next;i++)net.push([MARKET.dates[i],totalValue(i)/c.initial_capital*100]);
     for(let i=day+1;i<=next;i++){let ret=0;for(const [s,w] of weights){const a=value(s,i-1),b=value(s,i);if(a!=null&&b!=null&&a>0)ret+=w*(b/a-1)}gross.push([MARKET.dates[i],(gross.length?gross.at(-1)[1]:100)*(1+ret)])}
   }
   gross=dedupeSeries(gross,'first'); net=dedupeSeries(net,'last');
-  return {gross,net,drawdown:{gross:drawdown(gross),net:drawdown(net)},benchmark:benchmarkEquity(startIdx,endIdx),gross_metrics:metrics(gross),net_metrics:metrics(net),summary:{rebalances:rb.length,scheduled_rebalances:scheduled.length,trend_actions:trendActions.length,total_charges:totalCharges,total_tax:totalTax,trend_mode:holdings.at(-1)?.mode||'-'},latest_holdings:holdings.at(-1)?.holdings||[],changes:changes.slice(-500)};
+  return {gross,net,drawdown:{gross:drawdown(gross),net:drawdown(net)},benchmark:benchmarkEquity(startIdx,endIdx),gross_metrics:metrics(gross),net_metrics:metrics(net),summary:{rebalances:rb.length,scheduled_rebalances:scheduled.length,trend_actions:trendActions.length,total_charges:totalCharges,total_tax:totalTax,trend_mode:holdings.at(-1)?.mode||'-'},latest_holdings:holdings.at(-1)?.holdings||[],changes:changes.slice(-20000)};
 }
 function svgEl(tag,attrs={},parent){const node=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,v));if(parent)parent.appendChild(node);return node}
 function fmtDate(value){return new Date(value+'T00:00:00Z').toLocaleDateString('en-IN',{year:'numeric',month:'short',day:'2-digit'})}
@@ -491,7 +491,16 @@ function render(r){
   drawChart('equityChart',[{label:'Gross',color:'#2458d3',data:r.gross},{label:'Net',color:'#c93a3a',data:r.net},{label:'Nifty 500',color:'#157a5b',data:r.benchmark}]);
   drawChart('ddChart',[{label:'Gross DD',color:'#2458d3',data:r.drawdown.gross},{label:'Net DD',color:'#c93a3a',data:r.drawdown.net},{label:'Nifty 500 DD',color:'#157a5b',data:drawdown(r.benchmark)}]);
   document.querySelector('#holdings tbody').innerHTML=r.latest_holdings.map(x=>`<tr><td class="sym">${x.symbol}</td><td>${(x.weight*100).toFixed(1)}%</td></tr>`).join('');
-  document.querySelector('#changes tbody').innerHTML=r.changes.slice().reverse().map(x=>`<tr><td>${x.date}</td><td class="${x.action==='ENTER'?'pos':'neg'}">${x.action}</td><td class="sym">${x.symbol}</td><td>${x.rank??'-'}</td></tr>`).join('');
+  renderChanges();
+}
+const CHANGES_RENDER_CAP=500;
+function renderChanges(){
+  if(!RESULT)return;
+  const showAll=$('showTrimsAdds').checked;
+  const rows=showAll?RESULT.changes:RESULT.changes.filter(x=>x.action==='ENTER'||x.action==='EXIT');
+  const shown=rows.slice(-CHANGES_RENDER_CAP).reverse();
+  document.querySelector('#changes tbody').innerHTML=shown.map(x=>`<tr><td>${x.date}</td><td class="${x.action==='ENTER'||x.action==='ADD'?'pos':'neg'}">${x.action}</td><td class="sym">${x.symbol}</td><td>${x.rank??'-'}</td><td class="tiny">${x.detail??'-'}</td></tr>`).join('')||'<tr><td colspan="5">No events.</td></tr>';
+  $('changesNote').textContent=rows.length>CHANGES_RENDER_CAP?`Showing the most recent ${CHANGES_RENDER_CAP.toLocaleString('en-IN')} of ${rows.length.toLocaleString('en-IN')} events. Narrow the date range to see further back.`:'';
 }
 const SIM_LOOKBACK_SETS={
   '3m_6m_9m':{lookbacks:['3m','6m','9m'],weights:{'3m':1,'6m':1,'9m':1}},
@@ -891,6 +900,7 @@ async function loadPaper(){
 }
 // ---------- end paper trading ----------
 $('run').onclick=()=>{try{$('err').style.display='none';render(runBacktest(cfg()))}catch(e){$('err').textContent=e.message;$('err').style.display='block'}};
+$('showTrimsAdds').onchange=renderChanges;
 $('save').onclick=()=>$('saveName').focus();
 $('saveNamed').onclick=()=>saveRun($('saveName').value.trim()||'Backtest '+new Date().toLocaleString('en-IN'));
 $('tabBacktestBtn').onclick=()=>switchTab('backtest');
