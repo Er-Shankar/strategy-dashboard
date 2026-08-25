@@ -44,6 +44,7 @@ DEFAULTS = {
     "rebalance_frequency": "monthly",
     "rebalance_day": 21,
     "weighting": "equal",
+    "hold_mode": False,
     "initial_capital": 1_000_000.0,
     "include_brokerage": True,
     "brokerage_rate": 0.0003,
@@ -107,6 +108,9 @@ SWEEP_PARAMS: list[dict] = [
     {"key": "weighting", "label": "Weighting", "options": [
         {"value": "equal", "label": "Equal"}, {"value": "inverse_vol", "label": "Inverse vol"},
     ]},
+    {"key": "hold_mode", "label": "Let winners ride", "options": [
+        {"value": False, "label": "Off (trim/add)"}, {"value": True, "label": "On (no trim/add)"},
+    ]},
     {"key": "trend_filter", "label": "Trend filter", "options": [
         {"value": "none", "label": "Off"}, {"value": "supertrend", "label": "On"},
     ]},
@@ -128,6 +132,7 @@ SWEEP_DEFAULT_SELECTION: dict[str, list] = {
     "top_n": [20],
     "rebalance_frequency": ["monthly"],
     "weighting": ["equal"],
+    "hold_mode": [False],
     "trend_filter": ["none"],
     "supertrend_multiplier": [2.5],
     "trend_timeframe": ["weekly"],
@@ -779,6 +784,8 @@ def run_dashboard_backtest(cfg: dict) -> dict:
         )
 
     panels = precompute_return_panels(price_wide, cfg)
+    hold_base = float(cfg["initial_capital"])
+    hold_base_date = dates[0]
     for i, date in enumerate(dates):
         action_key = date.date().isoformat()
         is_trend_event = action_key in trend_event_info
@@ -815,33 +822,54 @@ def run_dashboard_backtest(cfg: dict) -> dict:
             change_rows.append({"date": date.date().isoformat(), "action": "EXIT", "symbol": symbol, "rank": ranks.get(symbol)})
 
         current = target
-        if not current:
-            weights = pd.Series(dtype=float)
-        elif cfg["weighting"] == "score":
-            raw = scores.reindex(list(current)).clip(lower=0)
-            weights = raw / raw.sum() if raw.sum() > 0 else pd.Series(1 / len(current), index=list(current))
-        elif cfg["weighting"] == "inverse_vol":
-            raw = 1 / vols.reindex(list(current)).replace(0, np.nan)
-            raw = raw.replace([np.inf, -np.inf], np.nan).fillna(0)
-            weights = raw / raw.sum() if raw.sum() > 0 else pd.Series(1 / len(current), index=list(current))
+        if cfg.get("hold_mode"):
+            # "Let winners ride": existing holdings are never resized -- only
+            # full exits (above) and fresh entries (below) touch the position
+            # book. New entries are sized off a fixed slot (initial capital
+            # divided by the target holding count), reset to the ACTUAL
+            # portfolio value once every 12 months, never mid-cycle.
+            for symbol in sorted(set(positions) - current):
+                sell(symbol, date, shares(symbol))
+            if (date - hold_base_date).days >= 365:
+                hold_base = total_value(date)
+                hold_base_date = date
+            slot = (hold_base / len(current) * exposure) if current else 0.0
+            for symbol in sorted(current):
+                if symbol not in positions:
+                    buy(symbol, date, slot)
+            account_value_after = total_value(date)
+            weights = pd.Series(
+                {s: (value(s, date) / account_value_after if account_value_after > 0 else 0.0) for s in current},
+                dtype=float,
+            )
         else:
-            weights = pd.Series(1 / len(current), index=list(current))
-        weights = weights * exposure
+            if not current:
+                weights = pd.Series(dtype=float)
+            elif cfg["weighting"] == "score":
+                raw = scores.reindex(list(current)).clip(lower=0)
+                weights = raw / raw.sum() if raw.sum() > 0 else pd.Series(1 / len(current), index=list(current))
+            elif cfg["weighting"] == "inverse_vol":
+                raw = 1 / vols.reindex(list(current)).replace(0, np.nan)
+                raw = raw.replace([np.inf, -np.inf], np.nan).fillna(0)
+                weights = raw / raw.sum() if raw.sum() > 0 else pd.Series(1 / len(current), index=list(current))
+            else:
+                weights = pd.Series(1 / len(current), index=list(current))
+            weights = weights * exposure
 
-        for symbol in sorted(set(positions) - current):
-            sell(symbol, date, shares(symbol))
-        account_value = total_value(date)
-        for symbol in sorted(current):
-            target_value = account_value * float(weights.get(symbol, 0.0))
-            cur_value = value(symbol, date)
-            if cur_value > target_value * 1.01:
-                sell(symbol, date, (cur_value - target_value) / float(price_wide.at[date, symbol]))
-        account_value = total_value(date)
-        for symbol in sorted(current):
-            target_value = account_value * float(weights.get(symbol, 0.0))
-            cur_value = value(symbol, date)
-            if cur_value < target_value * 0.99:
-                buy(symbol, date, target_value - cur_value)
+            for symbol in sorted(set(positions) - current):
+                sell(symbol, date, shares(symbol))
+            account_value = total_value(date)
+            for symbol in sorted(current):
+                target_value = account_value * float(weights.get(symbol, 0.0))
+                cur_value = value(symbol, date)
+                if cur_value > target_value * 1.01:
+                    sell(symbol, date, (cur_value - target_value) / float(price_wide.at[date, symbol]))
+            account_value = total_value(date)
+            for symbol in sorted(current):
+                target_value = account_value * float(weights.get(symbol, 0.0))
+                cur_value = value(symbol, date)
+                if cur_value < target_value * 0.99:
+                    buy(symbol, date, target_value - cur_value)
 
         next_date = dates[i + 1] if i + 1 < len(dates) else price_wide.index[price_wide.index <= pd.to_datetime(cfg["end"])][-1]
         if current:

@@ -30,6 +30,15 @@ button:disabled{opacity:.6;cursor:wait}
 .chart{position:relative}.chart svg{width:100%;height:auto;display:block}.tip{position:absolute;display:none;pointer-events:none;background:#111827;color:#fff;border-radius:7px;padding:7px 9px;font-size:12px;line-height:1.35;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:3;white-space:nowrap}.axis-label{font-size:11px;fill:var(--muted)}.hover-line{stroke:#777;stroke-width:1;stroke-dasharray:3 3}.hover-dot{stroke:#fff;stroke-width:2}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}th:first-child,td:first-child{text-align:left}.sym{font-weight:700}.pos{color:var(--green)}.neg{color:var(--red)}
 .scroll{overflow:auto;max-height:330px}.err{display:none;background:#fff3f3;border:1px solid #f0b6b6;color:#8b1717;border-radius:8px;padding:10px;margin-top:12px}
+.explain summary{cursor:pointer;font-weight:700;font-size:16px;padding:2px 0}.explain[open] summary{margin-bottom:10px}
+.flow{display:flex;flex-direction:column;align-items:center;gap:4px;margin:14px 0;font-size:13px}
+.flow .box{border:1px solid var(--line);border-radius:8px;padding:8px 14px;background:#fff;text-align:center;max-width:620px}
+.flow .arrow{color:var(--muted);font-size:16px;line-height:1}
+.flow .branch{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.flow .branch .col{flex:1;min-width:170px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.flow .box.exit{border-color:var(--red);color:var(--red)}.flow .box.enter{border-color:var(--green);color:var(--green)}
+.exWrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0}
+@media(max-width:820px){.exWrap{grid-template-columns:1fr}.flow .branch{flex-direction:column;align-items:center}}
 .status{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.pill{border:1px solid var(--line);border-radius:999px;background:#fff;padding:5px 10px;color:var(--muted);font-size:12px}
 .saved-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}.saved-row:last-child{border-bottom:0}
 .progress{height:8px;border-radius:999px;background:#e8ebf0;overflow:hidden;margin-top:10px}.bar{height:100%;background:var(--blue);width:0%}
@@ -71,6 +80,8 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
   <div class="row"><div><label>Exit rank</label><input id="exit_rank" type="number" min="1" max="500"></div><div><label>Rebalance day</label><input id="rebalance_day" type="number" min="1" max="28"></div></div>
   <label>Frequency</label><select id="rebalance_frequency"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="quarterly">Quarterly</option></select>
   <label>Weighting</label><select id="weighting"><option value="equal">Equal</option><option value="score">Score weighted</option><option value="inverse_vol">Inverse volatility</option></select>
+  <label class="check"><input id="hold_mode" type="checkbox">Let winners ride (no trim/add)</label>
+  <div class="tiny">Existing holdings are never resized between rebalances — only full exits/entries happen. New entries are sized off a fixed slot (starting capital ÷ holdings), reset to the actual portfolio value once every 12 months. See "How rebalancing works" below for the full explanation.</div>
 
   <h3>Trend Filter</h3>
   <label>Mode</label><select id="trend_filter"><option value="none">None</option><option value="supertrend">Supertrend</option></select>
@@ -125,6 +136,63 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
     <div class="card"><h2>Saved Backtests</h2><div class="row"><input id="saveName" type="text" placeholder="Name current result"><button id="saveNamed">Save</button></div><div id="savedList" style="margin-top:10px"></div></div>
   </div>
   <div class="card"><h2>Recent Entries / Exits</h2><label class="check"><input type="checkbox" id="showTrimsAdds">Also show trims/adds (position resizing within existing holdings, not just what enters/exits)</label><p class="tiny" id="changesNote" style="margin-top:6px"></p><div class="scroll"><table id="changes"><thead><tr><th>Date</th><th>Action</th><th>Symbol</th><th>Rank</th><th>Detail</th></tr></thead><tbody></tbody></table></div></div>
+  <details class="card explain" id="rebalanceExplainer">
+    <summary>How rebalancing works — Standard vs. "Let winners ride"</summary>
+    <p class="sub">Every rebalance date, the strategy first decides <b>which stocks to hold</b> (unchanged by either mode below — purely rank-based: keep survivors inside your exit rank, fill up to your holding count from the top of the rank list). What differs between the two modes is only <b>how much of each stock to hold</b>.</p>
+    <div class="flow">
+      <div class="box">Rebalance date arrives — rank the universe</div>
+      <div class="arrow">↓</div>
+      <div class="box">For each stock currently held or newly eligible…</div>
+      <div class="arrow">↓</div>
+      <div class="branch">
+        <div class="col">
+          <div class="box exit">Rank fell past exit cutoff</div>
+          <div class="arrow">↓</div>
+          <div class="box exit">SELL the entire position<br><span class="tiny">same in both modes</span></div>
+        </div>
+        <div class="col">
+          <div class="box">Already held, still eligible</div>
+          <div class="arrow">↓</div>
+          <div class="box"><b>Standard:</b> resize to target weight (TRIM if overweight, ADD if underweight)<br><b>Let winners ride:</b> do nothing — leave it exactly as is</div>
+        </div>
+        <div class="col">
+          <div class="box enter">New to the target set</div>
+          <div class="arrow">↓</div>
+          <div class="box enter"><b>Standard:</b> BUY up to its target % of the current portfolio<br><b>Let winners ride:</b> BUY a fixed ₹ slot (see below)</div>
+        </div>
+      </div>
+    </div>
+    <h3 style="margin-top:22px">Worked example — same 2 stocks, both modes</h3>
+    <p class="tiny">Start: ₹5,000 into Stock A and ₹5,000 into Stock B (100 shares each @ ₹50). A month later, A doubles to ₹100/share (now worth ₹10,000); B stays flat at ₹50/share (still ₹5,000). Total portfolio = ₹15,000. Both stocks are still ranked well within range — nothing exits or enters. What happens at the next rebalance:</p>
+    <div class="exWrap">
+      <div class="card" style="margin-top:0"><h4 style="margin:0 0 8px">Standard</h4>
+        <p class="tiny">Target = 50% of the <b>current</b> total (₹15,000) = ₹7,500 each.</p>
+        <table><thead><tr><th>Stock</th><th>Before</th><th>Target</th><th>Action</th><th>After</th></tr></thead><tbody>
+          <tr><td class="sym">A</td><td>₹10,000</td><td>₹7,500</td><td class="neg">TRIM ₹2,500</td><td>₹7,500</td></tr>
+          <tr><td class="sym">B</td><td>₹5,000</td><td>₹7,500</td><td class="pos">ADD ₹2,500</td><td>₹7,500</td></tr>
+        </tbody></table>
+        <p class="tiny">A's gain is harvested and handed to B every single rebalance — winners are systematically sold down, laggards systematically topped up.</p>
+      </div>
+      <div class="card" style="margin-top:0"><h4 style="margin:0 0 8px">Let winners ride</h4>
+        <p class="tiny">Both are survivors — neither is a fresh entry, so neither is touched.</p>
+        <table><thead><tr><th>Stock</th><th>Before</th><th>Action</th><th>After</th></tr></thead><tbody>
+          <tr><td class="sym">A</td><td>₹10,000</td><td>—</td><td>₹10,000</td></tr>
+          <tr><td class="sym">B</td><td>₹5,000</td><td>—</td><td>₹5,000</td></tr>
+        </tbody></table>
+        <p class="tiny">A keeps riding its full gain; B keeps riding its own performance too. Weights drift wherever the market takes them until a stock is fully exited.</p>
+      </div>
+    </div>
+    <h3 style="margin-top:22px">How a fresh entry is sized in "Let winners ride"</h3>
+    <p class="tiny">A brand-new stock entering the portfolio (replacing an exited one, or at inception) is bought with a <b>fixed ₹ slot</b> = reference capital ÷ number of holdings — <i>not</i> a % of whatever the portfolio is worth that day. That reference capital starts as your starting capital, and resets to the portfolio's actual value once every 12 months (never mid-year, and never touching stocks you already hold):</p>
+    <table><thead><tr><th>Point in time</th><th>Reference capital</th><th>Slot size (20 holdings)</th></tr></thead><tbody>
+      <tr><td>Inception</td><td>₹10,00,000 (starting capital)</td><td>₹50,000</td></tr>
+      <tr><td>12 months later — portfolio has grown to ₹12,00,000</td><td>resets to ₹12,00,000</td><td>₹60,000</td></tr>
+      <tr><td>24 months later — portfolio is at ₹11,00,000 (a drawdown)</td><td>resets to ₹11,00,000</td><td>₹55,000</td></tr>
+    </tbody></table>
+    <p class="tiny">Stocks bought in year 1 keep riding from their original ₹50,000 basis; a stock entering in year 2 starts from ₹60,000; one entering in year 3 starts from ₹55,000. Each "vintage" compounds independently — the reset only changes the yardstick for <i>future</i> entries, never resizes what's already held.</p>
+    <h3 style="margin-top:22px">What happens to leftover cash</h3>
+    <p class="tiny">If an exit frees up more cash than a fresh entry's fixed slot needs (e.g. a winner exits at 3× its original stake, but the replacement only needs one slot's worth), the leftover simply sits as <b>uninvested cash</b> — nothing forces it back into the market. Over a long run this can mean holding a meaningful cash balance; that's the deliberate trade-off of never trimming winners to fund it. Toggle "Also show trims/adds" above — with Let winners ride on, you'll only ever see ENTER/EXIT rows, confirming nothing else is being resized.</p>
+  </details>
   </div>
   <div id="simulationView" style="display:none">
     <div class="card">
@@ -173,6 +241,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;b
         <div><label>Lookback set</label><select id="pfLookbackSet"></select></div>
         <div><label>Weighting</label><select id="pfWeighting"><option value="equal">Equal</option><option value="score">Score weighted</option><option value="inverse_vol">Inverse volatility</option></select></div>
       </div>
+      <label class="check"><input id="pfHoldMode" type="checkbox">Let winners ride (no trim/add) — see "How rebalancing works" on the Backtest tab</label>
       <div class="row3">
         <div><label>Holdings</label><input id="pfTopN" type="number" min="1" max="80" value="20"></div>
         <div><label>Entry rank cap</label><input id="pfEntryRank" type="number" min="1" max="400" value="20"></div>
@@ -261,7 +330,7 @@ function cfg(){
   const lookbacks=[...document.querySelectorAll('.lb:checked')].map(x=>x.value);
   const weights={};document.querySelectorAll('.wt').forEach(x=>weights[x.dataset.lb]=Number(x.value));
   const universe=[...document.querySelectorAll('.uni:checked')].map(x=>x.value);
-  return {universe:universe.length?universe:['midsmallcap400'],start:$('start').value,end:$('end').value,lookbacks,weights,vol_adjust:checked('vol_adjust'),vol_lookback:$('vol_lookback').value,skip_1m:checked('skip_1m'),top_n:num('top_n'),entry_rank:num('entry_rank'),exit_rank:num('exit_rank'),rebalance_frequency:$('rebalance_frequency').value,rebalance_day:num('rebalance_day'),weighting:$('weighting').value,initial_capital:num('initial_capital'),include_brokerage:checked('include_brokerage'),brokerage_rate:num('brokerage_rate'),include_stt:checked('include_stt'),stt_rate:num('stt_rate'),include_sebi:checked('include_sebi'),sebi_rate:num('sebi_rate'),include_stamp:checked('include_stamp'),stamp_duty_rate:num('stamp_duty_rate'),include_slippage:checked('include_slippage'),slippage_rate:num('slippage_rate'),include_tax:checked('include_tax'),stcg_rate:num('stcg_rate'),ltcg_rate:num('ltcg_rate'),ltcg_exemption:num('ltcg_exemption'),long_term_days:365,trend_filter:$('trend_filter').value,trend_source:$('trend_source').value,trend_timeframe:$('trend_timeframe').value,supertrend_atr_period:num('supertrend_atr_period'),supertrend_multiplier:num('supertrend_multiplier'),bearish_exposure:num('bearish_exposure'),bearish_asset:$('bearish_asset').value,bearish_symbol:'GOLDBEES'};
+  return {universe:universe.length?universe:['midsmallcap400'],start:$('start').value,end:$('end').value,lookbacks,weights,vol_adjust:checked('vol_adjust'),vol_lookback:$('vol_lookback').value,skip_1m:checked('skip_1m'),top_n:num('top_n'),entry_rank:num('entry_rank'),exit_rank:num('exit_rank'),rebalance_frequency:$('rebalance_frequency').value,rebalance_day:num('rebalance_day'),weighting:$('weighting').value,hold_mode:checked('hold_mode'),initial_capital:num('initial_capital'),include_brokerage:checked('include_brokerage'),brokerage_rate:num('brokerage_rate'),include_stt:checked('include_stt'),stt_rate:num('stt_rate'),include_sebi:checked('include_sebi'),sebi_rate:num('sebi_rate'),include_stamp:checked('include_stamp'),stamp_duty_rate:num('stamp_duty_rate'),include_slippage:checked('include_slippage'),slippage_rate:num('slippage_rate'),include_tax:checked('include_tax'),stcg_rate:num('stcg_rate'),ltcg_rate:num('ltcg_rate'),ltcg_exemption:num('ltcg_exemption'),long_term_days:365,trend_filter:$('trend_filter').value,trend_source:$('trend_source').value,trend_timeframe:$('trend_timeframe').value,supertrend_atr_period:num('supertrend_atr_period'),supertrend_multiplier:num('supertrend_multiplier'),bearish_exposure:num('bearish_exposure'),bearish_asset:$('bearish_asset').value,bearish_symbol:'GOLDBEES'};
 }
 function applyDefaults(d){
   const uni=d.universe||['midsmallcap400'];
@@ -269,7 +338,7 @@ function applyDefaults(d){
   $('start').value=d.start;$('end').value=d.end;
   document.querySelectorAll('.lb').forEach(x=>x.checked=d.lookbacks.includes(x.value));
   document.querySelectorAll('.wt').forEach(x=>x.value=d.weights[x.dataset.lb]??1);
-  ['vol_adjust','skip_1m','include_brokerage','include_stt','include_sebi','include_stamp','include_slippage','include_tax'].forEach(id=>$(id).checked=!!d[id]);
+  ['vol_adjust','skip_1m','hold_mode','include_brokerage','include_stt','include_sebi','include_stamp','include_slippage','include_tax'].forEach(id=>$(id).checked=!!d[id]);
   ['vol_lookback','top_n','entry_rank','exit_rank','rebalance_frequency','rebalance_day','weighting','initial_capital','brokerage_rate','stt_rate','sebi_rate','stamp_duty_rate','slippage_rate','stcg_rate','ltcg_rate','ltcg_exemption','trend_filter','trend_source','trend_timeframe','supertrend_atr_period','supertrend_multiplier','bearish_exposure','bearish_asset'].forEach(id=>$(id).value=d[id]);
 }
 function universeSnapAt(timeline,date){
@@ -435,6 +504,7 @@ function runBacktest(c){
   const startIdx=firstIdx(MARKET.dates,c.start), endIdx=lastIdx(MARKET.dates,c.end), scheduled=rebalanceDates(c,startIdx,endIdx);if(scheduled.length<2)throw Error('Not enough rebalance dates.');
   const trend=supertrendState(c), trendActions=c.trend_filter==='none'?[]:trendActionDates(trend,startIdx,endIdx), rb=[...new Set([...scheduled,...trendActions])].sort((a,b)=>a-b), goldIdx=symbolIndex(c.bearish_symbol), buyRate=charges(c,true), sellRate=charges(c,false);
   let current=new Set(), gross=[], cash=c.initial_capital, positions=new Map(), net=[], totalCharges=0,totalTax=0, changes=[], holdings=[], taxState={stLoss:0,ltLoss:0,exempt:{}};
+  let holdBase=c.initial_capital, holdBaseIdx=startIdx;
   const shares=s=>positions.get(s)?.reduce((a,l)=>a+l.shares,0)||0;
   const posValue=(s,day)=>{const px=value(s,day,false);return px==null?0:shares(s)*px};
   const totalValue=day=>cash+[...positions.keys()].reduce((a,s)=>a+posValue(s,day),0);
@@ -448,14 +518,28 @@ function runBacktest(c){
     for(const s of target)if(!current.has(s))changes.push({date:MARKET.dates[day],action:'ENTER',symbol:MARKET.symbols[s],rank:rank.get(s)||null});
     for(const s of current)if(!target.has(s))changes.push({date:MARKET.dates[day],action:'EXIT',symbol:MARKET.symbols[s],rank:rank.get(s)||null});
     current=target;
-    let weights=new Map();if(current.size){if(c.weighting==='score'){let sum=0;for(const s of current){const w=Math.max(0,scoreBy.get(s)?.score||0);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
-      else if(c.weighting==='inverse_vol'){let sum=0;for(const s of current){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
-      else for(const s of current)weights.set(s,1/current.size)}
-    if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
     const currentSorted=[...current].sort(bySymbol);
-    for(const s of [...positions.keys()].sort(bySymbol))if(!current.has(s))sell(s,day,shares(s));
-    let acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01){sell(s,day,(cur-target)/px);changes.push({date:MARKET.dates[day],action:'TRIM',symbol:MARKET.symbols[s],rank:rank.get(s)||null,detail:money(cur)+' → '+money(target)})}}
-    acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99){buy(s,day,target-cur);changes.push({date:MARKET.dates[day],action:'ADD',symbol:MARKET.symbols[s],rank:rank.get(s)||null,detail:money(cur)+' → '+money(target)})}}
+    let weights=new Map();
+    if(c.hold_mode){
+      // "Let winners ride": existing holdings are never resized. Only full
+      // exits (above) and fresh entries (below) touch the position book.
+      // New entries are sized off a fixed slot -- initial capital divided by
+      // the target holding count -- reset to the ACTUAL portfolio value once
+      // every 12 months (never mid-cycle), so vintages compound independently.
+      for(const s of [...positions.keys()].sort(bySymbol))if(!current.has(s))sell(s,day,shares(s));
+      if((dateTs(MARKET.dates[day])-dateTs(MARKET.dates[holdBaseIdx]))/86400000>=365){holdBase=totalValue(day);holdBaseIdx=day}
+      const slot=currentSorted.length?holdBase/currentSorted.length:0, exposure=(bullish||useGold)?1:c.bearish_exposure;
+      for(const s of currentSorted)if(!positions.has(s))buy(s,day,slot*exposure);
+      const acctAfter=totalValue(day);for(const s of currentSorted)weights.set(s,acctAfter>0?posValue(s,day)/acctAfter:0);
+    } else {
+      if(current.size){if(c.weighting==='score'){let sum=0;for(const s of current){const w=Math.max(0,scoreBy.get(s)?.score||0);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
+        else if(c.weighting==='inverse_vol'){let sum=0;for(const s of current){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0){for(const s of current)weights.set(s,1/current.size)}else for(const s of current)weights.set(s,weights.get(s)/sum)}
+        else for(const s of current)weights.set(s,1/current.size)}
+      if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
+      for(const s of [...positions.keys()].sort(bySymbol))if(!current.has(s))sell(s,day,shares(s));
+      let acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day), px=value(s,day,false);if(px&&cur>target*1.01){sell(s,day,(cur-target)/px);changes.push({date:MARKET.dates[day],action:'TRIM',symbol:MARKET.symbols[s],rank:rank.get(s)||null,detail:money(cur)+' → '+money(target)})}}
+      acct=totalValue(day);for(const s of currentSorted){const target=acct*(weights.get(s)||0), cur=posValue(s,day);if(cur<target*.99){buy(s,day,target-cur);changes.push({date:MARKET.dates[day],action:'ADD',symbol:MARKET.symbols[s],rank:rank.get(s)||null,detail:money(cur)+' → '+money(target)})}}
+    }
     holdings.push({date:MARKET.dates[day],holdings:currentSorted.map(s=>({symbol:MARKET.symbols[s],weight:weights.get(s)||0})),mode:bullish?'Bullish':'Bearish'});
     const next=k+1<rb.length?rb[k+1]:endIdx;
     for(let i=day;i<=next;i++)net.push([MARKET.dates[i],totalValue(i)/c.initial_capital*100]);
@@ -520,12 +604,13 @@ const SIM_PARAMS=[
   {key:'exit_rank',label:'Exit rank',options:[32,50].map(v=>({value:v,label:String(v)}))},
   {key:'rebalance_frequency',label:'Frequency',options:[{value:'monthly',label:'Monthly'},{value:'quarterly',label:'Quarterly'}]},
   {key:'weighting',label:'Weighting',options:[{value:'equal',label:'Equal'},{value:'inverse_vol',label:'Inverse vol'}]},
+  {key:'hold_mode',label:'Let winners ride',options:[{value:false,label:'Off (trim/add)'},{value:true,label:'On (no trim/add)'}]},
   {key:'trend_filter',label:'Trend filter',options:[{value:'none',label:'Off'},{value:'supertrend',label:'On'}]},
   {key:'supertrend_multiplier',label:'Supertrend multiplier',options:[1,1.5,2,2.5,3,3.5,4,4.5,5].map(v=>({value:v,label:String(v)}))},
   {key:'trend_timeframe',label:'Supertrend timeframe',options:[{value:'weekly',label:'Weekly'},{value:'daily',label:'Daily'}]},
   {key:'bearish_asset',label:'Bearish destination',options:[{value:'cash',label:'Cash'},{value:'goldbees',label:'GoldBees'}]}
 ];
-const SIM_DEFAULTS={universe:[['midsmallcap400'],['microcap250'],['midsmallcap400','microcap250']],lookback_set:Object.keys(SIM_LOOKBACK_SETS),skip_1m:[false,true],vol_adjust:[true,false],top_n:[20],entry_rank:[20],exit_rank:[50],rebalance_frequency:['monthly'],weighting:['equal'],trend_filter:['none'],supertrend_multiplier:[2.5],trend_timeframe:['weekly'],bearish_asset:['cash']};
+const SIM_DEFAULTS={universe:[['midsmallcap400'],['microcap250'],['midsmallcap400','microcap250']],lookback_set:Object.keys(SIM_LOOKBACK_SETS),skip_1m:[false,true],vol_adjust:[true,false],top_n:[20],entry_rank:[20],exit_rank:[50],rebalance_frequency:['monthly'],weighting:['equal'],hold_mode:[false],trend_filter:['none'],supertrend_multiplier:[2.5],trend_timeframe:['weekly'],bearish_asset:['cash']};
 const SIM_LABELS={cagr:'Net CAGR %',gross_cagr:'Gross CAGR %',sharpe:'Sharpe',vol:'Vol %',maxdd:'Net MaxDD %',gross_maxdd:'Gross MaxDD %',final:'Net Final',rebalances:'Rebalances',error:'Error'};
 let simRunning=false, simCancel=false, simSort={key:'sharpe',dir:'desc'}, SIM_RESULTS=[], STATIC_SIM_RESULTS=[], LIVE_SIM_RESULTS=[], simAvgSec=null, staticSimLoaded=false;
 function switchTab(tab){
@@ -655,6 +740,25 @@ function paperDue(state){
 }
 // Mirrors the backtest's target selection (survivors within exit rank + top-N
 // fill, trend filter, weighting) but sizes whole-share orders off latest closes.
+// Derives the hold-mode fixed-slot reference base from the ledger's actual
+// history -- no extra state needs to be persisted on the portfolio. Starts at
+// starting capital, and re-bases to the real portfolio value (from the NAV
+// series) at the first confirmed rebalance on/after each 12-month mark,
+// exactly mirroring the backtest engine's per-rebalance check. Also checks
+// whether the CURRENT (not-yet-confirmed) rebalance itself crosses that mark,
+// using today's live portfolio value (pv) if so.
+function computeHoldBase(state,rep,asOfDate,pv){
+  const navByDate=new Map(rep.nav);
+  let base=state.starting_capital,resetDate=state.inception_date;
+  for(const rb of state.rebalances){
+    if((dateTs(rb.date)-dateTs(resetDate))/86400000>=365){
+      const v=navByDate.get(rb.date);
+      if(v!=null){base=v;resetDate=rb.date}
+    }
+  }
+  if(asOfDate!=null&&pv!=null&&(dateTs(asOfDate)-dateTs(resetDate))/86400000>=365)base=pv;
+  return base;
+}
 function paperGenerateOrders(state,rep){
   const c=state.config,day=MARKET.dates.length-1;
   const trend=supertrendState(c),bullish=trend[day];
@@ -668,13 +772,6 @@ function paperGenerateOrders(state,rep){
   if(bullish){survivors.forEach(s=>target.add(s));for(const r of scores.slice(0,c.entry_rank)){if(target.size>=c.top_n)break;target.add(r.s)}}
   else if(useGold)target.add(goldIdx);
   else if(c.bearish_exposure>0)survivors.forEach(s=>target.add(s));
-  const weights=new Map();
-  if(target.size){
-    if(c.weighting==='score'){let sum=0;for(const s of target){const w=Math.max(0,scoreBy.get(s)?.score||0);weights.set(s,w);sum+=w}if(sum<=0)for(const s of target)weights.set(s,1/target.size);else for(const s of target)weights.set(s,weights.get(s)/sum)}
-    else if(c.weighting==='inverse_vol'){let sum=0;for(const s of target){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0)for(const s of target)weights.set(s,1/target.size);else for(const s of target)weights.set(s,weights.get(s)/sum)}
-    else for(const s of target)weights.set(s,1/target.size);
-  }
-  if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
   const px=s=>value(s,day),buyRate=charges(c,true),sellRate=charges(c,false),orders=[];
   let pv=rep.cash;for(const x of heldIdx){const p=(x.si>=0?px(x.si):null)??x.h.last;pv+=x.h.qty*(p||0)}
   let estCash=rep.cash;
@@ -686,22 +783,43 @@ function paperGenerateOrders(state,rep){
   }
   const qtyBy=new Map(heldIdx.filter(x=>x.si>=0).map(x=>[x.si,x.h.qty]));
   const tgtSorted=[...target].sort(bySymbol);
-  for(const s of tgtSorted){
-    const p=px(s);if(p==null||p<=0)continue;
-    const tgt=pv*(weights.get(s)||0),cur=(qtyBy.get(s)||0)*p;
-    if(cur>tgt*1.01){const q=Math.floor((cur-tgt)/p);if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'SELL',qty:q,ref:p,rank:rank.get(s)||null,reason:'trim'});estCash+=q*p*(1-sellRate)}}
-  }
-  for(const s of tgtSorted){
-    const p=px(s);if(p==null||p<=0)continue;
-    const tgt=pv*(weights.get(s)||0),cur=(qtyBy.get(s)||0)*p;
-    if(cur<tgt*0.99){const spend=Math.min(tgt-cur,Math.max(0,estCash));const q=Math.floor(spend/(p*(1+buyRate)));if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'BUY',qty:q,ref:p,rank:rank.get(s)||null,reason:qtyBy.has(s)?'add':'enter'});estCash-=q*p*(1+buyRate)}}
+  if(c.hold_mode){
+    // Survivors are never trimmed or topped up -- only fresh entries get an
+    // order, sized off the fixed slot (see computeHoldBase above).
+    const exposure=(bullish||useGold)?1:c.bearish_exposure;
+    const holdBase=computeHoldBase(state,rep,MARKET.dates[day],pv);
+    const slot=tgtSorted.length?holdBase/tgtSorted.length*exposure:0;
+    for(const s of tgtSorted){
+      if(qtyBy.has(s))continue;
+      const p=px(s);if(p==null||p<=0)continue;
+      const spend=Math.min(slot,Math.max(0,estCash)),q=Math.floor(spend/(p*(1+buyRate)));
+      if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'BUY',qty:q,ref:p,rank:rank.get(s)||null,reason:'enter'});estCash-=q*p*(1+buyRate)}
+    }
+  } else {
+    const weights=new Map();
+    if(target.size){
+      if(c.weighting==='score'){let sum=0;for(const s of target){const w=Math.max(0,scoreBy.get(s)?.score||0);weights.set(s,w);sum+=w}if(sum<=0)for(const s of target)weights.set(s,1/target.size);else for(const s of target)weights.set(s,weights.get(s)/sum)}
+      else if(c.weighting==='inverse_vol'){let sum=0;for(const s of target){const w=1/(scoreBy.get(s)?.vol||Infinity);weights.set(s,w);sum+=w}if(sum<=0)for(const s of target)weights.set(s,1/target.size);else for(const s of target)weights.set(s,weights.get(s)/sum)}
+      else for(const s of target)weights.set(s,1/target.size);
+    }
+    if(!bullish&&!useGold)for(const s of weights.keys())weights.set(s,weights.get(s)*c.bearish_exposure);
+    for(const s of tgtSorted){
+      const p=px(s);if(p==null||p<=0)continue;
+      const tgt=pv*(weights.get(s)||0),cur=(qtyBy.get(s)||0)*p;
+      if(cur>tgt*1.01){const q=Math.floor((cur-tgt)/p);if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'SELL',qty:q,ref:p,rank:rank.get(s)||null,reason:'trim'});estCash+=q*p*(1-sellRate)}}
+    }
+    for(const s of tgtSorted){
+      const p=px(s);if(p==null||p<=0)continue;
+      const tgt=pv*(weights.get(s)||0),cur=(qtyBy.get(s)||0)*p;
+      if(cur<tgt*0.99){const spend=Math.min(tgt-cur,Math.max(0,estCash));const q=Math.floor(spend/(p*(1+buyRate)));if(q>=1){orders.push({symbol:MARKET.symbols[s],side:'BUY',qty:q,ref:p,rank:rank.get(s)||null,reason:qtyBy.has(s)?'add':'enter'});estCash-=q*p*(1+buyRate)}}
+    }
   }
   return {id:'rb-'+MARKET.dates[day]+'-'+Math.random().toString(36).slice(2,6),mode:bullish?'Bullish':'Bearish',orders,asOf:MARKET.dates[day]};
 }
 function paperRankMap(c){try{const day=MARKET.dates.length-1,scores=computeScores(day,universeAt(day,c.universe),c);return new Map(scores.map((r,i)=>[MARKET.symbols[r.s],i+1]))}catch(e){return new Map()}}
 function renderPaperOrders(){
   $('paperPending').style.display='';
-  $('paperPendingNote').textContent=(PAPER.rebalances.length?'Scheduled rebalance is due. ':'Initial portfolio purchase. ')+'Ranks and reference prices use the latest closes ('+PAPER_ORDERS.asOf+'). Trend mode: '+PAPER_ORDERS.mode+'. Execute at the next market open, then record actual fill prices below and confirm (or use Autofill from Open once that date\'s data has arrived). Confirming with everything unticked records a no-trade rebalance.';
+  $('paperPendingNote').textContent=(PAPER.rebalances.length?'Scheduled rebalance is due. ':'Initial portfolio purchase. ')+'Ranks and reference prices use the latest closes ('+PAPER_ORDERS.asOf+'). Trend mode: '+PAPER_ORDERS.mode+'. Execute at the next market open, then record actual fill prices below and confirm (or use Autofill from Open once that date\'s data has arrived). Confirming with everything unticked records a no-trade rebalance.'+(PAPER.config.hold_mode?' "Let winners ride" is on: only full exits and fresh entries appear here — existing holdings are never trimmed or topped up.':'');
   if(!$('paperFillDate').value)$('paperFillDate').value=localToday();
   document.querySelector('#paperOrders tbody').innerHTML=PAPER_ORDERS.orders.map((o,i)=>`<tr><td class="sym">${o.symbol}</td><td class="${o.side==='BUY'?'pos':'neg'}">${o.side} <span class="tiny">${o.reason}</span></td><td>${o.rank??'-'}</td><td>${o.ref!=null?fmtNum(o.ref):'-'}</td><td><input type="number" min="0" step="any" value="${o.qty}" data-oq="${i}" style="width:90px"></td><td><input type="number" min="0" step="any" value="${o.ref??''}" data-op="${i}" style="width:100px"></td><td style="text-align:center"><input type="checkbox" checked data-oi="${i}"></td></tr>`).join('')||'<tr><td colspan="7">Portfolio already matches targets — confirm to record the rebalance.</td></tr>';
   paperAutofillFromOpen(true);
@@ -749,7 +867,7 @@ function renderPaper(){
   PAPER=PAPERS.find(p=>p.id===PAPER_ACTIVE_ID);
   const c=PAPER.config,cap=PAPER.starting_capital,rep=paperReplay(PAPER),dates=MARKET.dates,endIdx=dates.length-1;
   $('paperSourcePill').textContent='State: '+(PAPER.source==='repo'?'repo file':'local browser — export & commit to persist');
-  $('paperCfgPill').textContent='Rules: '+(c.universe||[]).join('+')+' | '+(c.lookbacks||[]).join('+')+(c.vol_adjust?'/vol':'')+' | top '+c.top_n+' | entry '+c.entry_rank+' exit '+c.exit_rank+' | '+c.rebalance_frequency+' day '+c.rebalance_day+(c.trend_filter&&c.trend_filter!=='none'?' | '+c.trend_filter:'');
+  $('paperCfgPill').textContent='Rules: '+(c.universe||[]).join('+')+' | '+(c.lookbacks||[]).join('+')+(c.vol_adjust?'/vol':'')+' | top '+c.top_n+' | entry '+c.entry_rank+' exit '+c.exit_rank+' | '+c.rebalance_frequency+' day '+c.rebalance_day+(c.trend_filter&&c.trend_filter!=='none'?' | '+c.trend_filter:'')+(c.hold_mode?' | let winners ride':'');
   const val=rep.nav.length?rep.nav.at(-1)[1]:cap,pnl=val-cap,days=Math.max(1,(dateTs(dates[endIdx])-dateTs(PAPER.inception_date))/86400000);
   const paperSeries=rep.nav.map(([d,v])=>[d,v/cap*100]);
   $('pVal').textContent=money(val);$('pValCmp').textContent='since '+PAPER.inception_date;
@@ -798,7 +916,7 @@ function buildPaperConfigFromForm(){
     lookbacks:[...ls.lookbacks],weights:{...ls.weights},
     skip_1m:$('pfSkip1m').checked,vol_adjust:$('pfVolAdjust').checked,vol_lookback:$('pfVolLookback').value,
     top_n:Number($('pfTopN').value)||20,entry_rank:Number($('pfEntryRank').value)||20,exit_rank:Number($('pfExitRank').value)||50,
-    rebalance_frequency:$('pfFreq').value,rebalance_day:Number($('pfRbDay').value)||21,weighting:$('pfWeighting').value,
+    rebalance_frequency:$('pfFreq').value,rebalance_day:Number($('pfRbDay').value)||21,weighting:$('pfWeighting').value,hold_mode:$('pfHoldMode').checked,
     trend_filter:$('pfTrend').value,trend_timeframe:$('pfTrendTf').value,
     supertrend_atr_period:Number($('pfAtr').value)||1,supertrend_multiplier:Number($('pfMult').value)||2.5,
     bearish_exposure:Number($('pfBearExp').value)||0,bearish_asset:$('pfBearAsset').value,bearish_symbol:'GOLDBEES'};
@@ -821,6 +939,7 @@ function openPaperSetupFromCombo(combo){
   if(combo.exit_rank)$('pfExitRank').value=combo.exit_rank;
   if(combo.rebalance_frequency)$('pfFreq').value=combo.rebalance_frequency;
   if(combo.weighting)$('pfWeighting').value=combo.weighting;
+  $('pfHoldMode').checked=!!combo.hold_mode;
   if(combo.trend_filter)$('pfTrend').value=combo.trend_filter;
   if(combo.trend_timeframe)$('pfTrendTf').value=combo.trend_timeframe;
   if(combo.supertrend_multiplier)$('pfMult').value=combo.supertrend_multiplier;
