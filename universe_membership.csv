@@ -137,6 +137,8 @@ microcap250,,DODLA,,2022-04-07,2026-05-12,False,False
 microcap250,,DOLATALGO,,2021-05-10,2023-04-28,True,False
 microcap250,,DOLLAR,,2021-05-10,2024-04-26,True,False
 microcap250,,DREDGECORP,,2021-05-10,2022-04-07,True,False
+microcap250,DU1560A01023,DUMMYINGL1,Dummy India Glycols ltd. 1,2026-09-02,,False,True
+microcap250,DU2560A01023,DUMMYINGL2,Dummy India Glycols ltd. 2,2026-09-02,,False,True
 microcap250,DUM510W01014,DUMMYINXGN,Dummy Inox Green Ltd.,2026-07-31,,False,True
 microcap250,DUM256C01024,DUMMYTRVN,Dummy Triveni Ltd.,2026-07-22,,False,True
 microcap250,,DWARKESH,,2022-10-25,2024-04-26,False,False
