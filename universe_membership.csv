@@ -849,6 +849,7 @@ midsmallcap400,,DLF,,2016-04-01,2025-04-11,True,False
 midsmallcap400,INE321T01012,DOMS,DOMS Industries Ltd.,2024-10-10,,False,True
 midsmallcap400,,DREAMFOLKS,,2016-04-01,2025-04-11,True,False
 midsmallcap400,,DREDGECORP,,2016-04-01,2019-04-15,True,False
+midsmallcap400,DUM545A01024,DUMMYHEG,Dummy HEG Ltd.,2026-09-07,,False,True
 midsmallcap400,,DYNAMATECH,,2016-04-01,2017-05-26,True,False
 midsmallcap400,INE738I01010,ECLERX,eClerx Services Ltd.,2016-04-01,,True,True
 midsmallcap400,,EDELWEISS,,2016-04-01,2023-07-13,True,False
@@ -959,7 +960,7 @@ midsmallcap400,,HCC,,2016-04-01,2019-04-15,True,False
 midsmallcap400,INE756I01012,HDBFS,HDB Financial Services Ltd.,2026-05-12,,False,True
 midsmallcap400,,HDFCAMC,,2016-04-01,2026-05-12,True,False
 midsmallcap400,,HDIL,,2016-04-01,2018-12-28,True,False
-midsmallcap400,INE545A01024,HEG,H.E.G. Ltd.,2018-06-29,,False,True
+midsmallcap400,INE545A01024,HEG,HEG Ltd.,2018-06-29,,False,True
 midsmallcap400,,HEIDELBERG,,2016-04-01,2022-04-07,True,False
 midsmallcap400,,HEMIPROP,,2021-04-29,2022-12-30,False,False
 midsmallcap400,,HERITGFOOD,,2017-10-30,2021-04-29,False,False
