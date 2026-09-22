@@ -960,7 +960,8 @@ midsmallcap400,,HCC,,2016-04-01,2019-04-15,True,False
 midsmallcap400,INE756I01012,HDBFS,HDB Financial Services Ltd.,2026-05-12,,False,True
 midsmallcap400,,HDFCAMC,,2016-04-01,2026-05-12,True,False
 midsmallcap400,,HDIL,,2016-04-01,2018-12-28,True,False
-midsmallcap400,INE545A01024,HEG,HEG Ltd.,2018-06-29,,False,True
+midsmallcap400,,HEG,,2018-06-29,2026-09-22,False,False
+midsmallcap400,INE545A01024,HEGAM,HEG Advanced Materials Ltd.,2026-09-22,,False,True
 midsmallcap400,,HEIDELBERG,,2016-04-01,2022-04-07,True,False
 midsmallcap400,,HEMIPROP,,2021-04-29,2022-12-30,False,False
 midsmallcap400,,HERITGFOOD,,2017-10-30,2021-04-29,False,False
