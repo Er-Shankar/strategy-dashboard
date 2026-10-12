@@ -96,7 +96,7 @@ microcap250,INE0ILV01024,CAPILLARY,Capillary Technologies India Ltd.,2026-05-12,
 microcap250,,CAPLIPOINT,,2023-04-28,2024-04-26,False,False
 microcap250,,CARTRADE,,2022-04-07,2026-05-12,False,False
 microcap250,,CARYSIL,,2021-05-10,2024-04-26,True,False
-microcap250,INE483S01020,CCAVENUE,AvenuesAI Ltd.,2021-05-10,,True,True
+microcap250,,CCAVENUE,,2021-05-10,2026-10-12,True,False
 microcap250,INE0AG901020,CEIGALL,Ceigall India Ltd.,2021-05-10,2026-05-12,True,False
 microcap250,INE0AG901020,CEIGALL,Ceigall India Ltd.,2026-09-29,,False,True
 microcap250,INE0LMW01024,CELLO,Cello World Ltd.,2021-05-10,,True,True
@@ -420,6 +420,7 @@ microcap250,,PATELENG,,2024-04-26,2026-05-12,False,False
 microcap250,INE785M01021,PCJEWELLER,PC Jeweller Ltd.,2021-05-10,2022-04-07,True,False
 microcap250,INE785M01021,PCJEWELLER,PC Jeweller Ltd.,2023-04-28,,False,True
 microcap250,INE111Q01021,PDSL,PDS Ltd.,2026-09-29,,False,True
+microcap250,INE182A01018,PFIZER,Pfizer Ltd.,2026-10-12,,False,True
 microcap250,,PFOCUS,,2026-05-12,2026-07-17,False,False
 microcap250,,PFS,,2021-05-10,2022-04-07,True,False
 microcap250,INE199A01012,PGHL,Procter & Gamble Health Ltd.,2026-09-29,,False,True
