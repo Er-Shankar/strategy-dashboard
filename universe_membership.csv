@@ -1064,7 +1064,8 @@ midsmallcap400,,IBULLSLTD,,2019-04-15,2020-09-14,False,False
 midsmallcap400,INE346A01027,ICICIAMC,ICICI Prudential Asset Management Company Ltd.,2026-05-12,,False,True
 midsmallcap400,INE765G01017,ICICIGI,ICICI Lombard General Insurance Company Ltd.,2018-06-29,2018-12-28,False,False
 midsmallcap400,INE765G01017,ICICIGI,ICICI Lombard General Insurance Company Ltd.,2026-05-12,,False,True
-midsmallcap400,INE726G01019,ICICIPRULI,ICICI Prudential Life Insurance Company Ltd.,2025-12-31,,False,True
+midsmallcap400,INE726G01019,ICICILIFE,ICICI Life Insurance Ltd.,2026-10-27,,False,True
+midsmallcap400,,ICICIPRULI,,2025-12-31,2026-10-27,False,False
 midsmallcap400,,ICIL,,2016-04-01,2019-04-15,True,False
 midsmallcap400,,ICIL,,2021-04-29,2022-12-30,False,False
 midsmallcap400,,ICRA,,2016-04-01,2018-06-29,True,False
