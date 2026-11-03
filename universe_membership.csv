@@ -147,8 +147,8 @@ microcap250,,DODLA,,2022-04-07,2026-05-12,False,False
 microcap250,,DOLATALGO,,2021-05-10,2023-04-28,True,False
 microcap250,,DOLLAR,,2021-05-10,2024-04-26,True,False
 microcap250,,DREDGECORP,,2021-05-10,2022-04-07,True,False
-microcap250,DU1560A01023,DUMMYINGL1,Dummy India Glycols ltd. 1,2026-09-02,,False,True
-microcap250,DU2560A01023,DUMMYINGL2,Dummy India Glycols ltd. 2,2026-09-02,,False,True
+microcap250,,DUMMYINGL1,,2026-09-02,2026-11-03,False,False
+microcap250,,DUMMYINGL2,,2026-09-02,2026-11-03,False,False
 microcap250,DUM510W01014,DUMMYINXGN,Dummy Inox Green Ltd.,2026-07-31,,False,True
 microcap250,,DUMMYTRVN,,2026-07-22,2026-10-09,False,False
 microcap250,,DWARKESH,,2022-10-25,2024-04-26,False,False
@@ -165,6 +165,7 @@ microcap250,INE236E01022,ELLEN,Ellenbarrie Industrial Gases Ltd.,2026-05-12,,Fal
 microcap250,INE069I01010,EMBDL,Embassy Developments Ltd.,2021-05-10,,True,True
 microcap250,INE02YR01019,EMIL,Electronics Mart India Ltd.,2023-04-28,,False,True
 microcap250,,EMUDHRA,,2022-10-25,2026-05-12,False,False
+microcap250,INE2WCT01016,ENNATURE,Ennature Bio Pharma Ltd.,2026-11-03,,False,True
 microcap250,INE010601016,ENTERO,Entero Healthcare Solutions Ltd.,2021-05-10,,True,True
 microcap250,,EPIGRAL,,2024-04-26,2026-05-12,False,False
 microcap250,INE255A01020,EPL,EPL Ltd.,2021-05-10,,True,True
@@ -261,6 +262,7 @@ microcap250,INE483B01026,ICIL,Indo Count Industries Ltd.,2022-10-25,,False,True
 microcap250,,ICRA,,2021-05-10,2022-04-07,True,False
 microcap250,INE559A01017,IFBIND,IFB Industries Ltd.,2021-05-10,,True,True
 microcap250,,IGARASHI,,2021-05-10,2022-10-25,True,False
+microcap250,INE2W6901017,IGLSPIRITS,IGL Spirits Ltd.,2026-11-03,,False,True
 microcap250,,IGPL,,2021-05-10,2023-04-28,True,False
 microcap250,INE489L01022,IIFLCAPS,IIFL Capital Services Ltd.,2021-05-10,,True,True
 microcap250,,IIFLSEC,,2021-05-10,2023-04-28,True,False
